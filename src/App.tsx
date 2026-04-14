@@ -1,31 +1,17 @@
-import './App.css'
+import React from 'react';
+import { useData } from './context/DataContext';
+import Login from './components/Login';
+import Dashboard from './components/Dashboard';
+import './App.css';
 
 function App() {
-  return (
-    <div className="app-container">
-      {/* Top Navigation */}
-      <nav className="top-nav">
-        <div className="logo">
-          study<span>arc</span>
-        </div>
-        
-        <div className="nav-pill-group">
-          <button className="nav-pill active">dashboard</button>
-          <button className="nav-pill">notes</button>
-          <button className="nav-pill">settings</button>
-        </div>
+  const { data } = useData();
 
-        <div className="profile-avatar">
-          AK
-        </div>
-      </nav>
+  if (!data.isLoggedIn) {
+    return <Login />;
+  }
 
-      {/* Main Dashboard Content */}
-      <main className="dashboard-grid">
-        {/* We will add dashboard components here in Phase 3 */}
-      </main>
-    </div>
-  )
+  return <Dashboard />;
 }
 
-export default App
+export default App;
