@@ -5,6 +5,7 @@ import Heatmap from './Heatmap';
 import SubjectsList from './SubjectsList';
 import StudyComparison from './StudyComparison';
 import { Pomodoro, ExamCountdown, WeeklyGoal } from './Phase7Widgets';
+import { Resources, Reminders, CalendarWidget } from './Phase8Widgets';
 
 const Dashboard: React.FC = () => {
   const { data, logout } = useData();
@@ -41,6 +42,7 @@ const Dashboard: React.FC = () => {
         <div style={{ gridColumn: 'span 8', display: 'flex', flexDirection: 'column', gap: '24px' }}>
           <SubjectsList />
           <StudyComparison />
+          <Resources />
         </div>
 
         <div style={{ gridColumn: 'span 4', display: 'flex', flexDirection: 'column', gap: '24px' }}>
@@ -49,6 +51,10 @@ const Dashboard: React.FC = () => {
           <WeeklyGoal />
         </div>
 
+        <div style={{ gridColumn: 'span 12', display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: '24px' }}>
+          <Reminders />
+          <CalendarWidget />
+        </div>
       </main>
     </div>
   );

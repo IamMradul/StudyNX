@@ -1,0 +1,206 @@
+/* Phase 8 specific CSS */
+
+/* Resources */
+.resources-card {
+  margin-top: auto;
+}
+
+.resources-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.resource-item {
+  display: flex;
+  align-items: center;
+  background-color: #1f1f22;
+  padding: 12px;
+  border-radius: var(--border-radius-sm);
+  border: 1px solid var(--border-color);
+}
+
+.resource-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 12px;
+}
+
+.resource-title {
+  color: var(--text-heading);
+  font-size: 13px;
+  flex: 1;
+}
+
+.resource-tag {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.add-resource-btn {
+  background: transparent;
+  color: var(--accent-green);
+  text-align: left;
+  padding: 8px 12px;
+  font-size: 13px;
+}
+
+/* Reminders */
+.reminders-card {
+  grid-column: span 6; /* If placed in a new bottom row grid */
+}
+
+.reminders-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.reminder-item {
+  background-color: #1f1f22;
+  border-radius: var(--border-radius-sm);
+  padding: 16px;
+  border: 1px solid var(--border-color);
+  position: relative;
+}
+
+.reminder-item.type-warning {
+  border-left: 3px solid var(--accent-red);
+}
+
+.reminder-item.type-info {
+  border-left: 3px solid var(--accent-orange);
+}
+
+.reminder-item.type-success {
+  border-left: 3px solid var(--accent-green);
+}
+
+.reminder-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.reminder-title {
+  color: var(--text-heading);
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.reminder-time {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.reminder-desc {
+  color: var(--text-main);
+  font-size: 13px;
+  margin-bottom: 16px;
+}
+
+.add-reminder-row {
+  display: flex;
+  gap: 12px;
+  margin-top: auto;
+}
+
+.add-reminder-input {
+  flex: 1;
+  background-color: #1f1f22;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-sm);
+  padding: 8px 12px;
+  color: var(--text-heading);
+}
+
+/* Calendar */
+.calendar-card {
+  grid-column: span 6;
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.cal-nav {
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cal-month {
+  color: var(--text-heading);
+  font-weight: 600;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.cal-day-name {
+  color: var(--text-muted);
+  font-size: 12px;
+  margin-bottom: 8px;
+}
+
+.cal-date {
+  color: var(--text-main);
+  font-size: 13px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  position: relative;
+}
+
+.cal-today {
+  border: 1px solid var(--accent-green);
+  color: var(--text-heading);
+}
+
+.cal-event-bg {
+  background-color: var(--accent-green);
+  color: var(--bg-primary);
+  font-weight: bold;
+}
+
+.cal-event-dot::after {
+  content: '';
+  position: absolute;
+  bottom: 4px;
+  width: 4px;
+  height: 4px;
+  background-color: var(--accent-green);
+  border-radius: 50%;
+}
+
+.calendar-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cal-select {
+  background-color: #1f1f22;
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  padding: 6px 12px;
+  border-radius: var(--border-radius-sm);
+}
