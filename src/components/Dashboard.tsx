@@ -3,6 +3,7 @@ import { useData } from '../context/DataContext';
 import TopStats from './TopStats';
 import Heatmap from './Heatmap';
 import SubjectsList from './SubjectsList';
+import StudyComparison from './StudyComparison';
 
 const Dashboard: React.FC = () => {
   const { data, logout } = useData();
@@ -36,6 +37,7 @@ const Dashboard: React.FC = () => {
         <TopStats />
         <Heatmap />
         <SubjectsList />
+        <StudyComparison />
       </main>
     </div>
   );
