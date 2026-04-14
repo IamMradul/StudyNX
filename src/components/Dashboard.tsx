@@ -1,5 +1,6 @@
 import React from 'react';
 import { useData } from '../context/DataContext';
+import TopStats from './TopStats';
 
 const Dashboard: React.FC = () => {
   const { data, logout } = useData();
@@ -30,10 +31,7 @@ const Dashboard: React.FC = () => {
 
       {/* Main Dashboard Content */}
       <main className="dashboard-grid">
-        {/* We will add dashboard components here in Phase 3+ */}
-        <div style={{ gridColumn: 'span 12', textAlign: 'center', marginTop: '50px', color: 'var(--text-muted)' }}>
-          <p>Dashboard grid is ready. Let's add the status cards...</p>
-        </div>
+        <TopStats />
       </main>
     </div>
   );
