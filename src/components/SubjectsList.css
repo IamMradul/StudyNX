@@ -1,0 +1,185 @@
+.subjects-container {
+  grid-column: span 6; /* Uses half the grid width typically */
+}
+
+.subjects-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.subject-item {
+  display: flex;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.subject-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.progress-ring-container {
+  position: relative;
+  width: 50px;
+  height: 50px;
+  margin-right: 16px;
+  cursor: pointer;
+}
+
+.progress-ring {
+  transform: rotate(-90deg);
+}
+
+.progress-ring-circle-bg {
+  stroke: #3f3f46;
+}
+
+.progress-ring-circle {
+  transition: stroke-dashoffset 0.5s ease;
+}
+
+.progress-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-inverse);
+}
+
+.subject-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.subject-name {
+  font-weight: 600;
+  color: var(--text-heading);
+}
+
+.subject-hours {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.subject-status {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 999px;
+  text-transform: lowercase;
+}
+
+.tag-on-track {
+  color: #4ade80;
+  background-color: rgba(74, 222, 128, 0.1);
+}
+
+.tag-progressing {
+  color: #f97316;
+  background-color: rgba(249, 115, 22, 0.1);
+}
+
+.tag-needs-focus {
+  color: #ef4444;
+  background-color: rgba(239, 68, 68, 0.1);
+}
+
+/* Modal styles */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+}
+
+.modal-content {
+  background-color: var(--bg-card);
+  border-radius: var(--border-radius-md);
+  padding: 24px;
+  width: 90%;
+  max-width: 500px;
+  color: var(--text-main);
+  box-shadow: 0 20px 25px -5px rgba(0,0,0,0.5);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.modal-header h3 {
+  color: var(--text-heading);
+}
+
+.close-btn {
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 24px;
+  line-height: 1;
+  padding: 0;
+}
+
+.close-btn:hover {
+  color: var(--text-heading);
+}
+
+.modal-body p {
+  color: var(--text-muted);
+  margin-bottom: 24px;
+}
+
+.checkbox-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  color: var(--text-heading);
+}
+
+.checkbox-label input {
+  display: none;
+}
+
+.custom-checkbox {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--border-color);
+  border-radius: 4px;
+  display: inline-block;
+  position: relative;
+  transition: all 0.2s;
+}
+
+.checkbox-label input:checked + .custom-checkbox {
+  background-color: var(--check-color, var(--accent-green));
+  border-color: var(--check-color, var(--accent-green));
+}
+
+.checkbox-label input:checked + .custom-checkbox::after {
+  content: '✓';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+}

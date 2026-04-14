@@ -2,6 +2,7 @@ import React from 'react';
 import { useData } from '../context/DataContext';
 import TopStats from './TopStats';
 import Heatmap from './Heatmap';
+import SubjectsList from './SubjectsList';
 
 const Dashboard: React.FC = () => {
   const { data, logout } = useData();
@@ -34,6 +35,7 @@ const Dashboard: React.FC = () => {
       <main className="dashboard-grid">
         <TopStats />
         <Heatmap />
+        <SubjectsList />
       </main>
     </div>
   );
