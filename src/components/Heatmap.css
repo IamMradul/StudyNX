@@ -1,7 +1,8 @@
 .heatmap-container {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 16px;
+  width: 100%;
 }
 
 .heatmap-log-row {
@@ -62,7 +63,7 @@
 }
 
 .heatmap-title-row h3 {
-  font-size: 1rem;
+  font-size: 1.08rem;
   font-weight: 600;
 }
 
@@ -71,128 +72,123 @@
   color: var(--text-muted);
 }
 
-.rhythm-metrics {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 10px;
+.year-heatmap-strip {
+  display: flex;
+  gap: 6px;
+  padding: 12px 10px;
+  border: 1px solid rgba(120, 145, 226, 0.16);
+  border-radius: 14px;
+  background: linear-gradient(180deg, rgba(10, 26, 60, 0.72), rgba(8, 21, 54, 0.75));
+  overflow: hidden;
+  width: 100%;
+  justify-content: space-between;
 }
 
-.rhythm-chip {
-  border: 1px solid rgba(128, 152, 234, 0.2);
-  background: rgba(11, 27, 64, 0.7);
-  border-radius: 10px;
-  padding: 10px 12px;
+.month-block {
+  min-width: 0;
+  flex: 1;
   display: flex;
   flex-direction: column;
+  gap: 6px;
+  padding: 7px 4px 5px;
+  border-radius: 10px;
+  background: rgba(11, 24, 56, 0.45);
+  border: 1px solid transparent;
+}
+
+.month-block.current-month {
+  border-color: rgba(129, 171, 255, 0.5);
+  background: rgba(18, 36, 80, 0.55);
+}
+
+.month-dot-grid {
+  display: flex;
+  justify-content: center;
   gap: 2px;
 }
 
-.rhythm-chip span {
-  font-size: 0.72rem;
-  color: #93a7da;
-}
-
-.rhythm-chip strong {
-  font-size: 1.08rem;
-  color: #e9f1ff;
-}
-
-.rhythm-panels {
+.week-column {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
+  grid-template-rows: repeat(7, 7px);
+  gap: 2px;
 }
 
-.rhythm-panel {
-  border: 1px solid rgba(120, 145, 226, 0.16);
-  border-radius: 12px;
-  background: linear-gradient(180deg, rgba(10, 26, 60, 0.72), rgba(8, 21, 54, 0.75));
-  padding: 12px;
-  min-height: 146px;
-}
-
-.panel-label {
-  font-size: 0.74rem;
-  color: #96a9da;
-  margin-bottom: 10px;
-}
-
-.trend-line {
-  position: relative;
-  height: 86px;
-  border-radius: 10px;
-  background:
-    linear-gradient(transparent 50%, rgba(140, 160, 240, 0.09) 50%),
-    linear-gradient(90deg, rgba(140, 160, 240, 0.08) 1px, transparent 1px);
-  background-size: 100% 22px, 20% 100%;
-}
-
-.trend-line::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  background: linear-gradient(to top, rgba(89, 129, 255, 0.18), transparent 58%);
-  border-radius: 10px;
-}
-
-.trend-node {
-  position: absolute;
-  width: 8px;
-  height: 8px;
+.month-dot {
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
-  background: #7bd6ff;
-  box-shadow: 0 0 0 3px rgba(103, 192, 255, 0.24);
-  transform: translate(-50%, 50%);
-  z-index: 1;
+  background: #2b3b5f;
 }
 
-.focus-bars {
-  display: flex;
-  align-items: flex-end;
-  gap: 8px;
-  height: 86px;
+.month-dot.empty {
+  background: transparent;
+  box-shadow: none;
 }
 
-.focus-column {
+.bucket-0 {
+  background: #2b3b5f;
+}
+
+.bucket-1 {
+  background: #3d7a6e;
+}
+
+.bucket-2 {
+  background: #53a485;
+}
+
+.bucket-3 {
+  background: #70c596;
+}
+
+.bucket-4 {
+  background: #8fe6ad;
+}
+
+.month-meta {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
-  flex: 1;
+  gap: 2px;
 }
 
-.focus-column span {
-  font-size: 0.64rem;
+.month-meta strong {
+  color: #cfe0ff;
+  font-size: 0.58rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.month-meta small {
   color: #7f95ca;
+  font-size: 0.54rem;
 }
 
-.focus-column-fill {
-  width: 100%;
-  border-radius: 8px;
-  min-height: 16px;
-  background: linear-gradient(180deg, #809eff 0%, #5a78ed 100%);
-}
-
-.focus-days {
-  margin-top: 8px;
+.heatmap-legend-row {
   display: flex;
-  justify-content: space-between;
-  color: #88a0d8;
-  font-size: 0.65rem;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  font-size: 0.66rem;
+  color: #8da2d6;
 }
 
-@media (max-width: 1080px) {
-  .rhythm-panels {
-    grid-template-columns: 1fr;
-  }
+.legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
 }
 
 @media (max-width: 700px) {
-  .rhythm-metrics {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .year-heatmap-strip {
+    overflow-x: auto;
+    justify-content: flex-start;
+    gap: 8px;
+  }
+
+  .month-block {
+    min-width: 56px;
+    flex: 0 0 auto;
   }
 
   .heatmap-log-row {
@@ -206,5 +202,9 @@
 
   .heatmap-hours-input {
     width: 100%;
+  }
+
+  .heatmap-legend-row {
+    justify-content: flex-start;
   }
 }

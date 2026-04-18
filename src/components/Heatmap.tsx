@@ -3,10 +3,53 @@ import { useData } from '../context/DataContext';
 import './Heatmap.css';
 
 const toDateKey = (date: Date) => date.toISOString().slice(0, 10);
+const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+const getBucketClass = (hours: number) => {
+  if (hours <= 0) return 'bucket-0';
+  if (hours <= 1.5) return 'bucket-1';
+  if (hours <= 3) return 'bucket-2';
+  if (hours <= 5) return 'bucket-3';
+  return 'bucket-4';
+};
+
+type MonthCell = {
+  dateKey: string | null;
+  hours: number;
+  inMonth: boolean;
+};
+
+const buildMonthCells = (year: number, monthIndex: number, activityData: Record<string, number>) => {
+  const daysInMonth = new Date(year, monthIndex + 1, 0).getDate();
+  const firstWeekday = new Date(year, monthIndex, 1).getDay();
+  const cells: MonthCell[] = Array.from({ length: 42 }, () => ({
+    dateKey: null,
+    hours: 0,
+    inMonth: false,
+  }));
+
+  for (let day = 1; day <= daysInMonth; day += 1) {
+    const flatIndex = firstWeekday + day - 1;
+    const dateKey = toDateKey(new Date(year, monthIndex, day));
+    cells[flatIndex] = {
+      dateKey,
+      hours: activityData[dateKey] ?? 0,
+      inMonth: true,
+    };
+  }
+
+  const columns = Array.from({ length: 6 }, (_, weekIndex) => {
+    return Array.from({ length: 7 }, (_, weekday) => cells[weekIndex * 7 + weekday]);
+  });
+
+  const monthHours = cells.reduce((sum, cell) => sum + (cell.inMonth ? cell.hours : 0), 0);
+  return { columns, monthHours };
+};
 
 const Heatmap: React.FC = () => {
   const { data, updateData } = useData();
   const now = new Date();
+  const year = now.getFullYear();
   const todayKey = toDateKey(now);
   const todayHours = data.activityData[todayKey] ?? 0;
   const [todayHoursInput, setTodayHoursInput] = useState(String(todayHours));
@@ -34,41 +77,24 @@ const Heatmap: React.FC = () => {
     });
   };
 
-  const last7 = Array.from({ length: 7 }, (_, idx) => {
-    const d = new Date(now);
-    d.setDate(now.getDate() - (6 - idx));
-    const hours = data.activityData[toDateKey(d)] ?? 0;
+  const months = monthNames.map((monthLabel, monthIndex) => {
+    const { columns, monthHours } = buildMonthCells(year, monthIndex, data.activityData);
+
     return {
-      label: d.toLocaleDateString(undefined, { weekday: 'short' }).slice(0, 1),
-      hours,
+      monthLabel,
+      columns,
+      monthHours,
+      isCurrentMonth: monthIndex === now.getMonth(),
     };
   });
 
-  const totalWeeklyHours = last7.reduce((sum, item) => sum + item.hours, 0);
-  const totalBreakHours = totalWeeklyHours * 0.2;
-  const activeDays = last7.filter(item => item.hours > 0).length;
-  const bestDay = last7.reduce((best, item) => item.hours > best.hours ? item : best, last7[0]);
-
-  const recent28 = Array.from({ length: 28 }, (_, idx) => {
-    const d = new Date(now);
-    d.setDate(now.getDate() - (27 - idx));
-    return data.activityData[toDateKey(d)] ?? 0;
-  });
-
-  const trendPoints = [
-    recent28.slice(0, 7),
-    recent28.slice(7, 14),
-    recent28.slice(14, 21),
-    recent28.slice(21, 28),
-  ].map(week => week.reduce((sum, h) => sum + h, 0));
-
-  const maxTrend = Math.max(1, ...trendPoints);
+  const totalYearHours = months.reduce((sum, month) => sum + month.monthHours, 0);
 
   return (
     <section className="card heatmap-container">
       <div className="heatmap-title-row">
-        <h3>Weekly Rhythm</h3>
-        <span>{new Date(now.getFullYear(), now.getMonth(), now.getDate() - 6).toLocaleDateString()} - {now.toLocaleDateString()}</span>
+        <h3>Yearly Heatmap</h3>
+        <span>{year} • {totalYearHours.toFixed(1)}h total</span>
       </div>
 
       <div className="heatmap-log-row">
@@ -90,51 +116,57 @@ const Heatmap: React.FC = () => {
         </div>
       </div>
 
-      <div className="rhythm-metrics">
-        <div className="rhythm-chip">
-          <span>Study time</span>
-          <strong>{totalWeeklyHours.toFixed(1)}h</strong>
-        </div>
-        <div className="rhythm-chip">
-          <span>Break time</span>
-          <strong>{totalBreakHours.toFixed(1)}h</strong>
-        </div>
-        <div className="rhythm-chip">
-          <span>Active days</span>
-          <strong>{activeDays}/7</strong>
-        </div>
-        <div className="rhythm-chip">
-          <span>Best day</span>
-          <strong>{bestDay.label}</strong>
-        </div>
+      <div className="year-heatmap-strip" aria-label="Yearly study heatmap">
+        {months.map((month) => (
+          <article key={month.monthLabel} className={`month-block ${month.isCurrentMonth ? 'current-month' : ''}`}>
+            <div className="month-dot-grid">
+              {month.columns.map((weekColumn, weekIndex) => (
+                <div className="week-column" key={`${month.monthLabel}-w${weekIndex}`}>
+                  {weekColumn.map((cell, dayIndex) => {
+                    if (!cell.inMonth || !cell.dateKey) {
+                      return (
+                        <span
+                          key={`${month.monthLabel}-empty-${weekIndex}-${dayIndex}`}
+                          className="month-dot empty"
+                          aria-hidden="true"
+                        ></span>
+                      );
+                    }
+
+                    const dateLabel = new Date(cell.dateKey).toLocaleDateString(undefined, {
+                      weekday: 'short',
+                      day: 'numeric',
+                      month: 'short',
+                    });
+
+                    return (
+                      <span
+                        key={`${month.monthLabel}-${cell.dateKey}`}
+                        className={`month-dot ${getBucketClass(cell.hours)}`}
+                        title={`${dateLabel}: ${cell.hours.toFixed(1)}h`}
+                      ></span>
+                    );
+                  })}
+                </div>
+              ))}
+            </div>
+
+            <div className="month-meta">
+              <strong>{month.monthLabel}</strong>
+              <small>{month.monthHours.toFixed(1)}h</small>
+            </div>
+          </article>
+        ))}
       </div>
 
-      <div className="rhythm-panels">
-        <article className="rhythm-panel">
-          <div className="panel-label">Study hours trend</div>
-          <div className="trend-line" aria-hidden="true">
-            {trendPoints.map((point, idx) => (
-              <div key={idx} className="trend-node" style={{ left: `${idx * 24}%`, bottom: `${Math.round((point / maxTrend) * 80) + 8}%` }}></div>
-            ))}
-          </div>
-        </article>
-
-        <article className="rhythm-panel">
-          <div className="panel-label">Daily focus bars</div>
-          <div className="focus-bars">
-            {last7.map((bar, idx) => (
-              <div key={idx} className="focus-column">
-                <span>{bar.hours.toFixed(1)}h</span>
-                <div className="focus-column-fill" style={{ height: `${Math.max(16, bar.hours * 18)}%` }}></div>
-              </div>
-            ))}
-          </div>
-          <div className="focus-days">
-            {last7.map((day, idx) => (
-              <span key={`${day.label}-${idx}`}>{day.label}</span>
-            ))}
-          </div>
-        </article>
+      <div className="heatmap-legend-row">
+        <span>Less</span>
+        <i className="legend-dot bucket-0"></i>
+        <i className="legend-dot bucket-1"></i>
+        <i className="legend-dot bucket-2"></i>
+        <i className="legend-dot bucket-3"></i>
+        <i className="legend-dot bucket-4"></i>
+        <span>More</span>
       </div>
     </section>
   );
