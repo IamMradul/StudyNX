@@ -1,34 +1,74 @@
 import React, { useState } from 'react';
+import { useData } from '../context/DataContext';
 import './StudyComparison.css';
 
 type Timeframe = 'weekly' | 'monthly' | 'yearly';
 
 const StudyComparison: React.FC = () => {
   const [timeframe, setTimeframe] = useState<Timeframe>('weekly');
+  const { data } = useData();
 
-  // Dummy data based on reference image
+  const toDateKey = (date: Date) => date.toISOString().slice(0, 10);
+  const toHours = (level: number) => level * 1.5;
+  const readHours = (date: Date) => toHours(data.activityData[toDateKey(date)] ?? 0);
+
   const dataMap = {
-    weekly: [
-      { label: 'Mon', value: 2.5, max: 6 },
-      { label: 'Tue', value: 4, max: 6 },
-      { label: 'Wed', value: 1.5, max: 6 },
-      { label: 'Thu', value: 6, max: 6 },
-      { label: 'Fri', value: 5.5, max: 6 },
-      { label: 'Sat', value: 3, max: 6 },
-      { label: 'Sun', value: 4.5, max: 6 },
-    ],
-    monthly: [
-      { label: 'Week 1', value: 14, max: 40 },
-      { label: 'Week 2', value: 22, max: 40 },
-      { label: 'Week 3', value: 35, max: 40 },
-      { label: 'Week 4', value: 28, max: 40 },
-    ],
-    yearly: [
-      { label: 'Q1', value: 120, max: 200 },
-      { label: 'Q2', value: 180, max: 200 },
-      { label: 'Q3', value: 150, max: 200 },
-      { label: 'Q4', value: 195, max: 200 },
-    ]
+    weekly: (() => {
+      const now = new Date();
+      return Array.from({ length: 7 }, (_, idx) => {
+        const d = new Date(now);
+        d.setDate(now.getDate() - (6 - idx));
+        return {
+          label: d.toLocaleDateString(undefined, { weekday: 'short' }).slice(0, 3),
+          value: readHours(d),
+          max: 6,
+        };
+      });
+    })(),
+    monthly: (() => {
+      const now = new Date();
+      const start = new Date(now.getFullYear(), now.getMonth(), 1);
+      const today = now.getDate();
+      const weekCount = Math.ceil(today / 7);
+
+      return Array.from({ length: Math.max(4, weekCount) }, (_, idx) => {
+        const from = idx * 7 + 1;
+        const to = Math.min((idx + 1) * 7, today);
+        let total = 0;
+        for (let day = from; day <= to; day += 1) {
+          const d = new Date(start.getFullYear(), start.getMonth(), day);
+          total += readHours(d);
+        }
+
+        return {
+          label: `W${idx + 1}`,
+          value: total,
+          max: 42,
+        };
+      });
+    })(),
+    yearly: (() => {
+      const year = new Date().getFullYear();
+
+      return Array.from({ length: 4 }, (_, quarterIdx) => {
+        const startMonth = quarterIdx * 3;
+        const endMonth = startMonth + 2;
+        let total = 0;
+
+        for (let month = startMonth; month <= endMonth; month += 1) {
+          const daysInMonth = new Date(year, month + 1, 0).getDate();
+          for (let day = 1; day <= daysInMonth; day += 1) {
+            total += readHours(new Date(year, month, day));
+          }
+        }
+
+        return {
+          label: `Q${quarterIdx + 1}`,
+          value: total,
+          max: Math.max(60, total || 60),
+        };
+      });
+    })()
   };
 
   const currentData = dataMap[timeframe];
@@ -70,7 +110,7 @@ const StudyComparison: React.FC = () => {
                   style={{ width: `${widthPercent}%` }}
                 ></div>
               </div>
-              <div className="bar-value">{item.value}h</div>
+              <div className="bar-value">{item.value.toFixed(1)}h</div>
             </div>
           );
         })}

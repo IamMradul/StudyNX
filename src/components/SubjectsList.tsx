@@ -38,20 +38,98 @@ const CircularProgress: React.FC<{ progress: number, color: string, onClick: () 
 };
 
 const SubjectsList: React.FC = () => {
-  const { data } = useData();
-  const [selectedSubject, setSelectedSubject] = useState<Subject | null>(null);
+  const { data, updateData } = useData();
+  const [selectedSubjectId, setSelectedSubjectId] = useState<string | null>(null);
+  const [newSubjectName, setNewSubjectName] = useState('');
+
+  const selectedSubject = selectedSubjectId
+    ? data.subjects.find(subject => subject.id === selectedSubjectId) ?? null
+    : null;
+
+  const recentDays = Array.from({ length: 14 }).map((_, i) => {
+    const date = new Date();
+    date.setDate(date.getDate() - i);
+    return date;
+  });
+
+  const toggleStudyDate = (subjectId: string, dateKey: string) => {
+    const updatedSubjects = data.subjects.map(subject => {
+      if (subject.id !== subjectId) {
+        return subject;
+      }
+
+      const hasDate = subject.studyDates.includes(dateKey);
+      const studyDates = hasDate
+        ? subject.studyDates.filter(date => date !== dateKey)
+        : [...subject.studyDates, dateKey];
+
+      const boundedCount = studyDates.filter(date => {
+        const dateObj = new Date(date);
+        const diffDays = Math.floor((Date.now() - dateObj.getTime()) / (1000 * 60 * 60 * 24));
+        return diffDays >= 0 && diffDays <= 13;
+      }).length;
+
+      const progress = Math.round((boundedCount / 14) * 100);
+      const totalHours = Number((studyDates.length * 1.5).toFixed(1));
+      const status: Subject['status'] = progress >= 70 ? 'on track' : progress >= 40 ? 'progressing' : 'needs focus';
+
+      return {
+        ...subject,
+        studyDates,
+        progress,
+        totalHours,
+        status,
+      };
+    });
+
+    updateData({ subjects: updatedSubjects });
+  };
+
+  const addSubject = () => {
+    const name = newSubjectName.trim();
+    if (!name) return;
+
+    const palette = ['#5f8dff', '#35d6b5', '#ffba5f', '#ff6c78', '#9f84ff'];
+    const nextSubject: Subject = {
+      id: crypto.randomUUID(),
+      name,
+      progress: 0,
+      totalHours: 0,
+      status: 'needs focus',
+      color: palette[data.subjects.length % palette.length],
+      studyDates: [],
+    };
+
+    updateData({ subjects: [...data.subjects, nextSubject] });
+    setNewSubjectName('');
+  };
 
   return (
     <>
       <div className="card subjects-container">
         <div className="card-title">SUBJECTS — CLICK RING FOR DETAILS</div>
+        <div className="subject-create-row">
+          <input
+            type="text"
+            className="subject-create-input"
+            placeholder="Add subject..."
+            value={newSubjectName}
+            onChange={(e) => setNewSubjectName(e.target.value)}
+          />
+          <button className="widget-btn" onClick={addSubject}>Add</button>
+        </div>
+
+        {data.subjects.length === 0 && (
+          <div className="subject-empty">No subjects yet. Add one to begin tracking.</div>
+        )}
+
         <div className="subjects-list">
           {data.subjects.map(subject => (
             <div key={subject.id} className="subject-item">
               <CircularProgress 
                 progress={subject.progress} 
                 color={subject.color} 
-                onClick={() => setSelectedSubject(subject)} 
+                onClick={() => setSelectedSubjectId(subject.id)} 
               />
               <div className="subject-info">
                 <div className="subject-name">{subject.name}</div>
@@ -67,25 +145,26 @@ const SubjectsList: React.FC = () => {
 
       {/* Modal for detailed view */}
       {selectedSubject && (
-        <div className="modal-overlay" onClick={() => setSelectedSubject(null)}>
+        <div className="modal-overlay" onClick={() => setSelectedSubjectId(null)}>
           <div className="modal-content" onClick={e => e.stopPropagation()}>
             <div className="modal-header">
               <h3>{selectedSubject.name} - Study Details</h3>
-              <button className="close-btn" onClick={() => setSelectedSubject(null)}>×</button>
+              <button className="close-btn" onClick={() => setSelectedSubjectId(null)}>×</button>
             </div>
             <div className="modal-body">
               <p>Check the dates you studied {selectedSubject.name}:</p>
               <div className="checkbox-grid">
-                {/* Generating some dummy dates for the detailed checkbox view */}
-                {Array.from({ length: 14 }).map((_, i) => {
-                  const date = new Date();
-                  date.setDate(date.getDate() - i);
+                {recentDays.map((date, i) => {
                   const dateStr = date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
-                  // Randomly check some based on progress
-                  const isChecked = Math.random() < (selectedSubject.progress / 100);
+                  const dateKey = date.toISOString().slice(0, 10);
+                  const isChecked = selectedSubject.studyDates.includes(dateKey);
                   return (
                     <label key={i} className="checkbox-label">
-                      <input type="checkbox" defaultChecked={isChecked} />
+                      <input
+                        type="checkbox"
+                        checked={isChecked}
+                        onChange={() => toggleStudyDate(selectedSubject.id, dateKey)}
+                      />
                       <span className="custom-checkbox" style={{ '--check-color': selectedSubject.color } as React.CSSProperties}></span>
                       {dateStr}
                     </label>

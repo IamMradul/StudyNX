@@ -143,3 +143,22 @@
   font-size: 0.72rem;
   color: #8ca0d5;
 }
+
+.add-reminder-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.add-reminder-input {
+  flex: 1;
+  background: rgba(13, 27, 67, 0.8);
+  border: 1px solid rgba(120, 148, 235, 0.28);
+  border-radius: 10px;
+  padding: 8px 10px;
+  color: #deebff;
+}
+
+.add-reminder-input::placeholder {
+  color: #7f94ca;
+}

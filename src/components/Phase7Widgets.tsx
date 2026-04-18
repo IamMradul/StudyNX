@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useData } from '../context/DataContext';
 import './Widgets.css';
 
 export const Pomodoro: React.FC = () => {
@@ -54,52 +55,122 @@ export const Pomodoro: React.FC = () => {
 };
 
 export const ExamCountdown: React.FC = () => {
-  const exams = [
-    { id: 1, days: 8, title: 'Physics finals', date: 'Apr 22', color: '#ef4444', progress: 80 },
-    { id: 2, days: 21, title: 'Calculus midterm', date: 'May 5', color: '#4ade80', progress: 40 },
-    { id: 3, days: 34, title: 'CS — Data Structures', date: 'May 18', color: '#3b82f6', progress: 15 },
-  ];
+  const { data, updateData } = useData();
+  const [title, setTitle] = useState('');
+  const [date, setDate] = useState('');
+
+  const exams = data.exams
+    .map(exam => {
+      const examDate = new Date(exam.date);
+      const days = Math.max(0, Math.ceil((examDate.getTime() - Date.now()) / (1000 * 60 * 60 * 24)));
+      const progress = Math.max(5, 100 - days * 3);
+      return {
+        ...exam,
+        days,
+        progress,
+      };
+    })
+    .sort((a, b) => a.days - b.days);
+
+  const addExam = () => {
+    if (!title.trim() || !date) {
+      return;
+    }
+
+    const palette = ['#ff6c78', '#35d6b5', '#5f8dff', '#ffba5f'];
+    const nextExam = {
+      id: crypto.randomUUID(),
+      title: title.trim(),
+      date,
+      color: palette[data.exams.length % palette.length],
+    };
+
+    updateData({ exams: [...data.exams, nextExam] });
+    setTitle('');
+    setDate('');
+  };
+
+  const removeExam = (examId: string) => {
+    updateData({ exams: data.exams.filter(exam => exam.id !== examId) });
+  };
 
   return (
     <div className="card widget-card">
       <div className="card-title">EXAM COUNTDOWN</div>
       <div className="exam-list">
         {exams.map(exam => (
-          <div key={exam.id} className="exam-item">
+          <div key={exam.id} className="exam-item" title={exam.date}>
             <div className="exam-days" style={{ color: exam.days < 10 ? '#ef4444' : 'var(--text-heading)' }}>
               {exam.days}
             </div>
             <div className="exam-info">
               <div className="exam-title">{exam.title}</div>
-              <div className="exam-date">{exam.date}</div>
+              <div className="exam-date">{new Date(exam.date).toLocaleDateString()}</div>
             </div>
             <div className="exam-progress-bar">
               <div className="exam-progress-fill" style={{ width: `${exam.progress}%`, backgroundColor: exam.color }}></div>
             </div>
+            <button className="widget-btn" onClick={() => removeExam(exam.id)}>x</button>
           </div>
         ))}
+      </div>
+
+      <div className="add-reminder-row" style={{ marginTop: '12px' }}>
+        <input
+          type="text"
+          placeholder="exam title"
+          className="add-reminder-input"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+        />
+        <input
+          type="date"
+          className="add-reminder-input"
+          value={date}
+          onChange={(e) => setDate(e.target.value)}
+        />
+        <button className="widget-btn" onClick={addExam}>+</button>
       </div>
     </div>
   );
 };
 
 export const WeeklyGoal: React.FC = () => {
-  const current = 38.5;
-  const target = 40;
+  const { data, updateData } = useData();
+  const now = new Date();
+  const toDateKey = (date: Date) => date.toISOString().slice(0, 10);
+  const current = Array.from({ length: 7 }, (_, idx) => {
+    const d = new Date(now);
+    d.setDate(now.getDate() - idx);
+    return (data.activityData[toDateKey(d)] ?? 0) * 1.5;
+  }).reduce((sum, hours) => sum + hours, 0);
+  const target = data.weeklyTargetHours;
   const percent = (current / target) * 100;
+
+  const adjustTarget = (delta: number) => {
+    const nextTarget = Math.max(1, data.weeklyTargetHours + delta);
+    updateData({ weeklyTargetHours: nextTarget });
+  };
 
   return (
     <div className="card widget-card">
       <div className="card-title">WEEKLY GOAL</div>
       <div className="goal-display">
-        <span className="goal-current">{current}</span>
+        <span className="goal-current">{current.toFixed(1)}</span>
         <span className="goal-target"> / {target} hrs</span>
       </div>
       <div className="goal-track">
-        <div className="goal-fill" style={{ width: `${percent}%` }}></div>
+        <div className="goal-fill" style={{ width: `${Math.min(100, percent)}%` }}></div>
       </div>
       <div className="goal-text">
-        1.5 hrs to hit your weekly goal
+        {current >= target
+          ? `Goal reached. You are ${(current - target).toFixed(1)}h ahead.`
+          : `${(target - current).toFixed(1)} hrs to hit your weekly goal`}
+      </div>
+
+      <div className="add-reminder-row" style={{ marginTop: '10px' }}>
+        <button className="widget-btn" onClick={() => adjustTarget(-1)}>-1h</button>
+        <button className="widget-btn" onClick={() => adjustTarget(1)}>+1h</button>
       </div>
     </div>
   );

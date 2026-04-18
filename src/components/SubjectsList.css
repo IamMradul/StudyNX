@@ -8,6 +8,27 @@
   gap: 12px;
 }
 
+.subject-create-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.subject-create-input {
+  flex: 1;
+  background: rgba(13, 27, 67, 0.8);
+  border: 1px solid rgba(120, 148, 235, 0.28);
+  border-radius: 10px;
+  padding: 8px 12px;
+  color: #deebff;
+}
+
+.subject-empty {
+  color: #8ea1d4;
+  font-size: 0.78rem;
+  margin-bottom: 10px;
+}
+
 .subject-item {
   display: flex;
   align-items: center;
