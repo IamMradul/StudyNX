@@ -67,7 +67,8 @@ const defaultData: AppData = {
 
 interface DataContextType {
   data: AppData;
-  authMode: 'google-direct' | 'supabase-email' | 'local';
+  authMode: 'supabase-email' | 'local';
+  isGoogleDirectEnabled: boolean;
   isAuthLoading: boolean;
   signInWithGoogle: () => Promise<{ ok: boolean; message: string }>;
   signInWithPassword: (email: string, password: string) => Promise<{ ok: boolean; message: string }>;
@@ -110,9 +111,8 @@ const sanitizeProgressPayload = (rawPayload: unknown): Partial<ProgressPayload> 
 
 export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID as string | undefined;
-  const authMode: 'google-direct' | 'supabase-email' | 'local' = googleClientId
-    ? 'google-direct'
-    : (isSupabaseConfigured ? 'supabase-email' : 'local');
+  const isGoogleDirectEnabled = Boolean(googleClientId);
+  const authMode: 'supabase-email' | 'local' = isSupabaseConfigured ? 'supabase-email' : 'local';
   const isHydratingFromSupabaseRef = useRef(false);
   const hydratedUserRef = useRef<string | null>(null);
   const [isAuthLoading, setIsAuthLoading] = useState<boolean>(authMode === 'supabase-email');
@@ -302,10 +302,10 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   const signInWithGoogle = async (): Promise<AuthResult> => {
-    if (authMode !== 'google-direct') {
+    if (!isGoogleDirectEnabled) {
       return {
         ok: false,
-        message: 'Direct Google auth is not enabled in current mode.',
+        message: 'Direct Google auth is not enabled.',
       };
     }
 
@@ -458,6 +458,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       value={{
         data,
         authMode,
+        isGoogleDirectEnabled,
         isAuthLoading,
         signInWithGoogle,
         signInWithPassword,

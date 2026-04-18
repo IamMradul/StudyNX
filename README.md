@@ -16,8 +16,8 @@ It provides a **GitHub-style heatmap**, **subject-wise progress tracking**, and 
 
 Tracklio now supports saving progress to Supabase in addition to local browser storage.
 
-Email login uses Supabase Auth when `VITE_GOOGLE_CLIENT_ID` is not set.
-If `VITE_GOOGLE_CLIENT_ID` is set, Tracklio switches to direct Google OAuth (not Supabase Google provider).
+Email login uses Supabase Auth whenever Supabase env vars are configured.
+If `VITE_GOOGLE_CLIENT_ID` is set, direct Google OAuth is added as an extra sign-in option (not Supabase Google provider).
 The login page now includes:
 
 - Sign In (email + password)

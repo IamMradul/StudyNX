@@ -16,6 +16,7 @@ const Login: React.FC = () => {
   const {
     login,
     authMode,
+    isGoogleDirectEnabled,
     signInWithGoogle,
     requestEmailSignIn,
     signInWithPassword,
@@ -112,21 +113,25 @@ const Login: React.FC = () => {
           Track<span>lio</span>
         </div>
 
-        {authMode === 'google-direct' ? (
-          <div className="google-only-panel">
-            <p className="login-helper">Sign in directly with your Google account</p>
-            <button
-              type="button"
-              className="google-auth-btn"
-              disabled={submitting}
-              onClick={handleGoogleSignIn}
-            >
-              Continue with Google
-            </button>
-            {feedback && <p className={`login-feedback ${feedbackTone}`}>{feedback}</p>}
-          </div>
-        ) : authMode === 'supabase-email' ? (
+        {authMode === 'supabase-email' ? (
           <>
+            {isGoogleDirectEnabled && (
+              <>
+                <button
+                  type="button"
+                  className="google-auth-btn"
+                  disabled={submitting}
+                  onClick={handleGoogleSignIn}
+                >
+                  Continue with Google
+                </button>
+
+                <div className="auth-divider">
+                  <span>or continue with email</span>
+                </div>
+              </>
+            )}
+
             <div className="auth-tabs">
               <button
                 type="button"
