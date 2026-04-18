@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 import type { ReactNode } from 'react';
 import { isSupabaseConfigured, supabase } from '../lib/supabase';
+import type { Session } from '@supabase/supabase-js';
 
 // --- Types ---
 export interface Subject {
@@ -65,14 +66,21 @@ const defaultData: AppData = {
 
 interface DataContextType {
   data: AppData;
+  authMode: 'supabase-email' | 'local';
+  isAuthLoading: boolean;
+  signInWithPassword: (email: string, password: string) => Promise<{ ok: boolean; message: string }>;
+  signUpWithPassword: (email: string, password: string) => Promise<{ ok: boolean; message: string }>;
+  requestPasswordReset: (email: string) => Promise<{ ok: boolean; message: string }>;
+  requestEmailSignIn: (email: string) => Promise<{ ok: boolean; message: string }>;
   login: (name: string) => void;
-  logout: () => void;
+  logout: () => Promise<void>;
   updateData: (newData: Partial<AppData>) => void;
 }
 
 const DataContext = createContext<DataContextType | undefined>(undefined);
 
 const STORAGE_KEY = 'tracklio_data';
+type AuthResult = { ok: boolean; message: string };
 
 const toProgressPayload = (state: AppData): ProgressPayload => ({
   subjects: state.subjects,
@@ -99,8 +107,10 @@ const sanitizeProgressPayload = (rawPayload: unknown): Partial<ProgressPayload> 
 };
 
 export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const authMode: 'supabase-email' | 'local' = isSupabaseConfigured ? 'supabase-email' : 'local';
   const isHydratingFromSupabaseRef = useRef(false);
   const hydratedUserRef = useRef<string | null>(null);
+  const [isAuthLoading, setIsAuthLoading] = useState<boolean>(isSupabaseConfigured);
 
   const [data, setData] = useState<AppData>(() => {
     const saved = localStorage.getItem(STORAGE_KEY);
@@ -113,6 +123,57 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
     return defaultData;
   });
+
+  useEffect(() => {
+    const supabaseClient = supabase;
+    if (!isSupabaseConfigured || !supabaseClient) {
+      setIsAuthLoading(false);
+      return;
+    }
+
+    const applySession = (session: Session | null) => {
+      if (session?.user?.email) {
+        const email = session.user.email;
+
+        setData(prev => ({
+          ...prev,
+          isLoggedIn: true,
+          user: {
+            name: email,
+            avatar: email.slice(0, 2).toUpperCase(),
+          },
+        }));
+      } else {
+        setData(prev => ({
+          ...prev,
+          isLoggedIn: false,
+          user: null,
+        }));
+      }
+    };
+
+    let isMounted = true;
+
+    const bootstrapAuth = async () => {
+      const { data: sessionData } = await supabaseClient.auth.getSession();
+      if (!isMounted) return;
+
+      applySession(sessionData.session);
+      setIsAuthLoading(false);
+    };
+
+    bootstrapAuth();
+
+    const { data: authSubscription } = supabaseClient.auth.onAuthStateChange((_event, session) => {
+      applySession(session);
+      setIsAuthLoading(false);
+    });
+
+    return () => {
+      isMounted = false;
+      authSubscription.subscription.unsubscribe();
+    };
+  }, []);
 
   useEffect(() => {
     const supabaseClient = supabase;
@@ -201,7 +262,126 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     saveToSupabase();
   }, [data]);
 
+  const requestEmailSignIn = async (email: string) => {
+    const supabaseClient = supabase;
+    if (!isSupabaseConfigured || !supabaseClient) {
+      return {
+        ok: false,
+        message: 'Supabase is not configured. Use local login mode.',
+      };
+    }
+
+    const { error } = await supabaseClient.auth.signInWithOtp({
+      email,
+      options: {
+        emailRedirectTo: window.location.origin,
+      },
+    });
+
+    if (error) {
+      return {
+        ok: false,
+        message: error.message,
+      };
+    }
+
+    return {
+      ok: true,
+      message: 'Magic link sent. Check your email to sign in.',
+    };
+  };
+
+  const signInWithPassword = async (email: string, password: string): Promise<AuthResult> => {
+    const supabaseClient = supabase;
+    if (!isSupabaseConfigured || !supabaseClient) {
+      return {
+        ok: false,
+        message: 'Supabase is not configured. Use local login mode.',
+      };
+    }
+
+    const { error } = await supabaseClient.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error) {
+      return {
+        ok: false,
+        message: error.message,
+      };
+    }
+
+    return {
+      ok: true,
+      message: 'Signed in successfully.',
+    };
+  };
+
+  const signUpWithPassword = async (email: string, password: string): Promise<AuthResult> => {
+    const supabaseClient = supabase;
+    if (!isSupabaseConfigured || !supabaseClient) {
+      return {
+        ok: false,
+        message: 'Supabase is not configured. Use local login mode.',
+      };
+    }
+
+    const { data: signUpData, error } = await supabaseClient.auth.signUp({
+      email,
+      password,
+      options: {
+        emailRedirectTo: window.location.origin,
+      },
+    });
+
+    if (error) {
+      return {
+        ok: false,
+        message: error.message,
+      };
+    }
+
+    const hasSession = Boolean(signUpData.session);
+    return {
+      ok: true,
+      message: hasSession
+        ? 'Account created and signed in.'
+        : 'Account created. Check your email to confirm your account.',
+    };
+  };
+
+  const requestPasswordReset = async (email: string): Promise<AuthResult> => {
+    const supabaseClient = supabase;
+    if (!isSupabaseConfigured || !supabaseClient) {
+      return {
+        ok: false,
+        message: 'Supabase is not configured. Use local login mode.',
+      };
+    }
+
+    const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+      redirectTo: window.location.origin,
+    });
+
+    if (error) {
+      return {
+        ok: false,
+        message: error.message,
+      };
+    }
+
+    return {
+      ok: true,
+      message: 'Password reset email sent. Check your inbox.',
+    };
+  };
+
   const login = (name: string) => {
+    if (isSupabaseConfigured) {
+      return;
+    }
+
     setData(prev => ({
       ...prev,
       isLoggedIn: true,
@@ -209,7 +389,15 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }));
   };
 
-  const logout = () => {
+  const logout = async () => {
+    const supabaseClient = supabase;
+    if (isSupabaseConfigured && supabaseClient) {
+      const { error } = await supabaseClient.auth.signOut();
+      if (error) {
+        console.error('Supabase sign out error:', error.message);
+      }
+    }
+
     setData(prev => ({
       ...prev,
       isLoggedIn: false,
@@ -222,7 +410,20 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   return (
-    <DataContext.Provider value={{ data, login, logout, updateData }}>
+    <DataContext.Provider
+      value={{
+        data,
+        authMode,
+        isAuthLoading,
+        signInWithPassword,
+        signUpWithPassword,
+        requestPasswordReset,
+        requestEmailSignIn,
+        login,
+        logout,
+        updateData,
+      }}
+    >
       {children}
     </DataContext.Provider>
   );

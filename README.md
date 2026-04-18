@@ -16,6 +16,14 @@ It provides a **GitHub-style heatmap**, **subject-wise progress tracking**, and 
 
 Tracklio now supports saving progress to Supabase in addition to local browser storage.
 
+Email login uses Supabase Auth magic links.
+The login page now includes:
+
+- Sign In (email + password)
+- Sign Up (email + password)
+- Magic Link login
+- Password reset email
+
 ### 1) Create env variables
 
 Copy values from `.env.example` into a local `.env` file:
@@ -29,7 +37,13 @@ VITE_SUPABASE_ANON_KEY=your-anon-key
 
 Run the SQL in `supabase/user_progress.sql`.
 
-### 3) Run the app
+### 3) Enable email auth in Supabase
+
+- Go to Supabase Dashboard -> Authentication -> Providers -> Email.
+- Enable Email provider.
+- Keep "Confirm email" enabled for magic link flow.
+
+### 4) Run the app
 
 ```bash
 npm install
@@ -40,6 +54,7 @@ npm run dev
 
 - If Supabase env vars are set, progress is loaded on login and saved automatically on data changes.
 - If Supabase is not configured, Tracklio keeps using localStorage only.
+- Progress rows are scoped to the authenticated email via RLS policies.
 
 ---
 

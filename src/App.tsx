@@ -4,7 +4,11 @@ import Dashboard from './components/Dashboard';
 import './App.css';
 
 function App() {
-  const { data } = useData();
+  const { data, isAuthLoading } = useData();
+
+  if (isAuthLoading) {
+    return <div className="auth-loading">Restoring session...</div>;
+  }
 
   if (!data.isLoggedIn) {
     return <Login />;

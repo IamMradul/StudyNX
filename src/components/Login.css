@@ -29,6 +29,37 @@
   color: var(--accent-blue);
 }
 
+.auth-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.auth-tab {
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(119, 145, 226, 0.34);
+  background: rgba(13, 29, 73, 0.75);
+  color: #97abde;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.auth-tab.active {
+  background: linear-gradient(120deg, rgba(92, 128, 255, 0.35), rgba(68, 202, 255, 0.2));
+  color: #ecf3ff;
+  border-color: rgba(147, 177, 255, 0.5);
+}
+
+.login-helper {
+  margin-bottom: 10px;
+  font-size: 0.78rem;
+  color: #8ba0d4;
+  letter-spacing: 0.03em;
+}
+
 .login-input {
   width: 100%;
   padding: 12px 14px;
@@ -64,4 +95,40 @@
 
 .login-btn:hover {
   filter: brightness(1.06);
+}
+
+.login-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.login-feedback {
+  margin-top: 12px;
+  font-size: 0.76rem;
+  line-height: 1.4;
+}
+
+.login-feedback.success {
+  color: #9ff0db;
+}
+
+.login-feedback.error {
+  color: #ffadb7;
+}
+
+.auth-link-btn {
+  margin-top: 10px;
+  background: transparent;
+  border: none;
+  color: #93c3ff;
+  font-size: 0.73rem;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  padding: 4px 0;
+}
+
+@media (max-width: 520px) {
+  .auth-tabs {
+    grid-template-columns: 1fr;
+  }
 }
