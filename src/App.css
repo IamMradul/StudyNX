@@ -1,81 +1,153 @@
 .app-container {
-  display: flex;
-  flex-direction: column;
   min-height: 100vh;
   margin: 0 auto;
-  max-width: 1280px;
-  padding: 0 24px;
+  max-width: 1380px;
+  padding: 28px 24px 36px;
+  position: relative;
 }
 
-/* TOP NAVIGATION */
+.app-container::before,
+.app-container::after {
+  content: '';
+  position: fixed;
+  inset: auto;
+  width: 320px;
+  height: 320px;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+  z-index: -1;
+}
+
+.app-container::before {
+  top: -120px;
+  left: -100px;
+  background: rgba(78, 120, 255, 0.28);
+}
+
+.app-container::after {
+  bottom: -180px;
+  right: -90px;
+  background: rgba(9, 198, 196, 0.24);
+}
+
 .top-nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 24px 0;
-  margin-bottom: 24px;
+  padding: 4px 0 22px;
+  margin-bottom: 10px;
 }
 
 .logo {
-  font-weight: 700;
-  font-size: 20px;
-  color: var(--text-inverse);
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: var(--text-heading);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 0.2rem;
 }
 
 .logo span {
-  font-weight: 400;
-  color: var(--text-muted);
+  color: #8f9ff7;
 }
 
-.nav-links {
-  display: flex;
-  gap: 16px;
-  background-color: var(--bg-primary);
-  border: 1px solid var(--border-color); /* Light border if background is white? Wait, earlier I set background to white but border-color to dark */
-}
-
-/* Let's refine the nav a bit */
 .nav-pill-group {
   display: flex;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border-soft);
+  background: rgba(7, 18, 45, 0.68);
+  box-shadow: inset 0 0 0 1px rgba(108, 138, 255, 0.08);
   border-radius: 999px;
-  padding: 4px;
+  padding: 5px;
 }
 
 .nav-pill {
-  padding: 8px 24px;
+  padding: 8px 18px;
   border-radius: 999px;
-  font-size: 14px;
+  font-size: 0.76rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
   font-weight: 500;
-  color: #a1a1aa;
+  color: #8b95ba;
   background: transparent;
-  transition: all 0.2s ease;
+  transition: all 0.25s ease;
 }
 
 .nav-pill.active {
-  background-color: #f4f4f5;
-  color: #18181b;
+  background: linear-gradient(120deg, rgba(88, 120, 255, 0.32), rgba(95, 201, 255, 0.2));
+  color: #d6e4ff;
+  box-shadow: 0 0 0 1px rgba(137, 173, 255, 0.22) inset;
 }
 
 .profile-avatar {
-  width: 40px;
-  height: 40px;
+  width: 42px;
+  height: 42px;
   border-radius: 50%;
-  background-color: #3f6354; /* Dark greenish from reference */
-  color: white;
+  background: radial-gradient(circle at 30% 30%, #7f9dff, #21316e);
+  color: #f7f9ff;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 600;
-  font-size: 14px;
+  font-size: 0.78rem;
+  border: 1px solid rgba(131, 156, 255, 0.6);
+  box-shadow: 0 10px 24px rgba(21, 35, 95, 0.4);
 }
 
-/* DASHBOARD GRID layout for future phases */
-.dashboard-grid {
+.dashboard-layout {
   display: grid;
-  grid-template-columns: repeat(12, 1fr);
+  grid-template-columns: minmax(0, 1.45fr) minmax(320px, 0.9fr);
   gap: 24px;
+}
+
+.dashboard-main,
+.dashboard-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.dashboard-main-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+@media (max-width: 1080px) {
+  .dashboard-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-main-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-sidebar {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+}
+
+@media (max-width: 760px) {
+  .app-container {
+    padding: 16px 14px 24px;
+  }
+
+  .top-nav {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .nav-pill-group {
+    order: 3;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .dashboard-sidebar {
+    grid-template-columns: 1fr;
+  }
 }

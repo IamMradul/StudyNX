@@ -12,49 +12,40 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="app-container">
-      {/* Top Navigation */}
       <nav className="top-nav">
         <div className="logo">
-          study<span>arc</span>
-        </div>
-        
-        <div className="nav-pill-group">
-          <button className="nav-pill active">dashboard</button>
-          <button className="nav-pill">notes</button>
-          <button className="nav-pill">settings</button>
+          Track<span>lio</span>
         </div>
 
-        <div 
-          className="profile-avatar" 
-          onClick={logout} 
-          title="Click to logout" 
-          style={{ cursor: 'pointer' }}
-        >
+        <div className="nav-pill-group">
+          <button className="nav-pill active">Overview</button>
+          <button className="nav-pill">Sessions</button>
+          <button className="nav-pill">Insights</button>
+        </div>
+
+        <div className="profile-avatar" onClick={logout} title="Click to logout" style={{ cursor: 'pointer' }}>
           {data.user?.avatar || 'AK'}
         </div>
       </nav>
 
-      {/* Main Dashboard Content */}
-      <main className="dashboard-grid">
-        <TopStats />
-        <Heatmap />
-        
-        <div style={{ gridColumn: 'span 8', display: 'flex', flexDirection: 'column', gap: '24px' }}>
-          <SubjectsList />
-          <StudyComparison />
-          <Resources />
-        </div>
+      <main className="dashboard-layout">
+        <section className="dashboard-main">
+          <TopStats />
+          <Heatmap />
+          <div className="dashboard-main-grid">
+            <SubjectsList />
+            <StudyComparison />
+            <Resources />
+            <Reminders />
+          </div>
+        </section>
 
-        <div style={{ gridColumn: 'span 4', display: 'flex', flexDirection: 'column', gap: '24px' }}>
+        <aside className="dashboard-sidebar">
+          <CalendarWidget />
           <Pomodoro />
           <ExamCountdown />
           <WeeklyGoal />
-        </div>
-
-        <div style={{ gridColumn: 'span 12', display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: '24px' }}>
-          <Reminders />
-          <CalendarWidget />
-        </div>
+        </aside>
       </main>
     </div>
   );

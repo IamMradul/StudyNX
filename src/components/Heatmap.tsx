@@ -1,63 +1,64 @@
 import React from 'react';
 import './Heatmap.css';
 
-const getLevelColorClass = (level: number) => {
-  switch (level) {
-    case 1: return 'level-1';
-    case 2: return 'level-2';
-    case 3: return 'level-3';
-    case 4: return 'level-4';
-    default: return 'level-0';
-  }
-};
-
-const Header: React.FC = () => (
-  <div className="card-title">ACTIVITY HEATMAP — LAST 6 MONTHS</div>
-);
-
 const Heatmap: React.FC = () => {
-  
-  // Generate dummy grid (Mocking 6 months of data, roughly 26 weeks, 7 days per week = 182 cells)
-  // Since we have limited space, let's just make a 34x7 grid according to typical designs
-  const cols = 26;
-  const rows = 7;
-  
-  const cells = Array.from({ length: cols * rows }).map((_, i) => {
-    // Generate some random looking data, but make it look like the picture with gaps
-    const rand = Math.random();
-    let level = 0;
-    if (rand > 0.8) level = 4;
-    else if (rand > 0.6) level = 3;
-    else if (rand > 0.4) level = 2;
-    else if (rand > 0.2) level = 1;
-    
-    return <div key={i} className={`heatmap-cell ${getLevelColorClass(level)}`} title={`Activity: level ${level}`} />;
-  });
+  const trendPoints = [58, 60, 61, 63, 66, 68, 70];
+  const focusBars = [6.2, 6.5, 7.3, 7.6, 8, 8.1, 8.4];
 
   return (
-    <div className="card heatmap-container">
-      <Header />
-      <div className="heatmap-months">
-        <span>Nov</span>
-        <span>Dec</span>
-        <span>Jan</span>
-        <span>Feb</span>
-        <span>Mar</span>
-        <span>Apr</span>
+    <section className="card heatmap-container">
+      <div className="heatmap-title-row">
+        <h3>Weekly Rhythm</h3>
+        <span>06 Apr - 12 Apr</span>
       </div>
-      <div className="heatmap-grid" style={{ gridTemplateColumns: `repeat(${cols}, 1fr)`, gridTemplateRows: `repeat(${rows}, 1fr)` }}>
-        {cells}
+
+      <div className="rhythm-metrics">
+        <div className="rhythm-chip">
+          <span>Study time</span>
+          <strong>52.5h</strong>
+        </div>
+        <div className="rhythm-chip">
+          <span>Break time</span>
+          <strong>6h</strong>
+        </div>
+        <div className="rhythm-chip">
+          <span>Active days</span>
+          <strong>7/7</strong>
+        </div>
+        <div className="rhythm-chip">
+          <span>Best day</span>
+          <strong>Sun</strong>
+        </div>
       </div>
-      <div className="heatmap-legend">
-        <span>less</span>
-        <div className="heatmap-cell level-0"></div>
-        <div className="heatmap-cell level-1"></div>
-        <div className="heatmap-cell level-2"></div>
-        <div className="heatmap-cell level-3"></div>
-        <div className="heatmap-cell level-4"></div>
-        <span>more</span>
+
+      <div className="rhythm-panels">
+        <article className="rhythm-panel">
+          <div className="panel-label">Study hours trend</div>
+          <div className="trend-line" aria-hidden="true">
+            {trendPoints.map((point, idx) => (
+              <div key={idx} className="trend-node" style={{ left: `${idx * 15}%`, bottom: `${point}%` }}></div>
+            ))}
+          </div>
+        </article>
+
+        <article className="rhythm-panel">
+          <div className="panel-label">Daily focus bars</div>
+          <div className="focus-bars">
+            {focusBars.map((bar, idx) => (
+              <div key={idx} className="focus-column">
+                <span>{bar}h</span>
+                <div className="focus-column-fill" style={{ height: `${bar * 11}%` }}></div>
+              </div>
+            ))}
+          </div>
+          <div className="focus-days">
+            {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((day, idx) => (
+              <span key={`${day}-${idx}`}>{day}</span>
+            ))}
+          </div>
+        </article>
       </div>
-    </div>
+    </section>
   );
 };
 

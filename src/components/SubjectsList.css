@@ -1,18 +1,18 @@
 .subjects-container {
-  grid-column: span 6; /* Uses half the grid width typically */
+  min-height: 300px;
 }
 
 .subjects-list {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px;
 }
 
 .subject-item {
   display: flex;
   align-items: center;
-  padding: 12px 0;
-  border-bottom: 1px solid var(--border-color);
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(118, 145, 226, 0.18);
 }
 
 .subject-item:last-child {
@@ -33,7 +33,7 @@
 }
 
 .progress-ring-circle-bg {
-  stroke: #3f3f46;
+  stroke: #31426d;
 }
 
 .progress-ring-circle {
@@ -47,7 +47,7 @@
   transform: translate(-50%, -50%);
   font-size: 11px;
   font-weight: 700;
-  color: var(--text-inverse);
+  color: #dbe8ff;
 }
 
 .subject-info {
@@ -59,35 +59,37 @@
 
 .subject-name {
   font-weight: 600;
-  color: var(--text-heading);
+  color: #eaf2ff;
+  font-size: 0.86rem;
 }
 
 .subject-hours {
-  font-size: 12px;
-  color: var(--text-muted);
+  font-size: 0.7rem;
+  color: #8ca0d6;
 }
 
 .subject-status {
-  font-size: 11px;
+  font-size: 0.66rem;
   font-weight: 600;
   padding: 4px 8px;
   border-radius: 999px;
-  text-transform: lowercase;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 .tag-on-track {
-  color: #4ade80;
-  background-color: rgba(74, 222, 128, 0.1);
+  color: #72f0d2;
+  background-color: rgba(59, 222, 187, 0.12);
 }
 
 .tag-progressing {
-  color: #f97316;
-  background-color: rgba(249, 115, 22, 0.1);
+  color: #ffd18d;
+  background-color: rgba(255, 174, 77, 0.16);
 }
 
 .tag-needs-focus {
-  color: #ef4444;
-  background-color: rgba(239, 68, 68, 0.1);
+  color: #ff9ba7;
+  background-color: rgba(255, 89, 111, 0.16);
 }
 
 /* Modal styles */
@@ -103,7 +105,7 @@
 }
 
 .modal-content {
-  background-color: var(--bg-card);
+  background: linear-gradient(180deg, rgba(11, 25, 58, 0.98), rgba(8, 20, 50, 0.96));
   border-radius: var(--border-radius-md);
   padding: 24px;
   width: 90%;
@@ -136,7 +138,7 @@
 }
 
 .modal-body p {
-  color: var(--text-muted);
+  color: #8fa3d9;
   margin-bottom: 24px;
 }
 
@@ -151,7 +153,7 @@
   align-items: center;
   gap: 12px;
   cursor: pointer;
-  color: var(--text-heading);
+  color: #dce9ff;
 }
 
 .checkbox-label input {
@@ -161,7 +163,7 @@
 .custom-checkbox {
   width: 20px;
   height: 20px;
-  border: 2px solid var(--border-color);
+  border: 2px solid rgba(113, 140, 218, 0.36);
   border-radius: 4px;
   display: inline-block;
   position: relative;
