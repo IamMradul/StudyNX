@@ -766,8 +766,8 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       return {
         ok: true,
         message: error instanceof Error
-          ? `Gemini was unavailable, so Tracklio created a fallback plan: ${error.message}`
-          : 'Gemini was unavailable, so Tracklio created a fallback plan.',
+          ? `Gemini was unavailable, so StudyNX created a fallback plan: ${error.message}`
+          : 'Gemini was unavailable, so StudyNX created a fallback plan.',
         plan: fallbackPlan,
       };
     }

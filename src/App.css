@@ -50,6 +50,13 @@
   gap: 0.2rem;
 }
 
+.logo-mark {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  display: block;
+}
+
 .logo span {
   color: #8f9ff7;
 }

@@ -305,7 +305,7 @@ const formatStudyPromptLines = (context: StudyContext) => [
 ];
 
 export const buildGeminiPrompt = (context: StudyContext, question: string) => [
-  'You are Tracklio, a concise but sharp student productivity assistant.',
+  'You are StudyNX, a concise but sharp student productivity assistant.',
   'Use the study context to tailor every answer. Never answer generically if the context can help.',
   'Prioritize weak subjects, streak risk, motivation, and practical scheduling advice.',
   'When the user asks for a plan, give a clear, step-by-step answer with specific time blocks.',
@@ -319,7 +319,7 @@ export const buildGeminiPrompt = (context: StudyContext, question: string) => [
 ].join('\n');
 
 export const buildGeminiPlanPrompt = (context: StudyContext, targetDateKey: string) => [
-  'You are Tracklio generating a study schedule for tomorrow.',
+  'You are StudyNX generating a study schedule for tomorrow.',
   'Use the context to build a realistic plan focused on the weakest subjects and the current streak.',
   'Return valid JSON only with this exact shape:',
   '{"summary":"string","motivation":"string","schedule":[{"dateKey":"YYYY-MM-DD","subject":"string","startTime":"HH:MM","endTime":"HH:MM","hours":0,"focus":"string","note":"string"}]}',

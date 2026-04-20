@@ -19,7 +19,8 @@ const Dashboard: React.FC = () => {
     <div className="app-container">
       <nav className="top-nav">
         <div className="logo">
-          Track<span>lio</span>
+          <img src="/StudyNX.png" alt="StudyNX logo" className="logo-mark" />
+          Study<span>NX</span>
         </div>
 
         <div className="nav-pill-group">
@@ -46,7 +47,7 @@ const Dashboard: React.FC = () => {
           </button>
         </div>
 
-        <button type="button" className="profile-avatar profile-button" onClick={logout} aria-label="Log out of Tracklio" title="Click to logout">
+        <button type="button" className="profile-avatar profile-button" onClick={logout} aria-label="Log out of StudyNX" title="Click to logout">
           {data.user?.avatar || 'AK'}
         </button>
       </nav>

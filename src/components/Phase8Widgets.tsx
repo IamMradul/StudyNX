@@ -338,12 +338,12 @@ export const CalendarWidget: React.FC = () => {
 
         <div className="upcoming-study-list">
           <div className="upcoming-study-heading">
-            <span>Upcoming Tracklio sessions</span>
+            <span>Upcoming StudyNX sessions</span>
             <small>{isCalendarLoading ? 'Loading…' : `${upcomingEvents.length} events`}</small>
           </div>
 
           {upcomingEvents.length === 0 ? (
-            <p className="upcoming-study-empty">No upcoming Tracklio events synced yet.</p>
+            <p className="upcoming-study-empty">No upcoming StudyNX events synced yet.</p>
           ) : upcomingEvents.slice(0, 4).map((event) => (
             <article key={event.id} className="upcoming-study-item">
               <strong>{event.summary}</strong>

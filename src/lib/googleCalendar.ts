@@ -128,7 +128,7 @@ export const fetchUpcomingTracklioEvents = async (clientId: string, daysAhead = 
 
 const buildPlannedStudyDrafts = (plan: GeminiStudyPlan): CalendarEventDraft[] => plan.schedule.map((item: StudyPlanItem) => ({
   dateKey: item.dateKey,
-  title: `Tracklio Plan • ${item.subject}`,
+  title: `StudyNX Plan • ${item.subject}`,
   description: [item.focus, item.note].filter(Boolean).join(' • '),
   startTime: item.startTime,
   endTime: item.endTime,
@@ -155,11 +155,11 @@ export const syncTomorrowPlanToCalendar = async (clientId: string, plan: GeminiS
 export const buildStudySessionDraft = (session: StudySessionLog): CalendarEventDraft => ({
   dateKey: session.dateKey,
   title: session.source === 'subject' && session.subjectName
-    ? `Tracklio Study • ${session.subjectName}`
-    : 'Tracklio Study Session',
+    ? `StudyNX Study • ${session.subjectName}`
+    : 'StudyNX Study Session',
   description: session.source === 'subject' && session.subjectName
     ? `${session.hours.toFixed(1)}h focused on ${session.subjectName}`
-    : `${session.hours.toFixed(1)}h logged in Tracklio`,
+    : `${session.hours.toFixed(1)}h logged in StudyNX`,
   startTime: '18:00',
   endTime: (() => {
     const minutes = Math.max(30, Math.round(session.hours * 60));
