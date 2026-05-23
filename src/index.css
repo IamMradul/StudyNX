@@ -4,86 +4,88 @@
 :root {
   --ui-scale: 1.06;
 
-  --bg-primary:    #050c23;
-  --bg-secondary:  #081434;
-  --bg-card:       linear-gradient(180deg, rgba(10,24,56,0.95), rgba(8,18,45,0.92));
+  --bg-primary: #050c23;
+  --bg-secondary: #081434;
+  --bg-card: linear-gradient(180deg, rgba(10, 24, 56, 0.95), rgba(8, 18, 45, 0.92));
   --bg-card-solid: #0a1838;
-  --bg-input:      #111f4d;
-  --bg-nav:        rgba(7,18,45,0.68);
+  --bg-input: #111f4d;
+  --bg-nav: rgba(7, 18, 45, 0.68);
 
-  --text-main:     #cbdbff;
-  --text-muted:    #97a8d5;
-  --text-heading:  #eef4ff;
-  --text-inverse:  #0f1a3d;
-  --text-label:    #a0afd8;
+  --text-main: #cbdbff;
+  --text-muted: #97a8d5;
+  --text-heading: #eef4ff;
+  --text-inverse: #0f1a3d;
+  --text-label: #a0afd8;
 
-  --accent-blue:   #5f8dff;
-  --accent-cyan:   #4fd5ff;
-  --accent-teal:   #18d5b6;
-  --accent-green:  #32d3b2;
-  --accent-red:    #ff5f74;
+  --accent-blue: #5f8dff;
+  --accent-cyan: #4fd5ff;
+  --accent-teal: #18d5b6;
+  --accent-green: #32d3b2;
+  --accent-red: #ff5f74;
   --accent-orange: #ffad4c;
 
-  --border-color:  rgba(122,147,255,0.2);
-  --border-soft:   rgba(122,147,255,0.32);
+  --border-color: rgba(122, 147, 255, 0.2);
+  --border-soft: rgba(122, 147, 255, 0.32);
   --border-radius-lg: 18px;
   --border-radius-md: 14px;
   --border-radius-sm: 10px;
 
-  --shadow-card:   0 18px 34px rgba(3,8,27,0.4);
-  --shadow-glow:   0 0 0 1px rgba(92,120,235,0.06) inset;
+  --shadow-card: 0 18px 34px rgba(3, 8, 27, 0.4);
+  --shadow-glow: 0 0 0 1px rgba(92, 120, 235, 0.06) inset;
 
-  --font-sans:     'Inter', 'Outfit', 'Segoe UI', sans-serif;
-  --font-heading:  'Sora', 'Segoe UI', sans-serif;
+  --font-sans: 'Inter', 'Outfit', 'Segoe UI', sans-serif;
+  --font-heading: 'Sora', 'Segoe UI', sans-serif;
 
   /* Skeleton loader */
-  --skeleton-base: rgba(122,147,255,0.08);
-  --skeleton-shine: rgba(122,147,255,0.16);
+  --skeleton-base: rgba(122, 147, 255, 0.08);
+  --skeleton-shine: rgba(122, 147, 255, 0.16);
 
   /* Chart colors (exposed for JS) */
-  --chart-grid:    rgba(122,147,255,0.12);
-  --chart-label:   #97a8d5;
+  --chart-grid: rgba(122, 147, 255, 0.12);
+  --chart-label: #97a8d5;
   --bg-ring-track: rgba(59, 77, 136, 0.4);
 }
 
 /* ─── Light theme ────────────────────────────────────────────────── */
 [data-theme="light"] {
-  --bg-primary:    #f0f4ff;
-  --bg-secondary:  #e4ebff;
-  --bg-card:       linear-gradient(180deg, rgba(255,255,255,0.96), rgba(240,244,255,0.92));
+  --bg-primary: #f0f4ff;
+  --bg-secondary: #e4ebff;
+  --bg-card: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(240, 244, 255, 0.92));
   --bg-card-solid: #ffffff;
-  --bg-input:      #dde6ff;
-  --bg-nav:        rgba(255,255,255,0.72);
+  --bg-input: #dde6ff;
+  --bg-nav: rgba(255, 255, 255, 0.72);
 
-  --text-main:     #1a2550;
-  --text-muted:    #5a6a9a;
-  --text-heading:  #0d1730;
-  --text-inverse:  #eef4ff;
-  --text-label:    #6272a4;
+  --text-main: #1a2550;
+  --text-muted: #5a6a9a;
+  --text-heading: #0d1730;
+  --text-inverse: #eef4ff;
+  --text-label: #6272a4;
 
-  --accent-blue:   #3a6af4;
-  --accent-cyan:   #0db4e8;
-  --accent-teal:   #0ab89a;
-  --accent-green:  #0fb894;
-  --accent-red:    #e8334a;
+  --accent-blue: #3a6af4;
+  --accent-cyan: #0db4e8;
+  --accent-teal: #0ab89a;
+  --accent-green: #0fb894;
+  --accent-red: #e8334a;
   --accent-orange: #f59d1a;
 
-  --border-color:  rgba(58,106,244,0.18);
-  --border-soft:   rgba(58,106,244,0.28);
+  --border-color: rgba(58, 106, 244, 0.18);
+  --border-soft: rgba(58, 106, 244, 0.28);
 
-  --shadow-card:   0 8px 24px rgba(58,106,244,0.1);
-  --shadow-glow:   0 0 0 1px rgba(58,106,244,0.06) inset;
+  --shadow-card: 0 8px 24px rgba(58, 106, 244, 0.1);
+  --shadow-glow: 0 0 0 1px rgba(58, 106, 244, 0.06) inset;
 
-  --skeleton-base: rgba(58,106,244,0.07);
-  --skeleton-shine: rgba(58,106,244,0.14);
+  --skeleton-base: rgba(58, 106, 244, 0.07);
+  --skeleton-shine: rgba(58, 106, 244, 0.14);
 
-  --chart-grid:    rgba(58,106,244,0.1);
-  --chart-label:   #5a6a9a;
+  --chart-grid: rgba(58, 106, 244, 0.1);
+  --chart-label: #5a6a9a;
   --bg-ring-track: rgba(58, 106, 244, 0.12);
 }
 
 /* ─── Global transitions for theme switching ─────────────────────── */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   transition:
     background-color 0.3s ease,
@@ -104,8 +106,8 @@ body {
   margin: 0;
   font-family: var(--font-sans);
   background:
-    radial-gradient(circle at 8% 8%, rgba(41,84,221,0.42), transparent 36%),
-    radial-gradient(circle at 90% 20%, rgba(20,167,255,0.28), transparent 38%),
+    radial-gradient(circle at 8% 8%, rgba(41, 84, 221, 0.42), transparent 36%),
+    radial-gradient(circle at 90% 20%, rgba(20, 167, 255, 0.28), transparent 38%),
     linear-gradient(145deg, #030816 0%, #081434 55%, #040c23 100%);
   color: var(--text-main);
   -webkit-font-smoothing: antialiased;
@@ -116,8 +118,8 @@ body {
 [data-theme="light"] body,
 [data-theme="light"].body {
   background:
-    radial-gradient(circle at 8% 8%, rgba(58,106,244,0.12), transparent 36%),
-    radial-gradient(circle at 90% 20%, rgba(13,180,232,0.1), transparent 38%),
+    radial-gradient(circle at 8% 8%, rgba(58, 106, 244, 0.12), transparent 36%),
+    radial-gradient(circle at 90% 20%, rgba(13, 180, 232, 0.1), transparent 38%),
     linear-gradient(145deg, #e8eeff 0%, #f0f4ff 55%, #edf1ff 100%);
 }
 
@@ -165,29 +167,40 @@ button {
   transition: all 0.22s ease;
 }
 
-h1, h2, h3, h4, h5, h6, p {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
   margin: 0;
 }
 
-h1, h2, h3 {
+h1,
+h2,
+h3 {
   font-family: var(--font-heading);
   color: var(--text-heading);
 }
 
 /* ─── Skeleton loaders ───────────────────────────────────────────── */
 @keyframes skeleton-shimmer {
-  0%   { background-position: -400px 0; }
-  100% { background-position: 400px 0; }
+  0% {
+    background-position: -400px 0;
+  }
+
+  100% {
+    background-position: 400px 0;
+  }
 }
 
 .skeleton {
   border-radius: var(--border-radius-sm);
-  background: linear-gradient(
-    90deg,
-    var(--skeleton-base) 25%,
-    var(--skeleton-shine) 50%,
-    var(--skeleton-base) 75%
-  );
+  background: linear-gradient(90deg,
+      var(--skeleton-base) 25%,
+      var(--skeleton-shine) 50%,
+      var(--skeleton-base) 75%);
   background-size: 800px 100%;
   animation: skeleton-shimmer 1.4s ease-in-out infinite;
 }

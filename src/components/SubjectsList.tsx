@@ -230,11 +230,11 @@ const SubjectsList: React.FC = () => {
         <div className="subjects-list">
           {data.subjects.map(subject => (
             <div key={subject.id} className="subject-item">
-              <CircularProgress 
-                progress={subject.progress} 
-                color={subject.color} 
-                label={`Open ${subject.name} study details`} 
-                onClick={() => setSelectedSubjectId(subject.id)} 
+              <CircularProgress
+                progress={subject.progress}
+                color={subject.color}
+                label={`Open ${subject.name} study details`}
+                onClick={() => setSelectedSubjectId(subject.id)}
               />
               <div className="subject-info">
                 <div className="subject-name">{subject.name}</div>
