@@ -23,6 +23,8 @@
   --accent-green: #32d3b2;
   --accent-red: #ff5f74;
   --accent-orange: #ffad4c;
+  --selection-bg: rgba(95, 141, 255, 0.18);
+  --selection-text: #f7faff;
 
   --border-color: rgba(122, 147, 255, 0.2);
   --border-soft: rgba(122, 147, 255, 0.32);
@@ -67,6 +69,8 @@
   --accent-green: #0fb894;
   --accent-red: #e8334a;
   --accent-orange: #f59d1a;
+  --selection-bg: rgba(58, 106, 244, 0.12);
+  --selection-text: #08122c;
 
   --border-color: rgba(58, 106, 244, 0.18);
   --border-soft: rgba(58, 106, 244, 0.28);
@@ -138,6 +142,27 @@ textarea:focus-visible,
 select:focus-visible {
   outline: 2px solid var(--accent-blue);
   outline-offset: 2px;
+}
+
+input,
+textarea {
+  caret-color: var(--accent-blue);
+}
+
+::selection {
+  background: var(--selection-bg);
+  color: var(--selection-text);
+}
+
+::-moz-selection {
+  background: var(--selection-bg);
+  color: var(--selection-text);
+}
+
+input::selection,
+textarea::selection {
+  background: var(--selection-bg);
+  color: var(--selection-text);
 }
 
 /* ─── Card ───────────────────────────────────────────────────────── */
