@@ -1,7 +1,7 @@
 .heatmap-container {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 18px;
   width: 100%;
 }
 
@@ -11,9 +11,13 @@
   align-items: center;
   gap: 12px;
   border: 1px solid var(--border-soft);
-  border-radius: 12px;
-  padding: 12px 14px;
-  background: var(--bg-input);
+  border-radius: 14px;
+  padding: 13px 15px;
+  background: linear-gradient(180deg, rgba(15, 31, 76, 0.76), rgba(10, 22, 57, 0.92));
+}
+
+[data-theme="light"] .heatmap-log-row {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(240, 244, 255, 0.94));
 }
 
 .heatmap-log-label {
@@ -60,6 +64,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 12px;
 }
 
 .heatmap-title-row h3 {
@@ -75,13 +80,17 @@
 .year-heatmap-strip {
   display: flex;
   gap: 6px;
-  padding: 12px 10px;
+  padding: 14px 12px;
   border: 1px solid var(--border-soft);
-  border-radius: 14px;
-  background: var(--bg-card);
+  border-radius: 16px;
+  background: linear-gradient(180deg, rgba(10, 24, 56, 0.88), rgba(8, 18, 45, 0.96));
   overflow: hidden;
   width: 100%;
   justify-content: space-between;
+}
+
+[data-theme="light"] .year-heatmap-strip {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(242, 246, 255, 0.92));
 }
 
 .heatmap-selection-row {
@@ -89,10 +98,14 @@
   gap: 10px;
   align-items: center;
   flex-wrap: wrap;
-  padding: 10px 12px;
-  border-radius: 12px;
+  padding: 11px 13px;
+  border-radius: 14px;
   border: 1px solid var(--border-soft);
-  background: var(--bg-input);
+  background: linear-gradient(180deg, rgba(15, 31, 76, 0.72), rgba(10, 22, 57, 0.9));
+}
+
+[data-theme="light"] .heatmap-selection-row {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(240, 244, 255, 0.94));
 }
 
 .heatmap-selection-label {
@@ -108,17 +121,25 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
-  padding: 7px 4px 5px;
-  border-radius: 10px;
-  background: var(--bg-primary);
+  padding: 8px 5px 6px;
+  border-radius: 12px;
+  background: rgba(5, 12, 35, 0.26);
   border: 1px solid transparent;
   opacity: 0.85;
 }
 
 .month-block.current-month {
   border-color: var(--accent-blue);
-  background: var(--bg-secondary);
+  background: rgba(95, 141, 255, 0.12);
   opacity: 1;
+}
+
+[data-theme="light"] .month-block {
+  background: rgba(58, 106, 244, 0.05);
+}
+
+[data-theme="light"] .month-block.current-month {
+  background: rgba(58, 106, 244, 0.1);
 }
 
 .month-dot-grid {
@@ -147,7 +168,7 @@
 }
 
 .month-dot-button.selected {
-  box-shadow: 0 0 0 2px rgba(182, 205, 255, 0.7);
+  box-shadow: 0 0 0 2px rgba(182, 205, 255, 0.78);
 }
 
 .month-dot-button:focus-visible {

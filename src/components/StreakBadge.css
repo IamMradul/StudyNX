@@ -2,9 +2,9 @@
   display: flex;
   align-items: center;
   gap: 5px;
-  padding: 6px 12px;
+  padding: 7px 12px;
   border-radius: 999px;
-  background: var(--bg-nav);
+  background: linear-gradient(180deg, rgba(13, 27, 69, 0.86), rgba(8, 19, 50, 0.94));
   border: 1px solid var(--border-color);
   font-size: 0.82rem;
   font-weight: 600;
@@ -15,20 +15,24 @@
   transition: all 0.25s ease;
 }
 
+[data-theme="light"] .streak-badge {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(240, 244, 255, 0.94));
+}
+
 .streak-badge.streak-active {
   border-color: rgba(255, 160, 50, 0.4);
-  background: rgba(255, 160, 50, 0.08);
+  background: linear-gradient(180deg, rgba(255, 184, 77, 0.15), rgba(255, 160, 50, 0.1));
   color: var(--accent-orange);
 }
 
 [data-theme="light"] .streak-badge.streak-active {
-  background: rgba(245, 157, 26, 0.1);
+  background: linear-gradient(180deg, rgba(245, 157, 26, 0.12), rgba(245, 157, 26, 0.08));
   color: #d97706;
 }
 
 .streak-badge.streak-broken {
   border-color: rgba(255, 95, 116, 0.35);
-  background: rgba(255, 95, 116, 0.07);
+  background: linear-gradient(180deg, rgba(255, 95, 116, 0.14), rgba(255, 95, 116, 0.08));
   color: var(--accent-red);
   animation: streak-pulse 1.2s ease-in-out 2;
 }
