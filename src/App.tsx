@@ -27,6 +27,16 @@ function App() {
   const [legalRoute, setLegalRoute] = useState<LegalRoute>(() => getLegalRouteFromHash());
 
   useEffect(() => {
+    const pageTitle = legalRoute === 'terms'
+      ? 'StudyNX | Terms of Service'
+      : legalRoute === 'privacy'
+        ? 'StudyNX | Privacy Policy'
+        : 'StudyNX | Study Dashboard';
+
+    document.title = pageTitle;
+  }, [legalRoute]);
+
+  useEffect(() => {
     const handleHashChange = () => {
       setLegalRoute(getLegalRouteFromHash());
     };

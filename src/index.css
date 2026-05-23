@@ -9,86 +9,86 @@
   --motion-medium: 240ms;
   --motion-slow: 360ms;
 
-  --bg-primary: #050c23;
-  --bg-secondary: #081434;
-  --bg-card: linear-gradient(180deg, rgba(10, 24, 56, 0.95), rgba(8, 18, 45, 0.92));
-  --bg-card-solid: #0a1838;
-  --bg-input: #111f4d;
-  --bg-nav: rgba(7, 18, 45, 0.68);
+  --bg-primary: #020617;
+  --bg-secondary: #0f172a;
+  --bg-card: rgba(30, 41, 59, 0.6);
+  --bg-card-solid: #1e293b;
+  --bg-input: rgba(15, 23, 42, 0.92);
+  --bg-nav: rgba(15, 23, 42, 0.76);
 
-  --text-main: #cbdbff;
-  --text-muted: #97a8d5;
-  --text-heading: #eef4ff;
-  --text-inverse: #0f1a3d;
-  --text-label: #a0afd8;
+  --text-main: #cbd5e1;
+  --text-muted: #94a3b8;
+  --text-heading: #f8fafc;
+  --text-inverse: #0f172a;
+  --text-label: #cbd5e1;
 
-  --accent-blue: #5f8dff;
-  --accent-cyan: #4fd5ff;
-  --accent-teal: #18d5b6;
-  --accent-green: #32d3b2;
-  --accent-red: #ff5f74;
-  --accent-orange: #ffad4c;
-  --selection-bg: rgba(95, 141, 255, 0.18);
-  --selection-text: #f7faff;
+  --accent-blue: #4f46e5;
+  --accent-cyan: #38bdf8;
+  --accent-teal: #10b981;
+  --accent-green: #10b981;
+  --accent-red: #f43f5e;
+  --accent-orange: #f59e0b;
+  --selection-bg: rgba(79, 70, 229, 0.2);
+  --selection-text: #f8fafc;
 
-  --border-color: rgba(122, 147, 255, 0.2);
-  --border-soft: rgba(122, 147, 255, 0.32);
+  --border-color: rgba(148, 163, 184, 0.16);
+  --border-soft: rgba(148, 163, 184, 0.28);
   --border-radius-lg: 18px;
   --border-radius-md: 14px;
   --border-radius-sm: 10px;
 
-  --shadow-card: 0 18px 34px rgba(3, 8, 27, 0.4);
-  --shadow-glow: 0 0 0 1px rgba(92, 120, 235, 0.06) inset;
+  --shadow-card: 0 18px 36px rgba(2, 6, 23, 0.42);
+  --shadow-glow: 0 0 0 1px rgba(148, 163, 184, 0.06) inset;
 
   --font-sans: 'Inter', 'Outfit', 'Segoe UI', sans-serif;
   --font-heading: 'Sora', 'Segoe UI', sans-serif;
 
   /* Skeleton loader */
-  --skeleton-base: rgba(122, 147, 255, 0.08);
-  --skeleton-shine: rgba(122, 147, 255, 0.16);
+  --skeleton-base: rgba(148, 163, 184, 0.08);
+  --skeleton-shine: rgba(148, 163, 184, 0.16);
 
   /* Chart colors (exposed for JS) */
-  --chart-grid: rgba(122, 147, 255, 0.12);
-  --chart-label: #97a8d5;
-  --bg-ring-track: rgba(59, 77, 136, 0.4);
+  --chart-grid: rgba(148, 163, 184, 0.12);
+  --chart-label: #94a3b8;
+  --bg-ring-track: rgba(51, 65, 85, 0.5);
 }
 
 /* ─── Light theme ────────────────────────────────────────────────── */
 [data-theme="light"] {
-  --bg-primary: #f0f4ff;
-  --bg-secondary: #e4ebff;
-  --bg-card: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(240, 244, 255, 0.92));
+  --bg-primary: #f8fafc;
+  --bg-secondary: #e2e8f0;
+  --bg-card: rgba(255, 255, 255, 0.8);
   --bg-card-solid: #ffffff;
-  --bg-input: #dde6ff;
-  --bg-nav: rgba(255, 255, 255, 0.72);
+  --bg-input: #f1f5f9;
+  --bg-nav: rgba(255, 255, 255, 0.8);
 
-  --text-main: #1a2550;
-  --text-muted: #5a6a9a;
-  --text-heading: #0d1730;
-  --text-inverse: #eef4ff;
-  --text-label: #6272a4;
+  --text-main: #1e293b;
+  --text-muted: #64748b;
+  --text-heading: #0f172a;
+  --text-inverse: #f8fafc;
+  --text-label: #475569;
 
-  --accent-blue: #3a6af4;
-  --accent-cyan: #0db4e8;
-  --accent-teal: #0ab89a;
-  --accent-green: #0fb894;
-  --accent-red: #e8334a;
-  --accent-orange: #f59d1a;
-  --selection-bg: rgba(58, 106, 244, 0.12);
-  --selection-text: #08122c;
+  --accent-blue: #4f46e5;
+  --accent-cyan: #38bdf8;
+  --accent-teal: #10b981;
+  --accent-green: #10b981;
+  --accent-red: #e11d48;
+  --accent-orange: #f59e0b;
+  --selection-bg: rgba(79, 70, 229, 0.14);
+  --selection-text: #0f172a;
 
-  --border-color: rgba(58, 106, 244, 0.18);
-  --border-soft: rgba(58, 106, 244, 0.28);
+  --border-color: rgba(148, 163, 184, 0.18);
+  --border-soft: rgba(148, 163, 184, 0.28);
 
-  --shadow-card: 0 8px 24px rgba(58, 106, 244, 0.1);
-  --shadow-glow: 0 0 0 1px rgba(58, 106, 244, 0.06) inset;
+  --shadow-card: 0 10px 28px rgba(15, 23, 42, 0.08);
+  --shadow-glow: 0 0 0 1px rgba(148, 163, 184, 0.06) inset;
 
-  --skeleton-base: rgba(58, 106, 244, 0.07);
-  --skeleton-shine: rgba(58, 106, 244, 0.14);
+  --skeleton-base: rgba(148, 163, 184, 0.08);
+  --skeleton-shine: rgba(148, 163, 184, 0.16);
 
-  --chart-grid: rgba(58, 106, 244, 0.1);
-  --chart-label: #5a6a9a;
-  --bg-ring-track: rgba(58, 106, 244, 0.12);
+  --chart-grid: rgba(148, 163, 184, 0.12);
+  --chart-label: #64748b;
+  --bg-ring-track: rgba(203, 213, 225, 0.45);
 }
 
 /* ─── Global transitions for theme switching ─────────────────────── */
@@ -161,9 +161,9 @@ body {
   margin: 0;
   font-family: var(--font-sans);
   background:
-    radial-gradient(circle at 8% 8%, rgba(41, 84, 221, 0.42), transparent 36%),
-    radial-gradient(circle at 90% 20%, rgba(20, 167, 255, 0.28), transparent 38%),
-    linear-gradient(145deg, #030816 0%, #081434 55%, #040c23 100%);
+    radial-gradient(circle at 10% 10%, rgba(79, 70, 229, 0.22), transparent 32%),
+    radial-gradient(circle at 90% 0%, rgba(16, 185, 129, 0.1), transparent 34%),
+    linear-gradient(180deg, #020617 0%, #0f172a 100%);
   color: var(--text-main);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -173,9 +173,9 @@ body {
 [data-theme="light"] body,
 [data-theme="light"].body {
   background:
-    radial-gradient(circle at 8% 8%, rgba(58, 106, 244, 0.12), transparent 36%),
-    radial-gradient(circle at 90% 20%, rgba(13, 180, 232, 0.1), transparent 38%),
-    linear-gradient(145deg, #e8eeff 0%, #f0f4ff 55%, #edf1ff 100%);
+    radial-gradient(circle at 10% 10%, rgba(79, 70, 229, 0.08), transparent 32%),
+    radial-gradient(circle at 90% 0%, rgba(16, 185, 129, 0.06), transparent 34%),
+    linear-gradient(180deg, #f8fafc 0%, #e2e8f0 100%);
 }
 
 /* body bg needs to be on the html element for theme */
@@ -184,7 +184,7 @@ html {
 }
 
 [data-theme="light"] html {
-  background-color: #f0f4ff;
+  background-color: #f8fafc;
 }
 
 button:focus-visible,
@@ -219,11 +219,12 @@ textarea::selection {
 /* ─── Card ───────────────────────────────────────────────────────── */
 .card {
   background: var(--bg-card);
-  border-radius: var(--border-radius-md);
-  padding: calc(18px * var(--ui-scale));
+  border-radius: 1rem;
+  padding: 1.5rem;
   color: var(--text-main);
   border: 1px solid var(--border-color);
   box-shadow: var(--shadow-glow), var(--shadow-card);
+  backdrop-filter: blur(10px);
 }
 
 .card-title {
@@ -239,8 +240,8 @@ button {
   cursor: pointer;
   font-family: inherit;
   border: none;
-  border-radius: var(--border-radius-sm);
-  transition: all 0.22s ease;
+  border-radius: 0.75rem;
+  transition: all var(--motion-medium) var(--motion-ease);
 }
 
 h1,

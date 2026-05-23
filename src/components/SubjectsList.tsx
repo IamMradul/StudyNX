@@ -202,7 +202,13 @@ const SubjectsList: React.FC = () => {
   return (
     <>
       <div className="card subjects-container">
-        <div className="card-title">SUBJECTS — CLICK RING FOR DETAILS</div>
+        <div className="card-title">Subjects</div>
+        <div className="subjects-header">
+          <div>
+            <h2>Track every subject with less friction.</h2>
+            <p>Keep targets, progress, and recent study history in one place.</p>
+          </div>
+        </div>
         <div className="subject-create-row">
           <input
             type="text"
@@ -224,7 +230,11 @@ const SubjectsList: React.FC = () => {
         </div>
 
         {data.subjects.length === 0 && (
-          <div className="subject-empty">No subjects yet. Add one to begin tracking.</div>
+          <div className="subject-empty">
+            <div className="subject-empty-icon" aria-hidden="true">◌</div>
+            <strong>No subjects yet</strong>
+            <p>Add a subject above to start tracking progress and goals.</p>
+          </div>
         )}
 
         <div className="subjects-list">
@@ -261,11 +271,14 @@ const SubjectsList: React.FC = () => {
         <div className="modal-overlay" onClick={() => setSelectedSubjectId(null)}>
           <div className="modal-content" onClick={e => e.stopPropagation()}>
             <div className="modal-header">
-              <h3>{selectedSubject.name} - Subject Heatmap</h3>
+              <div>
+                <p className="modal-kicker">Subject details</p>
+                <h3>{selectedSubject.name}</h3>
+              </div>
               <button type="button" className="close-btn" aria-label="Close subject details" onClick={() => setSelectedSubjectId(null)}>×</button>
             </div>
             <div className="modal-body">
-              <p>Set today's study hours and review your last 16 weeks for {selectedSubject.name}.</p>
+              <p className="modal-intro">Set today’s hours and review the last 16 weeks of activity for this subject.</p>
 
               <div className="subject-log-row">
                 <input

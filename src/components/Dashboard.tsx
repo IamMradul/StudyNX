@@ -25,6 +25,17 @@ const dashboardTabs: Array<{ id: DashboardTab; label: string; description: strin
 const Dashboard: React.FC = () => {
   const { data, logout, requestAuthPrompt } = useData();
   const [activeTab, setActiveTab] = React.useState<DashboardTab>('overview');
+
+  React.useEffect(() => {
+    const titleSuffix = activeTab === 'overview'
+      ? 'Dashboard'
+      : activeTab === 'sessions'
+        ? 'Sessions'
+        : 'Insights';
+
+    document.title = `StudyNX | ${titleSuffix}`;
+  }, [activeTab]);
+
   const now = new Date();
   const todayKey = toDateKey(now);
   const todayHours = data.activityData[todayKey] ?? 0;
@@ -55,10 +66,10 @@ const Dashboard: React.FC = () => {
     <div className="app-container">
       <nav className="top-nav" aria-label="Main navigation">
         {/* Brand */}
-        <div className="logo">
+        <a className="logo" href="/" aria-label="StudyNX home">
           <img src="/StudyNX.png" alt="StudyNX logo" className="logo-mark" />
-          Study<span>NX</span>
-        </div>
+          <span>StudyNX</span>
+        </a>
 
         {/* Tab pills */}
         <div className="nav-pill-group" role="tablist" aria-label="Dashboard views">
@@ -107,7 +118,7 @@ const Dashboard: React.FC = () => {
 
       <header className="dashboard-hero card" aria-label="Study dashboard summary">
         <div className="dashboard-hero-copy">
-          <p className="dashboard-eyebrow">Professional study dashboard</p>
+          <p className="dashboard-eyebrow">Study tracker</p>
           <h1>{heroTitle}</h1>
           <p className="dashboard-hero-text">{heroDescription}</p>
 
@@ -159,7 +170,7 @@ const Dashboard: React.FC = () => {
 
       {/* ── Overview tab ─────────────────────────────────── */}
       {activeTab === 'overview' && (
-        <main className="dashboard-layout" role="main">
+        <main className="dashboard-layout" role="main" aria-label="Overview dashboard">
           <section className="dashboard-main">
             <Heatmap />
             <TopStats />
@@ -172,27 +183,27 @@ const Dashboard: React.FC = () => {
           </section>
 
           <aside className="dashboard-sidebar" aria-label="Widgets">
+            <WeeklyGoal />
             <DailyGoal />
             <Pomodoro />
             <CalendarWidget />
             <ExamCountdown />
-            <WeeklyGoal />
           </aside>
         </main>
       )}
 
       {/* ── Sessions tab ─────────────────────────────────── */}
       {activeTab === 'sessions' && (
-        <main className="dashboard-layout" role="main">
+        <main className="dashboard-layout" role="main" aria-label="Study sessions dashboard">
           <section className="dashboard-main">
             <Heatmap />
             <CalendarWidget />
           </section>
 
           <aside className="dashboard-sidebar" aria-label="Widgets">
+            <WeeklyGoal />
             <DailyGoal />
             <Pomodoro />
-            <WeeklyGoal />
             <ExamCountdown />
           </aside>
         </main>
@@ -200,7 +211,7 @@ const Dashboard: React.FC = () => {
 
       {/* ── Insights tab ─────────────────────────────────── */}
       {activeTab === 'insights' && (
-        <main className="dashboard-layout dashboard-layout-single" role="main">
+        <main className="dashboard-layout dashboard-layout-single" role="main" aria-label="Insights dashboard">
           <section className="dashboard-main">
             <InsightsPanel />
             <AnalyticsDashboard />

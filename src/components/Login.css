@@ -298,6 +298,7 @@
 }
 
 .auth-tab {
+  min-height: 44px;
   padding: 10px 12px;
   border-radius: 12px;
   border: 1px solid rgba(119, 145, 226, 0.28);
@@ -360,6 +361,7 @@
 
 .login-btn {
   width: 100%;
+  min-height: 44px;
   padding: 13px 14px;
   background: linear-gradient(90deg, #4ce0c6, #6e97ff);
   color: #03102b;

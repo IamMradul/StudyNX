@@ -1,6 +1,6 @@
 .theme-toggle {
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -11,6 +11,7 @@
   flex-shrink: 0;
   position: relative;
   overflow: hidden;
+  transition: all var(--motion-medium) var(--motion-ease);
 }
 
 .theme-toggle::before {
@@ -19,7 +20,7 @@
   inset: 0;
   background: radial-gradient(circle at 50% 50%, var(--accent-blue), transparent 70%);
   opacity: 0;
-  transition: opacity 0.3s ease;
+  transition: opacity var(--motion-medium) var(--motion-ease);
 }
 
 .theme-toggle:hover::before {
@@ -29,7 +30,7 @@
 .theme-toggle:hover {
   border-color: var(--accent-blue);
   color: var(--accent-blue);
-  transform: rotate(20deg);
+  transform: translateY(-1px) rotate(10deg);
 }
 
 .theme-toggle:focus-visible {
@@ -38,5 +39,5 @@
 }
 
 .theme-toggle svg {
-  transition: transform 0.4s ease;
+  transition: transform var(--motion-slow) var(--motion-ease-out);
 }
