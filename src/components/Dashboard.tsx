@@ -197,11 +197,11 @@ const Dashboard: React.FC = () => {
         <main className="dashboard-layout" role="main" aria-label="Study sessions dashboard">
           <section className="dashboard-main">
             <Heatmap />
-            <CalendarWidget />
           </section>
 
           <aside className="dashboard-sidebar" aria-label="Widgets">
             <WeeklyGoal />
+            <CalendarWidget />
             <DailyGoal />
             <Pomodoro />
             <ExamCountdown />

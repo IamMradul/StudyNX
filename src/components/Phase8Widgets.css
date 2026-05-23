@@ -1,4 +1,4 @@
-.resources-card { min-height: 280px; }
+.resources-card { min-height: 232px; }
 
 .resources-list {
   display: flex;
@@ -86,7 +86,7 @@
 }
 
 /* ─── Calendar widget ──────────────────────────────────────────── */
-.calendar-card { min-height: 560px; }
+.calendar-card { min-height: 470px; }
 
 .calendar-topline {
   font-size: 0.86rem;
@@ -189,7 +189,7 @@
 .selected-day-card {
   margin-top: auto;
   border-radius: 16px;
-  padding: 14px;
+  padding: 12px;
   border: 1px solid var(--border-color);
   background: var(--bg-card);
 }

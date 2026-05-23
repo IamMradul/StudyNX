@@ -1,8 +1,8 @@
 .app-container {
   min-height: 100vh;
   margin: 0 auto;
-  max-width: 80rem;
-  padding: 2rem 1.25rem 3rem;
+  max-width: 90rem;
+  padding: 1.5rem 1rem 3rem;
   position: relative;
 }
 
@@ -328,8 +328,8 @@
 /* ─── Dashboard layout ──────────────────────────────────────────── */
 .dashboard-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1.75fr) minmax(260px, 0.65fr);
-  gap: 26px;
+  grid-template-columns: minmax(0, 1.66fr) minmax(280px, 0.74fr);
+  gap: 22px;
   animation: tab-fade-in 0.3s ease;
 }
 
@@ -360,6 +360,11 @@
     transform var(--motion-fast) var(--motion-ease),
     box-shadow var(--motion-fast) var(--motion-ease),
     border-color var(--motion-fast) var(--motion-ease);
+  padding: 1.25rem;
+}
+
+.dashboard-sidebar > .card {
+  padding: 0.95rem;
 }
 
 .dashboard-main > .card:hover,
