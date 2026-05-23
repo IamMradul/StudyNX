@@ -11,6 +11,7 @@
     radial-gradient(circle at bottom right, rgba(24, 213, 182, 0.14), transparent 26%),
     rgba(2, 6, 18, 0.72);
   backdrop-filter: blur(14px);
+  animation: fade-up var(--motion-medium) var(--motion-ease-out) both;
 }
 
 .login-card {
@@ -23,6 +24,7 @@
   border: 1px solid rgba(126, 152, 232, 0.24);
   box-shadow: 0 30px 60px rgba(3, 10, 30, 0.46);
   background: linear-gradient(145deg, rgba(9, 21, 53, 0.96), rgba(7, 17, 42, 0.98));
+  animation: gentle-scale-in var(--motion-slow) var(--motion-ease-out) both;
 }
 
 .login-hero,
@@ -37,6 +39,7 @@
     radial-gradient(circle at top right, rgba(95, 141, 255, 0.32), transparent 34%),
     linear-gradient(180deg, rgba(10, 28, 68, 0.9), rgba(8, 18, 44, 0.94));
   border-right: 1px solid rgba(126, 152, 232, 0.16);
+  animation: fade-up calc(var(--motion-slow) + 80ms) var(--motion-ease-out) both;
 }
 
 .login-brand-row {
@@ -137,6 +140,7 @@
   padding: 30px 30px 26px;
   text-align: left;
   background: linear-gradient(180deg, rgba(9, 19, 48, 0.95), rgba(7, 16, 39, 0.97));
+  animation: fade-up calc(var(--motion-slow) + 120ms) var(--motion-ease-out) both;
 }
 
 .login-panel-header {
@@ -180,6 +184,15 @@
   display: grid;
   place-items: center;
   z-index: 1;
+  transition:
+    transform var(--motion-fast) var(--motion-ease),
+    background-color var(--motion-fast) var(--motion-ease),
+    border-color var(--motion-fast) var(--motion-ease),
+    color var(--motion-fast) var(--motion-ease);
+}
+
+.login-dismiss-btn:hover {
+  transform: rotate(90deg);
 }
 
 .login-logo {
@@ -233,10 +246,16 @@
   font-size: 0.9rem;
   font-weight: 600;
   letter-spacing: 0.02em;
+  transition:
+    transform var(--motion-fast) var(--motion-ease),
+    filter var(--motion-fast) var(--motion-ease),
+    border-color var(--motion-fast) var(--motion-ease),
+    box-shadow var(--motion-fast) var(--motion-ease);
 }
 
 .google-auth-btn:hover {
   filter: brightness(1.08);
+  transform: translateY(-1px);
 }
 
 .google-auth-btn:disabled {
@@ -287,12 +306,22 @@
   font-size: 0.75rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
+  transition:
+    transform var(--motion-fast) var(--motion-ease),
+    background-color var(--motion-fast) var(--motion-ease),
+    border-color var(--motion-fast) var(--motion-ease),
+    color var(--motion-fast) var(--motion-ease),
+    box-shadow var(--motion-fast) var(--motion-ease);
 }
 
 .auth-tab.active {
   background: linear-gradient(120deg, rgba(92, 128, 255, 0.35), rgba(68, 202, 255, 0.2));
   color: #ecf3ff;
   border-color: rgba(147, 177, 255, 0.5);
+}
+
+.auth-tab:hover {
+  transform: translateY(-1px);
 }
 
 .login-helper {
@@ -312,6 +341,11 @@
   color: #deebff;
   font-size: 0.95rem;
   outline: none;
+  transition:
+    transform var(--motion-fast) var(--motion-ease),
+    border-color var(--motion-fast) var(--motion-ease),
+    box-shadow var(--motion-fast) var(--motion-ease),
+    background-color var(--motion-fast) var(--motion-ease);
 }
 
 .login-input::placeholder {
@@ -321,6 +355,7 @@
 .login-input:focus {
   border-color: rgba(140, 170, 255, 0.78);
   box-shadow: 0 0 0 2px rgba(100, 143, 255, 0.2);
+  transform: translateY(-1px);
 }
 
 .login-btn {
@@ -333,10 +368,15 @@
   text-transform: uppercase;
   letter-spacing: 0.06em;
   border-radius: 14px;
+  transition:
+    transform var(--motion-fast) var(--motion-ease),
+    filter var(--motion-fast) var(--motion-ease),
+    box-shadow var(--motion-fast) var(--motion-ease);
 }
 
 .login-btn:hover {
   filter: brightness(1.06);
+  transform: translateY(-1px);
 }
 
 .login-btn:disabled {
@@ -367,6 +407,12 @@
   text-decoration: underline;
   text-underline-offset: 2px;
   padding: 4px 0;
+  transition: color var(--motion-fast) var(--motion-ease), transform var(--motion-fast) var(--motion-ease);
+}
+
+.auth-link-btn:hover {
+  color: var(--text-heading);
+  transform: translateY(-1px);
 }
 
 .login-security-note {
@@ -374,6 +420,7 @@
   color: #8da0cb;
   font-size: 0.76rem;
   line-height: 1.55;
+  animation: fade-up calc(var(--motion-slow) + 160ms) var(--motion-ease-out) both;
 }
 
 @media (max-width: 520px) {

@@ -15,6 +15,8 @@
   background: linear-gradient(135deg, rgba(10, 24, 56, 0.92), rgba(8, 18, 45, 0.96));
   border: 1px solid rgba(122, 147, 255, 0.22);
   box-shadow: 0 20px 40px rgba(3, 8, 27, 0.32);
+  animation: fade-up var(--motion-slow) var(--motion-ease-out) both;
+  transform-origin: center top;
 }
 
 [data-theme="light"] .dashboard-hero {
@@ -43,6 +45,7 @@
   font-size: clamp(1.8rem, 2.8vw, 3rem);
   line-height: 1.05;
   letter-spacing: -0.04em;
+  animation: fade-up calc(var(--motion-slow) + 80ms) var(--motion-ease-out) both;
 }
 
 .dashboard-hero-text {
@@ -70,6 +73,12 @@
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
+  transition:
+    transform var(--motion-fast) var(--motion-ease),
+    background-color var(--motion-fast) var(--motion-ease),
+    border-color var(--motion-fast) var(--motion-ease),
+    color var(--motion-fast) var(--motion-ease),
+    box-shadow var(--motion-fast) var(--motion-ease);
 }
 
 [data-theme="light"] .hero-action {
@@ -80,6 +89,15 @@
   background: linear-gradient(120deg, rgba(95, 141, 255, 0.34), rgba(79, 213, 255, 0.18));
   color: var(--text-heading);
   border-color: rgba(137, 173, 255, 0.42);
+}
+
+.hero-action:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(3, 8, 27, 0.16);
+}
+
+.hero-action:active {
+  transform: translateY(0);
 }
 
 .hero-action-secondary {
@@ -101,6 +119,17 @@
   border: 1px solid var(--border-soft);
   background: var(--bg-input);
   min-width: 0;
+  animation: gentle-scale-in var(--motion-medium) var(--motion-ease-out) both;
+  transition:
+    transform var(--motion-fast) var(--motion-ease),
+    border-color var(--motion-fast) var(--motion-ease),
+    box-shadow var(--motion-fast) var(--motion-ease);
+}
+
+.hero-metric-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(137, 173, 255, 0.42);
+  box-shadow: 0 10px 24px rgba(3, 8, 27, 0.16);
 }
 
 .hero-metric-card span {
@@ -201,7 +230,11 @@
   font-weight: 500;
   color: var(--text-muted);
   background: transparent;
-  transition: all 0.25s ease;
+  transition:
+    transform var(--motion-fast) var(--motion-ease),
+    background-color var(--motion-fast) var(--motion-ease),
+    box-shadow var(--motion-fast) var(--motion-ease),
+    color var(--motion-fast) var(--motion-ease);
 }
 
 .nav-pill.active {
@@ -217,6 +250,7 @@
 
 .nav-pill:hover:not(.active) {
   color: var(--text-main);
+  transform: translateY(-1px);
 }
 
 .nav-right {
@@ -256,6 +290,10 @@
   border: 1px solid var(--border-soft);
   box-shadow: var(--shadow-card);
   flex-shrink: 0;
+  transition:
+    transform var(--motion-fast) var(--motion-ease),
+    box-shadow var(--motion-fast) var(--motion-ease),
+    border-color var(--motion-fast) var(--motion-ease);
 }
 
 [data-theme="light"] .profile-avatar {
@@ -280,6 +318,11 @@
 .profile-button:focus-visible {
   outline: 2px solid var(--accent-blue);
   outline-offset: 3px;
+}
+
+.profile-avatar:hover {
+  transform: translateY(-1px);
+  border-color: rgba(137, 173, 255, 0.45);
 }
 
 /* ─── Dashboard layout ──────────────────────────────────────────── */
@@ -311,6 +354,18 @@
 .dashboard-sidebar > .card,
 .dashboard-main-grid > .card {
   border-radius: 18px;
+  animation: fade-up var(--motion-slow) var(--motion-ease-out) both;
+  transition:
+    transform var(--motion-fast) var(--motion-ease),
+    box-shadow var(--motion-fast) var(--motion-ease),
+    border-color var(--motion-fast) var(--motion-ease);
+}
+
+.dashboard-main > .card:hover,
+.dashboard-sidebar > .card:hover,
+.dashboard-main-grid > .card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 22px 40px rgba(3, 8, 27, 0.36);
 }
 
 .dashboard-main-grid {
@@ -413,7 +468,12 @@
   font-size: 0.74rem;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  transition: all 0.2s ease;
+  transition:
+    transform var(--motion-fast) var(--motion-ease),
+    background-color var(--motion-fast) var(--motion-ease),
+    border-color var(--motion-fast) var(--motion-ease),
+    color var(--motion-fast) var(--motion-ease),
+    box-shadow var(--motion-fast) var(--motion-ease);
   cursor: pointer;
 }
 
@@ -427,6 +487,7 @@
   background: rgba(95,141,255,0.15);
   border-color: var(--accent-blue);
   color: var(--text-heading);
+  transform: translateY(-1px);
 }
 
 .widget-btn.active-hours {
@@ -465,13 +526,18 @@
   font-size: 0.76rem;
   width: 100%;
   margin-top: 8px;
-  transition: all 0.2s ease;
+  transition:
+    transform var(--motion-fast) var(--motion-ease),
+    background-color var(--motion-fast) var(--motion-ease),
+    border-color var(--motion-fast) var(--motion-ease),
+    color var(--motion-fast) var(--motion-ease);
 }
 
 .add-resource-btn:hover {
   border-color: var(--accent-blue);
   color: var(--accent-blue);
   background: rgba(95,141,255,0.06);
+  transform: translateY(-1px);
 }
 
 /* ─── Responsive ────────────────────────────────────────────────── */
