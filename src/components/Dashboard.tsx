@@ -8,18 +8,34 @@ import StudyComparison from './StudyComparison';
 import { Pomodoro, ExamCountdown, WeeklyGoal } from './Phase7Widgets';
 import { Resources, Reminders, CalendarWidget } from './Phase8Widgets';
 import InsightsPanel from './InsightsPanel';
-import ThemeToggle from './ThemeToggle';
-import StreakBadge from './StreakBadge';
 import DailyGoal from './DailyGoal';
 import ExportReport from './ExportReport';
 import AnalyticsDashboard from './AnalyticsDashboard';
+import { motion, AnimatePresence } from 'framer-motion';
+import { fadeUp } from '../lib/animations';
+import { cn } from '../lib/utils';
 
 type DashboardTab = 'overview' | 'sessions' | 'insights';
 
-const dashboardTabs: Array<{ id: DashboardTab; label: string; description: string }> = [
-  { id: 'overview', label: 'Overview', description: 'Your main dashboard view' },
-  { id: 'sessions', label: 'Sessions', description: 'Focus blocks and study logs' },
-  { id: 'insights', label: 'Insights', description: 'Trends and export tools' },
+const dashboardTabs: Array<{ id: DashboardTab; label: string; description: string; icon: React.ReactNode }> = [
+  { 
+    id: 'overview', 
+    label: 'Overview', 
+    description: 'Your main dashboard view',
+    icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
+  },
+  { 
+    id: 'sessions', 
+    label: 'Sessions', 
+    description: 'Focus blocks and study logs',
+    icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+  },
+  { 
+    id: 'insights', 
+    label: 'Insights', 
+    description: 'Trends and export tools',
+    icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
+  },
 ];
 
 const Dashboard: React.FC = () => {
@@ -56,171 +72,183 @@ const Dashboard: React.FC = () => {
 
     return streak;
   })();
-  const sessionCount = data.sessionLogs.length;
   const heroTitle = data.isLoggedIn ? `Welcome back${data.user?.name ? `, ${data.user.name}` : ''}` : 'Your study workspace';
   const heroDescription = data.isLoggedIn
     ? 'Keep your study momentum organized with a cleaner overview, faster navigation, and clear next actions.'
     : 'Review your progress, manage focus sessions, and sign in when you are ready to save everything.';
 
   return (
-    <div className="app-container">
-      <nav className="top-nav" aria-label="Main navigation">
-        {/* Brand */}
-        <a className="logo" href="/" aria-label="StudyNX home">
-          <img src="/StudyNX.png" alt="StudyNX logo" className="logo-mark" />
-          <span>StudyNX</span>
-        </a>
-
-        {/* Tab pills */}
-        <div className="nav-pill-group" role="tablist" aria-label="Dashboard views">
-          {dashboardTabs.map((tab) => (
-            <button
+    <div className="flex min-h-screen bg-transparent text-slate-200 font-sans selection:bg-electric-violet/30 selection:text-white">
+      {/* Sidebar */}
+      <aside className="hidden lg:flex w-72 flex-col bg-white/[0.02] backdrop-blur-2xl border-r border-white/[0.06] sticky top-0 h-screen overflow-y-auto">
+        <div className="p-8">
+          <a href="/" className="flex items-center gap-2">
+            <span className="font-display font-bold text-2xl tracking-widest uppercase animate-[pulse-glow_4s_infinite]">
+              Study<span className="bg-clip-text text-transparent bg-gradient-to-r from-electric-violet to-neon-cyan">NX</span>
+            </span>
+          </a>
+        </div>
+        
+        <nav className="flex-1 px-6 space-y-3 mt-4">
+          {dashboardTabs.map(tab => (
+            <button 
               key={tab.id}
-              type="button"
-              role="tab"
-              aria-selected={activeTab === tab.id}
-              className={`nav-pill ${activeTab === tab.id ? 'active' : ''}`}
-              title={tab.description}
               onClick={() => setActiveTab(tab.id)}
+              className={cn(
+                "w-full flex items-center gap-4 px-4 py-3 rounded-2xl transition-all relative overflow-hidden group",
+                activeTab === tab.id ? "bg-white/[0.06] text-white shadow-glow-violet" : "text-slate-400 hover:bg-white/[0.04] hover:text-white"
+              )}
             >
-              {tab.label}
+              {activeTab === tab.id && (
+                <motion.div layoutId="sidebar-active" className="absolute left-0 top-1/4 bottom-1/4 w-1 rounded-r-full bg-gradient-to-b from-electric-violet to-neon-cyan" />
+              )}
+              <span className={cn("transition-colors", activeTab === tab.id ? "text-neon-cyan" : "group-hover:text-slate-200")}>
+                {tab.icon}
+              </span>
+              <span className="font-medium text-sm tracking-wide">{tab.label}</span>
             </button>
           ))}
-        </div>
-
-        {/* Right-side controls */}
-        <div className="nav-right">
-          <StreakBadge />
-          <ThemeToggle />
-          {data.isLoggedIn ? (
-            <button
-              type="button"
-              className="profile-avatar profile-button"
-              onClick={logout}
-              aria-label="Log out of StudyNX"
-              title="Click to logout"
+        </nav>
+        
+        <div className="p-6 mt-auto border-t border-white/5">
+          <div className="flex items-center gap-4">
+            <button 
+              onClick={data.isLoggedIn ? logout : () => requestAuthPrompt('Sign in to save your changes.')} 
+              className="relative w-12 h-12 rounded-full bg-electric-violet/10 border border-electric-violet/30 flex items-center justify-center text-electric-violet font-semibold transition-all hover:scale-105 hover:shadow-glow-violet group"
             >
-              {data.user?.avatar || 'SN'}
+              {data.isLoggedIn ? (data.user?.avatar || 'SN') : 'SN'}
+              {data.isLoggedIn && (
+                <>
+                  <span className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-400 border-2 border-[#050508] rounded-full z-10" />
+                  <span className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-400 rounded-full animate-ping z-0" />
+                </>
+              )}
             </button>
-          ) : (
-            <button
-              type="button"
-              className="profile-avatar profile-button profile-signin-button"
-              onClick={() => requestAuthPrompt('Sign in to save your changes.')}
-              aria-label="Sign in to StudyNX"
-              title="Click to sign in"
-            >
-              Sign in
-            </button>
-          )}
+            <div className="flex flex-col">
+               <span className="text-sm font-medium text-white">{data.isLoggedIn ? data.user?.name || 'User' : 'Guest'}</span>
+               <span className="text-xs text-slate-400">{data.isLoggedIn ? 'Online' : 'Sign in to sync'}</span>
+            </div>
+          </div>
         </div>
-      </nav>
+      </aside>
 
-      <header className="dashboard-hero card" aria-label="Study dashboard summary">
-        <div className="dashboard-hero-copy">
-          <p className="dashboard-eyebrow">Study tracker</p>
-          <h1>{heroTitle}</h1>
-          <p className="dashboard-hero-text">{heroDescription}</p>
-
-          <div className="dashboard-hero-actions" aria-label="Quick actions">
-            {dashboardTabs.map((tab) => (
-              <button
-                key={`hero-${tab.id}`}
-                type="button"
-                className={`hero-action ${activeTab === tab.id ? 'active' : ''}`}
+      {/* Main Content */}
+      <main className="flex-1 p-6 lg:p-10 overflow-x-hidden">
+        {/* Mobile Nav Header (Visible only on small screens) */}
+        <div className="lg:hidden flex items-center justify-between mb-8 pb-4 border-b border-white/10">
+          <span className="font-display font-bold text-xl tracking-widest uppercase">
+            Study<span className="text-neon-cyan">NX</span>
+          </span>
+          <div className="flex gap-2">
+            {dashboardTabs.map(tab => (
+              <button 
+                key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                aria-pressed={activeTab === tab.id}
+                className={cn(
+                  "px-3 py-1.5 rounded-full text-xs font-medium transition-all",
+                  activeTab === tab.id ? "bg-white/10 text-white" : "text-slate-400 bg-white/5"
+                )}
               >
                 {tab.label}
               </button>
             ))}
-
-            {!data.isLoggedIn && (
-              <button
-                type="button"
-                className="hero-action hero-action-secondary"
-                onClick={() => requestAuthPrompt('Sign in to save your dashboard changes.')}
-              >
-                Sign in to sync
-              </button>
-            )}
           </div>
         </div>
 
-        <div className="dashboard-hero-metrics">
-          <article className="hero-metric-card">
-            <span>Today</span>
-            <strong>{todayHours.toFixed(1)}h</strong>
-            <small>Logged so far</small>
-          </article>
-
-          <article className="hero-metric-card">
-            <span>Weekly progress</span>
-            <strong>{weeklyProgress}%</strong>
-            <small>{weeklyHours.toFixed(1)}h of {data.weeklyTargetHours}h target</small>
-          </article>
-
-          <article className="hero-metric-card">
-            <span>Current streak</span>
-            <strong>{currentStreak} days</strong>
-            <small>{sessionCount} session{sessionCount === 1 ? '' : 's'} saved</small>
-          </article>
-        </div>
-      </header>
-
-      {/* ── Overview tab ─────────────────────────────────── */}
-      {activeTab === 'overview' && (
-        <main className="dashboard-layout" role="main" aria-label="Overview dashboard">
-          <section className="dashboard-main">
-            <Heatmap />
-            <TopStats />
-            <div className="dashboard-main-grid">
-              <SubjectsList />
-              <StudyComparison />
-              <Resources />
-              <Reminders />
+        <motion.header 
+          variants={fadeUp} 
+          initial="initial" 
+          animate="animate" 
+          className="relative bg-white/[0.02] backdrop-blur-xl border border-white/[0.08] rounded-[2rem] p-8 lg:p-12 mb-10 overflow-hidden shadow-card group hover:border-white/[0.12] transition-colors"
+        >
+          {/* Decorative glow inside hero */}
+          <div className="absolute top-0 right-0 w-96 h-96 bg-neon-cyan/10 blur-[100px] rounded-full -translate-y-1/2 translate-x-1/3 group-hover:bg-neon-cyan/20 transition-colors duration-700 pointer-events-none" />
+          
+          <div className="relative z-10 grid lg:grid-cols-[1fr_auto] gap-10 lg:gap-20 items-center">
+            <div className="space-y-4">
+              <p className="text-neon-cyan text-xs font-bold tracking-[0.2em] uppercase">Study Tracker</p>
+              <h1 className="text-4xl lg:text-5xl font-display font-bold leading-tight text-white">
+                {heroTitle}
+              </h1>
+              <p className="text-slate-400 text-base lg:text-lg max-w-2xl leading-relaxed">
+                {heroDescription}
+              </p>
             </div>
-          </section>
-
-          <aside className="dashboard-sidebar" aria-label="Widgets">
-            <WeeklyGoal />
-            <DailyGoal />
-            <Pomodoro />
-            <CalendarWidget />
-            <ExamCountdown />
-          </aside>
-        </main>
-      )}
-
-      {/* ── Sessions tab ─────────────────────────────────── */}
-      {activeTab === 'sessions' && (
-        <main className="dashboard-layout" role="main" aria-label="Study sessions dashboard">
-          <section className="dashboard-main">
-            <Heatmap />
-          </section>
-
-          <aside className="dashboard-sidebar" aria-label="Widgets">
-            <WeeklyGoal />
-            <CalendarWidget />
-            <DailyGoal />
-            <Pomodoro />
-            <ExamCountdown />
-          </aside>
-        </main>
-      )}
-
-      {/* ── Insights tab ─────────────────────────────────── */}
-      {activeTab === 'insights' && (
-        <main className="dashboard-layout dashboard-layout-single" role="main" aria-label="Insights dashboard">
-          <section className="dashboard-main">
-            <InsightsPanel />
-            <AnalyticsDashboard />
-            <div className="insights-bottom-row">
-              <ExportReport />
+            
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-1 gap-4 lg:gap-6 min-w-[240px]">
+              <div className="bg-white/5 border border-white/10 rounded-2xl p-5 hover:-translate-y-1 hover:border-electric-violet/50 hover:shadow-glow-violet transition-all duration-300">
+                <p className="text-slate-500 text-[0.65rem] font-bold tracking-widest uppercase mb-1">Today</p>
+                <div className="text-3xl font-display font-bold text-white">{todayHours.toFixed(1)}<span className="text-lg text-slate-500 ml-1">h</span></div>
+              </div>
+              <div className="bg-white/5 border border-white/10 rounded-2xl p-5 hover:-translate-y-1 hover:border-neon-cyan/50 hover:shadow-glow-cyan transition-all duration-300">
+                <p className="text-slate-500 text-[0.65rem] font-bold tracking-widest uppercase mb-1">Weekly</p>
+                <div className="text-3xl font-display font-bold text-white">{weeklyProgress}<span className="text-lg text-slate-500 ml-1">%</span></div>
+              </div>
+              <div className="bg-white/5 border border-white/10 rounded-2xl p-5 hover:-translate-y-1 hover:border-emerald-500/50 hover:shadow-glow-emerald transition-all duration-300">
+                <p className="text-slate-500 text-[0.65rem] font-bold tracking-widest uppercase mb-1">Streak</p>
+                <div className="text-3xl font-display font-bold text-white">{currentStreak}<span className="text-lg text-slate-500 ml-1">d</span></div>
+              </div>
             </div>
-          </section>
-        </main>
-      )}
+          </div>
+        </motion.header>
+
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeTab}
+            variants={fadeUp}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+          >
+            {activeTab === 'overview' && (
+              <div className="grid lg:grid-cols-[1.66fr_0.74fr] gap-8">
+                <div className="space-y-8 min-w-0">
+                  <Heatmap />
+                  <TopStats />
+                  <div className="grid sm:grid-cols-2 gap-8">
+                    <SubjectsList />
+                    <StudyComparison />
+                    <Resources />
+                    <Reminders />
+                  </div>
+                </div>
+                <aside className="space-y-8 min-w-0">
+                  <WeeklyGoal />
+                  <DailyGoal />
+                  <Pomodoro />
+                  <CalendarWidget />
+                  <ExamCountdown />
+                </aside>
+              </div>
+            )}
+
+            {activeTab === 'sessions' && (
+              <div className="grid lg:grid-cols-[1.66fr_0.74fr] gap-8">
+                <div className="space-y-8 min-w-0">
+                  <Heatmap />
+                </div>
+                <aside className="space-y-8 min-w-0">
+                  <WeeklyGoal />
+                  <CalendarWidget />
+                  <DailyGoal />
+                  <Pomodoro />
+                  <ExamCountdown />
+                </aside>
+              </div>
+            )}
+
+            {activeTab === 'insights' && (
+              <div className="space-y-8">
+                <InsightsPanel />
+                <AnalyticsDashboard />
+                <div className="flex items-center gap-4 py-4">
+                  <ExportReport />
+                </div>
+              </div>
+            )}
+          </motion.div>
+        </AnimatePresence>
+      </main>
     </div>
   );
 };
