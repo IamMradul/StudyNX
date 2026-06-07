@@ -5,7 +5,7 @@ import { toDateKey } from '../lib/studyLogic';
 import { motion, AnimatePresence } from 'framer-motion';
 // @ts-ignore
 import confetti from 'canvas-confetti';
-import { cn } from '../lib/utils';
+import { cn, scrollOnHover } from '../lib/utils';
 import { fadeUp, staggerContainer, scaleIn } from '../lib/animations';
 
 const TiltCard = ({ children, className, onClick }: { children: React.ReactNode, className?: string, onClick?: () => void }) => {
@@ -182,13 +182,15 @@ const SubjectsList: React.FC = () => {
 
   return (
     <>
-      <motion.div variants={fadeUp} className="bg-white/[0.02] border border-white/10 backdrop-blur-xl rounded-3xl p-6 lg:p-8 shadow-card flex flex-col gap-6 overflow-hidden h-[400px]">
-        <div className="flex flex-col gap-2 border-b border-white/10 pb-6 shrink-0">
-          <h2 className="text-xl font-display font-semibold text-white">Track Subjects</h2>
-          <p className="text-sm text-slate-400">Keep targets, progress, and history in one place.</p>
+      <motion.div variants={fadeUp} className="bg-white/[0.02] border border-white/10 backdrop-blur-xl rounded-3xl p-6 lg:p-8 h-[500px] flex flex-col">
+        <div className="flex items-center justify-between mb-6 shrink-0">
+          <div>
+            <h2 className="text-2xl font-display font-bold text-white tracking-wide">Track Subjects</h2>
+            <p className="text-slate-400 text-sm mt-1">Keep targets, progress, and history in one place.</p>
+          </div>
         </div>
 
-        <div className="flex flex-col sm:flex-row gap-3">
+        <div className="flex flex-col sm:flex-row gap-3 mb-6">
           <input
             type="text"
             className="flex-1 min-w-[50px] w-full bg-black/20 border border-white/10 rounded-xl px-4 py-2 text-sm text-slate-200 placeholder:text-slate-500 focus:outline-none focus:border-neon-cyan focus:ring-1 focus:ring-neon-cyan transition-all"
@@ -222,12 +224,12 @@ const SubjectsList: React.FC = () => {
           </div>
         )}
 
-        <motion.div variants={staggerContainer} initial="initial" animate="animate" className="grid grid-cols-1 gap-4 flex-1 overflow-y-auto pr-2 min-h-0">
+        <motion.div variants={staggerContainer} initial="initial" animate="animate" onWheel={scrollOnHover} className="flex flex-col gap-4 flex-1 overflow-y-auto scrollbar-hide hover-scrollbar min-h-0">
           {data.subjects.map(subject => (
             <TiltCard 
               key={subject.id} 
               onClick={() => setSelectedSubjectId(subject.id)}
-              className="group cursor-pointer relative bg-white/[0.03] hover:bg-white/[0.05] border border-white/10 rounded-2xl p-5 transition-colors overflow-hidden"
+              className="group cursor-pointer relative bg-white/[0.03] hover:bg-white/[0.05] border border-white/10 rounded-2xl p-5 transition-colors overflow-hidden shrink-0"
             >
               <div 
                 className="absolute top-0 left-0 bottom-0 w-1 opacity-50"

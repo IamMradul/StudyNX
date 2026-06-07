@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useData } from '../context/DataContext';
 import { toDateKey } from '../lib/studyLogic';
+import { scrollOnHover } from '../lib/utils';
 import './Widgets.css';
 import './Phase8Widgets.css';
 
@@ -65,17 +66,19 @@ export const Resources: React.FC = () => {
         </div>
       )}
 
-      <div className="resources-list flex-1 overflow-y-auto pr-2 space-y-3">
+      <div className="resources-list flex-1 overflow-y-auto scrollbar-hide hover-scrollbar min-h-0 space-y-3" onWheel={scrollOnHover}>
         {data.resources.map(res => (
-          <div key={res.id} className="resource-item">
-            <span className="resource-dot" style={{ backgroundColor: res.color }} />
-            <span className="resource-title">{res.title}</span>
-            <span className="resource-tag">{res.tag}</span>
-            <div className="subject-actions">
-              <button type="button" className="widget-btn mini" aria-label={`Move ${res.title} up`} onClick={() => moveResource(res.id, -1)}>↑</button>
-              <button type="button" className="widget-btn mini" aria-label={`Move ${res.title} down`} onClick={() => moveResource(res.id, 1)}>↓</button>
-              <button type="button" className="widget-btn mini" aria-label={`Edit ${res.title}`} onClick={() => editResource(res.id)}>edit</button>
-              <button type="button" className="widget-btn mini danger" aria-label={`Delete ${res.title}`} onClick={() => deleteResource(res.id)}>del</button>
+          <div key={res.id} className="resource-item shrink-0 group relative bg-white/[0.03] hover:bg-white/[0.05] border border-white/10 rounded-2xl p-4 transition-colors flex items-center gap-3">
+            <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: res.color }} />
+            <div className="flex-1 min-w-0 pr-2">
+              <span className="text-sm font-medium text-slate-200 block break-words whitespace-normal">{res.title}</span>
+              {res.tag && <span className="text-xs text-slate-500 block break-all whitespace-normal mt-0.5">{res.tag}</span>}
+            </div>
+            <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
+              <button type="button" className="w-7 h-7 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-400 hover:text-white transition-colors" aria-label={`Move up`} onClick={() => moveResource(res.id, -1)}>↑</button>
+              <button type="button" className="w-7 h-7 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-400 hover:text-white transition-colors" aria-label={`Move down`} onClick={() => moveResource(res.id, 1)}>↓</button>
+              <button type="button" className="w-7 h-7 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-400 hover:text-white transition-colors text-xs font-bold" onClick={() => editResource(res.id)}>EDIT</button>
+              <button type="button" className="w-7 h-7 rounded-lg bg-white/5 hover:bg-red-500/20 flex items-center justify-center text-slate-400 hover:text-red-400 transition-colors text-xs font-bold" onClick={() => deleteResource(res.id)}>DEL</button>
             </div>
           </div>
         ))}
@@ -130,16 +133,16 @@ export const ToDoList: React.FC = () => {
         </div>
       )}
 
-      <div className="reminders-list flex-1 overflow-y-auto pr-2 space-y-3">
+      <div className="reminders-list flex-1 overflow-y-auto scrollbar-hide hover-scrollbar min-h-0 space-y-3" onWheel={scrollOnHover}>
         {data.todos.map(todo => (
-          <div key={todo.id} className="flex items-center gap-3 bg-white/[0.02] border border-white/10 p-3 rounded-xl transition-colors hover:bg-white/[0.04]">
+          <div key={todo.id} className="shrink-0 flex items-center gap-3 bg-white/[0.02] border border-white/10 p-3 rounded-xl transition-colors hover:bg-white/[0.04]">
             <input 
               type="checkbox" 
               checked={todo.completed} 
               onChange={() => toggleTodo(todo.id)}
               className="w-4 h-4 rounded border-white/20 bg-black/20 text-electric-violet focus:ring-electric-violet cursor-pointer shrink-0"
             />
-            <span className={todo.completed ? 'line-through text-slate-500 flex-1 text-sm' : 'text-slate-200 flex-1 text-sm'}>
+            <span className={todo.completed ? 'line-through text-slate-500 flex-1 text-sm break-words whitespace-normal' : 'text-slate-200 flex-1 text-sm break-words whitespace-normal'}>
               {todo.text}
             </span>
             <button type="button" className="text-slate-500 hover:text-red-400 transition-colors shrink-0 px-2" aria-label="Delete" onClick={() => deleteTodo(todo.id)}>
