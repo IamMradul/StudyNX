@@ -1,5 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 @import "tailwindcss";
+@config "../tailwind.config.ts";
+
+@theme {
+  --color-void: #050508;
+  --color-electric-violet: #7C3AED;
+  --color-neon-cyan: #06B6D4;
+  --color-neon-indigo: #4F46E5;
+}
 
 /* ─── Dark theme (default) ───────────────────────────────────────── */
 :root {
@@ -29,7 +37,7 @@
   --accent-green: #10b981;
   --accent-red: #ef4444;
   --accent-violet: #7c3aed;
-  
+
   --selection-bg: rgba(124, 58, 237, 0.3);
   --selection-text: #ffffff;
 
@@ -57,43 +65,51 @@
 }
 
 /* ─── Light theme ────────────────────────────────────────────────── */
-[data-theme="light"] {
-  /* Enforce premium dark aesthetic */
-  --bg-primary: #050508;
-  --bg-secondary: rgba(255, 255, 255, 0.02);
-  --bg-card: rgba(255, 255, 255, 0.03);
-  --bg-card-solid: #0f0f13;
-  --bg-input: rgba(255, 255, 255, 0.03);
-  --bg-nav: rgba(255, 255, 255, 0.02);
+html[data-theme="light"] {
+  /* Override custom theme variables */
+  --bg-primary: #f8fafc;
+  --bg-secondary: rgba(0, 0, 0, 0.02);
+  --bg-card: rgba(255, 255, 255, 0.7);
+  --bg-card-solid: #ffffff;
+  --bg-input: rgba(0, 0, 0, 0.03);
+  --bg-nav: rgba(255, 255, 255, 0.8);
 
-  --text-main: #f8fafc;
-  --text-muted: #94a3b8;
-  --text-heading: #ffffff;
-  --text-inverse: #050508;
-  --text-label: #cbd5e1;
+  --text-main: #0f172a;
+  --text-muted: #64748b;
+  --text-heading: #020617;
+  --text-inverse: #f8fafc;
+  --text-label: #475569;
 
-  --accent-blue: #4f46e5;
-  --accent-cyan: #06b6d4;
-  --accent-teal: #10b981;
-  --accent-green: #10b981;
-  --accent-red: #ef4444;
-  --accent-violet: #7c3aed;
+  --border-color: rgba(0, 0, 0, 0.06);
+  --border-soft: rgba(0, 0, 0, 0.03);
+
+  --shadow-card: 0 12px 30px rgba(0, 0, 0, 0.04);
+  --shadow-glow: 0 0 0 1px rgba(0, 0, 0, 0.03) inset;
+
+  --skeleton-base: rgba(0, 0, 0, 0.04);
+  --skeleton-shine: rgba(0, 0, 0, 0.08);
+
+  --chart-grid: rgba(0, 0, 0, 0.05);
+  --chart-label: #64748b;
+  --bg-ring-track: rgba(0, 0, 0, 0.05);
+
+  /* Override Tailwind v4 default color variables used in hardcoded classes */
+  --color-white: #0f172a;     /* text-white becomes dark slate */
+  --color-black: #ffffff;     /* bg-black becomes white */
   
-  --selection-bg: rgba(124, 58, 237, 0.3);
-  --selection-text: #ffffff;
+  --color-slate-100: #1e293b; /* Re-map slate scales for light mode */
+  --color-slate-200: #334155;
+  --color-slate-300: #475569;
+  --color-slate-400: #64748b;
+  --color-slate-500: #94a3b8;
+  
+  --color-void: #f8fafc;      /* Background3D uses bg-void */
+}
 
-  --border-color: rgba(255, 255, 255, 0.08);
-  --border-soft: rgba(255, 255, 255, 0.04);
-
-  --shadow-card: 0 18px 36px rgba(0, 0, 0, 0.4);
-  --shadow-glow: 0 0 0 1px rgba(255, 255, 255, 0.04) inset;
-
-  --skeleton-base: rgba(255, 255, 255, 0.04);
-  --skeleton-shine: rgba(255, 255, 255, 0.08);
-
-  --chart-grid: rgba(255, 255, 255, 0.05);
-  --chart-label: #94a3b8;
-  --bg-ring-track: rgba(255, 255, 255, 0.1);
+/* Remove inverted image filters */
+html[data-theme="light"] img,
+html[data-theme="light"] video {
+  filter: none;
 }
 
 /* ─── Global transitions for theme switching ─────────────────────── */
@@ -107,6 +123,21 @@
     border-color 0.3s ease,
     color 0.3s ease,
     box-shadow 0.3s ease;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
 }
 
 /* Opt-out for elements that shouldn't animate */
@@ -129,6 +160,7 @@
 }
 
 @keyframes soft-float {
+
   0%,
   100% {
     transform: translateY(0);
@@ -152,6 +184,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+
   *,
   *::before,
   *::after {

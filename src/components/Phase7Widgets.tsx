@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import toast from 'react-hot-toast';
 import { useData } from '../context/DataContext';
 import { toDateKey } from '../lib/studyLogic';
 import './Widgets.css';
@@ -292,6 +293,23 @@ export const ExamCountdown: React.FC = () => {
     })
     .sort((a, b) => a.days - b.days);
 
+  const hasAlertedRef = useRef(false);
+
+  useEffect(() => {
+    if (hasAlertedRef.current) return;
+    hasAlertedRef.current = true;
+    
+    const tomorrowExams = exams.filter(e => e.days === 1);
+    if (tomorrowExams.length > 0) {
+      tomorrowExams.forEach(exam => {
+        toast(`Reminder: Your exam "${exam.title}" is tomorrow!`, {
+          icon: '📅',
+          duration: 6000,
+        });
+      });
+    }
+  }, [exams]);
+
   const addExam = () => {
     if (!title.trim() || !date) return;
     const palette = ['#ff6c78', '#35d6b5', '#5f8dff', '#ffba5f'];
@@ -330,11 +348,11 @@ export const ExamCountdown: React.FC = () => {
   };
 
   return (
-    <div className="card widget-card">
-      <div className="card-title">Exam Countdown</div>
+    <div className="card widget-card flex flex-col h-[400px]">
+      <div className="card-title shrink-0">Exam Countdown</div>
 
       {exams.length === 0 && (
-        <div className="empty-state">
+        <div className="empty-state shrink-0">
           <svg width="48" height="48" viewBox="0 0 48 48" fill="none" aria-hidden="true">
             <rect x="8" y="6" width="32" height="36" rx="4" stroke="currentColor" strokeWidth="2" />
             <path d="M16 16h16M16 22h16M16 28h10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
@@ -343,7 +361,7 @@ export const ExamCountdown: React.FC = () => {
         </div>
       )}
 
-      <div className="exam-list">
+      <div className="exam-list flex-1 overflow-y-auto pr-2">
         {exams.map(exam => (
           <div key={exam.id} className="exam-item" title={exam.date}>
             <div className="exam-days" style={{ color: exam.days < 10 ? '#ef4444' : 'var(--text-heading)' }}>
@@ -366,7 +384,7 @@ export const ExamCountdown: React.FC = () => {
         ))}
       </div>
 
-      <div className="add-reminder-row exam-add-row" style={{ marginTop: '12px' }}>
+      <div className="add-reminder-row exam-add-row shrink-0 mt-4">
         <input type="text" placeholder="exam title" className="add-reminder-input exam-add-title" value={title} onChange={e => setTitle(e.target.value)} />
         <input type="date" className="add-reminder-input exam-add-date" value={date} onChange={e => setDate(e.target.value)} />
         <button type="button" className="widget-btn exam-add-btn" aria-label="Add exam" onClick={addExam}>+</button>

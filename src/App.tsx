@@ -84,7 +84,7 @@ function App() {
   }
 
   return (
-    <div className="app-shell relative text-slate-100 font-sans">
+    <div className="app-shell relative z-0 text-slate-100 font-sans">
       <Background3D />
       <Toaster position="top-right" toastOptions={{
         style: {
@@ -101,7 +101,7 @@ function App() {
           initial="initial"
           animate="animate"
           exit="exit"
-          className="app-view relative z-10"
+          className="app-view relative z-10 pb-16"
         >
           {content}
         </motion.div>

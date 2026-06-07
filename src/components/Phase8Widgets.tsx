@@ -50,8 +50,8 @@ export const Resources: React.FC = () => {
   };
 
   return (
-    <div className="card widget-card resources-card">
-      <div className="card-title">Quick resources</div>
+    <div className="card widget-card resources-card flex flex-col h-[400px]">
+      <div className="card-title shrink-0">Quick resources</div>
 
       {data.resources.length === 0 && (
         <div className="empty-state">
@@ -65,7 +65,7 @@ export const Resources: React.FC = () => {
         </div>
       )}
 
-      <div className="resources-list">
+      <div className="resources-list flex-1 overflow-y-auto pr-2 space-y-3">
         {data.resources.map(res => (
           <div key={res.id} className="resource-item">
             <span className="resource-dot" style={{ backgroundColor: res.color }} />
@@ -79,95 +79,85 @@ export const Resources: React.FC = () => {
             </div>
           </div>
         ))}
-        <div className="add-reminder-row">
+        <div className="add-reminder-row shrink-0 mt-4">
           <input type="text" placeholder="resource title" className="add-reminder-input" value={title} onChange={e => setTitle(e.target.value)} />
           <input type="text" placeholder="tag" className="add-reminder-input" value={tag} onChange={e => setTag(e.target.value)} />
         </div>
-        <button type="button" className="add-resource-btn" onClick={addResource}>+ add resource</button>
+        <button type="button" className="widget-btn shrink-0 mt-3" onClick={addResource}>+ add resource</button>
       </div>
     </div>
   );
 };
 
-export const Reminders: React.FC = () => {
+export const ToDoList: React.FC = () => {
   const { data, updateData } = useData();
-  const [newReminder, setNewReminder] = useState('');
+  const [newTodo, setNewTodo] = useState('');
 
-  const addReminder = () => {
-    const description = newReminder.trim();
-    if (!description) return;
+  const addTodo = () => {
+    const text = newTodo.trim();
+    if (!text) return;
     updateData({
-      reminders: [{
+      todos: [{
         id: crypto.randomUUID(),
-        title: 'Custom reminder',
-        description,
-        timeStr: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        type: 'info',
-      }, ...data.reminders],
+        text,
+        completed: false,
+      }, ...data.todos],
     });
-    setNewReminder('');
+    setNewTodo('');
   };
 
-  const editReminder = (reminderId: string) => {
-    const reminder = data.reminders.find(item => item.id === reminderId);
-    if (!reminder) return;
-    const nextTitle = window.prompt('Edit reminder title', reminder.title)?.trim();
-    if (!nextTitle) return;
-    const nextDescription = window.prompt('Edit reminder description', reminder.description)?.trim();
-    if (!nextDescription) return;
+  const toggleTodo = (id: string) => {
     updateData({
-      reminders: data.reminders.map(item =>
-        item.id === reminderId ? { ...item, title: nextTitle, description: nextDescription } : item
+      todos: data.todos.map(item => 
+        item.id === id ? { ...item, completed: !item.completed } : item
       ),
     });
   };
 
-  const deleteReminder = (reminderId: string) =>
-    updateData({ reminders: data.reminders.filter(item => item.id !== reminderId) });
-
-  const moveReminder = (reminderId: string, direction: -1 | 1) => {
-    const idx = data.reminders.findIndex(item => item.id === reminderId);
-    const next = idx + direction;
-    if (idx < 0 || next < 0 || next >= data.reminders.length) return;
-    const arr = [...data.reminders];
-    [arr[idx], arr[next]] = [arr[next], arr[idx]];
-    updateData({ reminders: arr });
-  };
+  const deleteTodo = (id: string) =>
+    updateData({ todos: data.todos.filter(item => item.id !== id) });
 
   return (
-    <div className="card widget-card reminders-card">
-      <div className="card-title">Reminders</div>
+    <div className="card widget-card reminders-card flex flex-col h-[400px]">
+      <div className="card-title shrink-0">To-Do List</div>
 
-      {data.reminders.length === 0 && (
-        <div className="empty-state">
+      {data.todos.length === 0 && (
+        <div className="empty-state shrink-0">
           <svg width="40" height="40" viewBox="0 0 40 40" fill="none" aria-hidden="true">
-            <path d="M20 6a10 10 0 0 1 10 10v6l3 4H7l3-4v-6A10 10 0 0 1 20 6z" stroke="currentColor" strokeWidth="1.5"/>
-            <path d="M17 30a3 3 0 0 0 6 0" stroke="currentColor" strokeWidth="1.5"/>
+            <path d="M9 11l3 3L22 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
-          <p>No reminders set yet.</p>
+          <p>No tasks yet. Add one below!</p>
         </div>
       )}
 
-      <div className="reminders-list">
-        {data.reminders.map(rem => (
-          <div key={rem.id} className={`reminder-item type-${rem.type}`}>
-            <div className="reminder-header">
-              <span className="reminder-title">{rem.title}</span>
-              <span className="reminder-time">{rem.timeStr}</span>
-            </div>
-            <div className="reminder-desc">{rem.description}</div>
-            <div className="reminder-actions">
-              <button type="button" className="widget-btn mini" aria-label={`Move ${rem.title} up`} onClick={() => moveReminder(rem.id, -1)}>↑</button>
-              <button type="button" className="widget-btn mini" aria-label={`Move ${rem.title} down`} onClick={() => moveReminder(rem.id, 1)}>↓</button>
-              <button type="button" className="widget-btn mini" aria-label={`Edit ${rem.title}`} onClick={() => editReminder(rem.id)}>edit</button>
-              <button type="button" className="widget-btn mini danger" aria-label={`Delete ${rem.title}`} onClick={() => deleteReminder(rem.id)}>del</button>
-            </div>
+      <div className="reminders-list flex-1 overflow-y-auto pr-2 space-y-3">
+        {data.todos.map(todo => (
+          <div key={todo.id} className="flex items-center gap-3 bg-white/[0.02] border border-white/10 p-3 rounded-xl transition-colors hover:bg-white/[0.04]">
+            <input 
+              type="checkbox" 
+              checked={todo.completed} 
+              onChange={() => toggleTodo(todo.id)}
+              className="w-4 h-4 rounded border-white/20 bg-black/20 text-electric-violet focus:ring-electric-violet cursor-pointer shrink-0"
+            />
+            <span className={todo.completed ? 'line-through text-slate-500 flex-1 text-sm' : 'text-slate-200 flex-1 text-sm'}>
+              {todo.text}
+            </span>
+            <button type="button" className="text-slate-500 hover:text-red-400 transition-colors shrink-0 px-2" aria-label="Delete" onClick={() => deleteTodo(todo.id)}>
+              ✕
+            </button>
           </div>
         ))}
       </div>
-      <div className="add-reminder-row">
-        <input type="text" placeholder="add a reminder..." className="add-reminder-input" value={newReminder} onChange={e => setNewReminder(e.target.value)} />
-        <button type="button" className="widget-btn add-btn" aria-label="Add reminder" onClick={addReminder}>+</button>
+      <div className="add-reminder-row shrink-0 mt-4">
+        <input 
+          type="text" 
+          placeholder="Add a new task..." 
+          className="add-reminder-input" 
+          value={newTodo} 
+          onChange={e => setNewTodo(e.target.value)} 
+          onKeyDown={e => e.key === 'Enter' && addTodo()}
+        />
+        <button type="button" className="widget-btn add-btn" aria-label="Add task" onClick={addTodo}>+</button>
       </div>
     </div>
   );

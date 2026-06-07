@@ -18,12 +18,10 @@ export interface Subject {
   dailyHours: Record<string, number>; // date "YYYY-MM-DD" -> hours for this subject
 }
 
-export interface Reminder {
+export interface Todo {
   id: string;
-  title: string;
-  description: string;
-  timeStr: string;
-  type: 'warning' | 'info' | 'success';
+  text: string;
+  completed: boolean;
 }
 
 export interface ResourceItem {
@@ -61,7 +59,7 @@ export interface AppData {
   subjects: Subject[];
   activityData: Record<string, number>; // date "YYYY-MM-DD" -> hours
   activityDataMode: 'hours';
-  reminders: Reminder[];
+  todos: Todo[];
   resources: ResourceItem[];
   exams: ExamItem[];
   weeklyTargetHours: number;
@@ -70,7 +68,7 @@ export interface AppData {
   sessionLogs: SessionLog[];
 }
 
-type ProgressPayload = Pick<AppData, 'subjects' | 'activityData' | 'activityDataMode' | 'reminders' | 'resources' | 'exams' | 'weeklyTargetHours' | 'dailyTargetHours' | 'pomodoroSettings' | 'sessionLogs'>;
+type ProgressPayload = Pick<AppData, 'subjects' | 'activityData' | 'activityDataMode' | 'todos' | 'resources' | 'exams' | 'weeklyTargetHours' | 'dailyTargetHours' | 'pomodoroSettings' | 'sessionLogs'>;
 
 const isRecord = (value: unknown): value is Record<string, unknown> => (
   Boolean(value) && typeof value === 'object' && !Array.isArray(value)
@@ -82,7 +80,7 @@ const defaultData: AppData = {
   subjects: [],
   activityData: {},
   activityDataMode: 'hours',
-  reminders: [],
+  todos: [],
   resources: [],
   exams: [],
   weeklyTargetHours: 40,
@@ -134,7 +132,7 @@ const toProgressPayload = (state: AppData): ProgressPayload => ({
   subjects: state.subjects,
   activityData: state.activityData,
   activityDataMode: state.activityDataMode,
-  reminders: state.reminders,
+  todos: state.todos,
   resources: state.resources,
   exams: state.exams,
   weeklyTargetHours: state.weeklyTargetHours,
@@ -152,7 +150,7 @@ const sanitizeProgressPayload = (rawPayload: unknown): Partial<ProgressPayload> 
       ? (payload.activityData as Record<string, number>)
       : undefined,
     activityDataMode: payload.activityDataMode === 'hours' ? 'hours' : undefined,
-    reminders: Array.isArray(payload.reminders) ? payload.reminders : undefined,
+    todos: Array.isArray(payload.todos) ? payload.todos : undefined,
     resources: Array.isArray(payload.resources) ? payload.resources : undefined,
     exams: Array.isArray(payload.exams) ? payload.exams : undefined,
     weeklyTargetHours: typeof payload.weeklyTargetHours === 'number' ? payload.weeklyTargetHours : undefined,
@@ -241,7 +239,7 @@ const normalizeAppData = (rawData: unknown): AppData => {
     subjects: normalizeSubjects(candidate.subjects),
     activityData: normalizeActivityData(candidate.activityData, candidate.activityDataMode),
     activityDataMode: 'hours',
-    reminders: Array.isArray(candidate.reminders) ? candidate.reminders as Reminder[] : defaultData.reminders,
+    todos: Array.isArray(candidate.todos) ? candidate.todos as Todo[] : defaultData.todos,
     resources: Array.isArray(candidate.resources) ? candidate.resources as ResourceItem[] : defaultData.resources,
     exams: Array.isArray(candidate.exams) ? candidate.exams as ExamItem[] : defaultData.exams,
     weeklyTargetHours: typeof candidate.weeklyTargetHours === 'number' ? candidate.weeklyTargetHours : defaultData.weeklyTargetHours,
@@ -317,7 +315,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       } else {
         const savedGoogleSession = readGoogleSession();
         if (savedGoogleSession) {
-          setData(prev => ({ ...prev, isLoggedIn: true, user: { name: savedGoogleSession.name, avatar: savedGoogleSession.avatar } }));
+          setData(prev => ({ ...prev, isLoggedIn: true, user: { name: savedGoogleSession.email, avatar: savedGoogleSession.avatar } }));
           return;
         }
         setData(prev => ({ ...prev, isLoggedIn: false, user: null }));
@@ -363,7 +361,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           subjects: normalizeSubjects(remotePayload.subjects ?? prev.subjects),
           activityData: normalizeActivityData(remotePayload.activityData ?? prev.activityData, remotePayload.activityDataMode ?? prev.activityDataMode),
           activityDataMode: 'hours',
-          reminders: remotePayload.reminders ?? prev.reminders,
+          todos: remotePayload.todos ?? prev.todos,
           resources: remotePayload.resources ?? prev.resources,
           exams: remotePayload.exams ?? prev.exams,
           weeklyTargetHours: remotePayload.weeklyTargetHours ?? prev.weeklyTargetHours,
@@ -433,7 +431,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       setData(prev => ({
         ...prev,
         isLoggedIn: true,
-        user: { name: displayName, avatar: initials },
+        user: { name: profile.email, avatar: initials },
       }));
       dismissAuthPrompt();
 

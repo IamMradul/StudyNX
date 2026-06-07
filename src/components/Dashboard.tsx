@@ -5,8 +5,9 @@ import TopStats from './TopStats';
 import Heatmap from './Heatmap';
 import SubjectsList from './SubjectsList';
 import StudyComparison from './StudyComparison';
-import { Pomodoro, ExamCountdown, WeeklyGoal } from './Phase7Widgets';
-import { Resources, Reminders, CalendarWidget } from './Phase8Widgets';
+import { ExamCountdown, WeeklyGoal } from './Phase7Widgets';
+import { Resources, ToDoList, CalendarWidget } from './Phase8Widgets';
+import ThemeToggle from './ThemeToggle';
 import InsightsPanel from './InsightsPanel';
 import DailyGoal from './DailyGoal';
 import ExportReport from './ExportReport';
@@ -15,26 +16,20 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { fadeUp } from '../lib/animations';
 import { cn } from '../lib/utils';
 
-type DashboardTab = 'overview' | 'sessions' | 'insights';
+type DashboardTab = 'overview' | 'insights';
 
 const dashboardTabs: Array<{ id: DashboardTab; label: string; description: string; icon: React.ReactNode }> = [
   { 
     id: 'overview', 
     label: 'Overview', 
     description: 'Your main dashboard view',
-    icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
-  },
-  { 
-    id: 'sessions', 
-    label: 'Sessions', 
-    description: 'Focus blocks and study logs',
-    icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+    icon: <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
   },
   { 
     id: 'insights', 
     label: 'Insights', 
     description: 'Trends and export tools',
-    icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
+    icon: <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
   },
 ];
 
@@ -45,9 +40,7 @@ const Dashboard: React.FC = () => {
   React.useEffect(() => {
     const titleSuffix = activeTab === 'overview'
       ? 'Dashboard'
-      : activeTab === 'sessions'
-        ? 'Sessions'
-        : 'Insights';
+      : 'Insights';
 
     document.title = `StudyNX | ${titleSuffix}`;
   }, [activeTab]);
@@ -80,54 +73,62 @@ const Dashboard: React.FC = () => {
   return (
     <div className="flex min-h-screen bg-transparent text-slate-200 font-sans selection:bg-electric-violet/30 selection:text-white">
       {/* Sidebar */}
-      <aside className="hidden lg:flex w-72 flex-col bg-white/[0.02] backdrop-blur-2xl border-r border-white/[0.06] sticky top-0 h-screen overflow-y-auto">
-        <div className="p-8">
-          <a href="/" className="flex items-center gap-2">
-            <span className="font-display font-bold text-2xl tracking-widest uppercase animate-[pulse-glow_4s_infinite]">
-              Study<span className="bg-clip-text text-transparent bg-gradient-to-r from-electric-violet to-neon-cyan">NX</span>
+      <aside className="group hidden lg:flex w-20 hover:w-64 transition-all duration-300 flex-col bg-white/[0.02] backdrop-blur-2xl border-r border-white/[0.06] sticky top-0 h-screen overflow-y-auto overflow-x-hidden z-40 pb-20">
+        <div className="p-6">
+          <a href="/" className="flex items-center gap-2 overflow-hidden">
+            <span className="font-display font-bold text-2xl flex items-center justify-center w-8 shrink-0 text-electric-violet">
+              S
+            </span>
+            <span className="font-display font-bold text-xl tracking-widest uppercase opacity-0 group-hover:opacity-100 whitespace-nowrap transition-opacity duration-300 animate-[pulse-glow_4s_infinite]">
+              tudy<span className="bg-clip-text text-transparent bg-gradient-to-r from-electric-violet to-neon-cyan">NX</span>
             </span>
           </a>
         </div>
         
-        <nav className="flex-1 px-6 space-y-3 mt-4">
+        <nav className="flex-1 px-4 space-y-3 mt-4">
           {dashboardTabs.map(tab => (
             <button 
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               className={cn(
-                "w-full flex items-center gap-4 px-4 py-3 rounded-2xl transition-all relative overflow-hidden group",
+                "w-full flex items-center gap-4 px-4 py-3 rounded-2xl transition-all relative overflow-hidden group/btn",
                 activeTab === tab.id ? "bg-white/[0.06] text-white shadow-glow-violet" : "text-slate-400 hover:bg-white/[0.04] hover:text-white"
               )}
             >
               {activeTab === tab.id && (
                 <motion.div layoutId="sidebar-active" className="absolute left-0 top-1/4 bottom-1/4 w-1 rounded-r-full bg-gradient-to-b from-electric-violet to-neon-cyan" />
               )}
-              <span className={cn("transition-colors", activeTab === tab.id ? "text-neon-cyan" : "group-hover:text-slate-200")}>
+              <span className={cn("transition-colors shrink-0", activeTab === tab.id ? "text-neon-cyan" : "group-hover/btn:text-slate-200")}>
                 {tab.icon}
               </span>
-              <span className="font-medium text-sm tracking-wide">{tab.label}</span>
+              <span className="font-medium text-sm tracking-wide opacity-0 group-hover:opacity-100 whitespace-nowrap transition-opacity duration-300">
+                {tab.label}
+              </span>
             </button>
           ))}
         </nav>
         
-        <div className="p-6 mt-auto border-t border-white/5">
-          <div className="flex items-center gap-4">
+        <div className="p-4 mt-auto border-t border-white/5">
+          <div className="flex items-center gap-4 overflow-hidden mb-4">
             <button 
               onClick={data.isLoggedIn ? logout : () => requestAuthPrompt('Sign in to save your changes.')} 
-              className="relative w-12 h-12 rounded-full bg-electric-violet/10 border border-electric-violet/30 flex items-center justify-center text-electric-violet font-semibold transition-all hover:scale-105 hover:shadow-glow-violet group"
+              className="relative w-10 h-10 shrink-0 rounded-full bg-electric-violet/10 border border-electric-violet/30 flex items-center justify-center text-electric-violet font-semibold transition-all hover:scale-105 hover:shadow-glow-violet group/btn"
             >
               {data.isLoggedIn ? (data.user?.avatar || 'SN') : 'SN'}
               {data.isLoggedIn && (
                 <>
-                  <span className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-400 border-2 border-[#050508] rounded-full z-10" />
-                  <span className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-400 rounded-full animate-ping z-0" />
+                  <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-400 border-2 border-[#050508] rounded-full z-10" />
+                  <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-400 rounded-full animate-ping z-0" />
                 </>
               )}
             </button>
-            <div className="flex flex-col">
+            <div className="flex flex-col opacity-0 group-hover:opacity-100 whitespace-nowrap transition-opacity duration-300">
                <span className="text-sm font-medium text-white">{data.isLoggedIn ? data.user?.name || 'User' : 'Guest'}</span>
                <span className="text-xs text-slate-400">{data.isLoggedIn ? 'Online' : 'Sign in to sync'}</span>
             </div>
+          </div>
+          <div className="flex justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <ThemeToggle />
           </div>
         </div>
       </aside>
@@ -139,19 +140,11 @@ const Dashboard: React.FC = () => {
           <span className="font-display font-bold text-xl tracking-widest uppercase">
             Study<span className="text-neon-cyan">NX</span>
           </span>
-          <div className="flex gap-2">
-            {dashboardTabs.map(tab => (
-              <button 
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={cn(
-                  "px-3 py-1.5 rounded-full text-xs font-medium transition-all",
-                  activeTab === tab.id ? "bg-white/10 text-white" : "text-slate-400 bg-white/5"
-                )}
-              >
-                {tab.label}
-              </button>
-            ))}
+          <div className="flex items-center gap-4">
+            <ThemeToggle />
+            <button onClick={() => requestAuthPrompt()} className="text-sm font-medium text-electric-violet">
+              {data.isLoggedIn ? 'Account' : 'Sign In'}
+            </button>
           </div>
         </div>
 
@@ -159,34 +152,34 @@ const Dashboard: React.FC = () => {
           variants={fadeUp} 
           initial="initial" 
           animate="animate" 
-          className="relative bg-white/[0.02] backdrop-blur-xl border border-white/[0.08] rounded-[2rem] p-8 lg:p-12 mb-10 overflow-hidden shadow-card group hover:border-white/[0.12] transition-colors"
+          className="relative bg-white/[0.02] backdrop-blur-xl border border-white/[0.08] rounded-3xl p-6 lg:p-8 mb-8 overflow-hidden shadow-card group hover:border-white/[0.12] transition-colors"
         >
           {/* Decorative glow inside hero */}
-          <div className="absolute top-0 right-0 w-96 h-96 bg-neon-cyan/10 blur-[100px] rounded-full -translate-y-1/2 translate-x-1/3 group-hover:bg-neon-cyan/20 transition-colors duration-700 pointer-events-none" />
+          <div className="absolute top-0 right-0 w-64 h-64 bg-neon-cyan/10 blur-[80px] rounded-full -translate-y-1/2 translate-x-1/3 group-hover:bg-neon-cyan/20 transition-colors duration-700 pointer-events-none" />
           
-          <div className="relative z-10 grid lg:grid-cols-[1fr_auto] gap-10 lg:gap-20 items-center">
-            <div className="space-y-4">
-              <p className="text-neon-cyan text-xs font-bold tracking-[0.2em] uppercase">Study Tracker</p>
-              <h1 className="text-4xl lg:text-5xl font-display font-bold leading-tight text-white">
+          <div className="relative z-10 grid lg:grid-cols-[1fr_auto] gap-6 lg:gap-10 items-center">
+            <div className="space-y-3">
+              <p className="text-neon-cyan text-[10px] font-bold tracking-[0.2em] uppercase">Study Tracker</p>
+              <h1 className="text-3xl lg:text-4xl font-display font-bold leading-tight text-white">
                 {heroTitle}
               </h1>
-              <p className="text-slate-400 text-base lg:text-lg max-w-2xl leading-relaxed">
+              <p className="text-slate-400 text-sm max-w-xl leading-relaxed">
                 {heroDescription}
               </p>
             </div>
             
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-1 gap-4 lg:gap-6 min-w-[240px]">
-              <div className="bg-white/5 border border-white/10 rounded-2xl p-5 hover:-translate-y-1 hover:border-electric-violet/50 hover:shadow-glow-violet transition-all duration-300">
-                <p className="text-slate-500 text-[0.65rem] font-bold tracking-widest uppercase mb-1">Today</p>
-                <div className="text-3xl font-display font-bold text-white">{todayHours.toFixed(1)}<span className="text-lg text-slate-500 ml-1">h</span></div>
+            <div className="grid grid-cols-3 gap-3 min-w-[200px]">
+              <div className="bg-white/5 border border-white/10 rounded-xl p-4 hover:-translate-y-1 hover:border-electric-violet/50 hover:shadow-glow-violet transition-all duration-300">
+                <p className="text-slate-500 text-[10px] font-bold tracking-widest uppercase mb-1">Today</p>
+                <div className="text-2xl font-display font-bold text-white">{todayHours.toFixed(1)}<span className="text-sm text-slate-500 ml-1">h</span></div>
               </div>
-              <div className="bg-white/5 border border-white/10 rounded-2xl p-5 hover:-translate-y-1 hover:border-neon-cyan/50 hover:shadow-glow-cyan transition-all duration-300">
-                <p className="text-slate-500 text-[0.65rem] font-bold tracking-widest uppercase mb-1">Weekly</p>
-                <div className="text-3xl font-display font-bold text-white">{weeklyProgress}<span className="text-lg text-slate-500 ml-1">%</span></div>
+              <div className="bg-white/5 border border-white/10 rounded-xl p-4 hover:-translate-y-1 hover:border-neon-cyan/50 hover:shadow-glow-cyan transition-all duration-300">
+                <p className="text-slate-500 text-[10px] font-bold tracking-widest uppercase mb-1">Weekly</p>
+                <div className="text-2xl font-display font-bold text-white">{weeklyProgress}<span className="text-sm text-slate-500 ml-1">%</span></div>
               </div>
-              <div className="bg-white/5 border border-white/10 rounded-2xl p-5 hover:-translate-y-1 hover:border-emerald-500/50 hover:shadow-glow-emerald transition-all duration-300">
-                <p className="text-slate-500 text-[0.65rem] font-bold tracking-widest uppercase mb-1">Streak</p>
-                <div className="text-3xl font-display font-bold text-white">{currentStreak}<span className="text-lg text-slate-500 ml-1">d</span></div>
+              <div className="bg-white/5 border border-white/10 rounded-xl p-4 hover:-translate-y-1 hover:border-emerald-500/50 hover:shadow-glow-emerald transition-all duration-300">
+                <p className="text-slate-500 text-[10px] font-bold tracking-widest uppercase mb-1">Streak</p>
+                <div className="text-2xl font-display font-bold text-white">{currentStreak}<span className="text-sm text-slate-500 ml-1">d</span></div>
               </div>
             </div>
           </div>
@@ -209,33 +202,19 @@ const Dashboard: React.FC = () => {
                     <SubjectsList />
                     <StudyComparison />
                     <Resources />
-                    <Reminders />
+                    <ToDoList />
                   </div>
                 </div>
                 <aside className="space-y-8 min-w-0">
                   <WeeklyGoal />
                   <DailyGoal />
-                  <Pomodoro />
                   <CalendarWidget />
                   <ExamCountdown />
                 </aside>
               </div>
             )}
 
-            {activeTab === 'sessions' && (
-              <div className="grid lg:grid-cols-[1.66fr_0.74fr] gap-8">
-                <div className="space-y-8 min-w-0">
-                  <Heatmap />
-                </div>
-                <aside className="space-y-8 min-w-0">
-                  <WeeklyGoal />
-                  <CalendarWidget />
-                  <DailyGoal />
-                  <Pomodoro />
-                  <ExamCountdown />
-                </aside>
-              </div>
-            )}
+
 
             {activeTab === 'insights' && (
               <div className="space-y-8">

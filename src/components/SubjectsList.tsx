@@ -182,8 +182,8 @@ const SubjectsList: React.FC = () => {
 
   return (
     <>
-      <motion.div variants={fadeUp} className="bg-white/[0.02] border border-white/10 backdrop-blur-xl rounded-3xl p-8 shadow-card flex flex-col gap-6">
-        <div className="flex flex-col gap-2 border-b border-white/10 pb-6">
+      <motion.div variants={fadeUp} className="bg-white/[0.02] border border-white/10 backdrop-blur-xl rounded-3xl p-6 lg:p-8 shadow-card flex flex-col gap-6 overflow-hidden h-[400px]">
+        <div className="flex flex-col gap-2 border-b border-white/10 pb-6 shrink-0">
           <h2 className="text-xl font-display font-semibold text-white">Track Subjects</h2>
           <p className="text-sm text-slate-400">Keep targets, progress, and history in one place.</p>
         </div>
@@ -191,7 +191,7 @@ const SubjectsList: React.FC = () => {
         <div className="flex flex-col sm:flex-row gap-3">
           <input
             type="text"
-            className="flex-1 bg-black/20 border border-white/10 rounded-xl px-4 py-2 text-sm text-slate-200 placeholder:text-slate-500 focus:outline-none focus:border-neon-cyan focus:ring-1 focus:ring-neon-cyan transition-all"
+            className="flex-1 min-w-[50px] w-full bg-black/20 border border-white/10 rounded-xl px-4 py-2 text-sm text-slate-200 placeholder:text-slate-500 focus:outline-none focus:border-neon-cyan focus:ring-1 focus:ring-neon-cyan transition-all"
             placeholder="Add subject..."
             value={newSubjectName}
             onChange={(e) => setNewSubjectName(e.target.value)}
@@ -222,7 +222,7 @@ const SubjectsList: React.FC = () => {
           </div>
         )}
 
-        <motion.div variants={staggerContainer} initial="initial" animate="animate" className="grid grid-cols-1 gap-4">
+        <motion.div variants={staggerContainer} initial="initial" animate="animate" className="grid grid-cols-1 gap-4 flex-1 overflow-y-auto pr-2 min-h-0">
           {data.subjects.map(subject => (
             <TiltCard 
               key={subject.id} 

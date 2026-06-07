@@ -73,8 +73,8 @@ const StudyComparison: React.FC = () => {
   const currentData = dataMap[timeframe];
 
   return (
-    <div className="card comparison-container">
-      <div className="card-title">STUDY HOURS — COMPARISON</div>
+    <div className="card comparison-container flex flex-col h-[400px]">
+      <div className="card-title shrink-0">STUDY HOURS — COMPARISON</div>
       
       <div className="toggle-group">
         <button 
@@ -100,7 +100,7 @@ const StudyComparison: React.FC = () => {
         </button>
       </div>
 
-      <div className="bars-container">
+      <div className="bars-container flex-1 overflow-y-auto pr-2">
         {currentData.map((item, index) => {
           const widthPercent = (item.value / item.max) * 100;
           return (
