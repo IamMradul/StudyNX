@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
+﻿import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 import type { ReactNode } from 'react';
 import { isSupabaseConfigured, supabase } from '../lib/supabase';
 import type { Session } from '@supabase/supabase-js';
@@ -18,10 +18,12 @@ export interface Subject {
   dailyHours: Record<string, number>; // date "YYYY-MM-DD" -> hours for this subject
 }
 
-export interface Todo {
+export interface Reminder {
   id: string;
-  text: string;
-  completed: boolean;
+  title: string;
+  description: string;
+  timeStr: string;
+  type: 'warning' | 'info' | 'success';
 }
 
 export interface ResourceItem {
@@ -59,7 +61,7 @@ export interface AppData {
   subjects: Subject[];
   activityData: Record<string, number>; // date "YYYY-MM-DD" -> hours
   activityDataMode: 'hours';
-  todos: Todo[];
+  reminders: Reminder[];
   resources: ResourceItem[];
   exams: ExamItem[];
   weeklyTargetHours: number;
@@ -68,7 +70,7 @@ export interface AppData {
   sessionLogs: SessionLog[];
 }
 
-type ProgressPayload = Pick<AppData, 'subjects' | 'activityData' | 'activityDataMode' | 'todos' | 'resources' | 'exams' | 'weeklyTargetHours' | 'dailyTargetHours' | 'pomodoroSettings' | 'sessionLogs'>;
+type ProgressPayload = Pick<AppData, 'subjects' | 'activityData' | 'activityDataMode' | 'reminders' | 'resources' | 'exams' | 'weeklyTargetHours' | 'dailyTargetHours' | 'pomodoroSettings' | 'sessionLogs'>;
 
 const isRecord = (value: unknown): value is Record<string, unknown> => (
   Boolean(value) && typeof value === 'object' && !Array.isArray(value)
@@ -80,7 +82,7 @@ const defaultData: AppData = {
   subjects: [],
   activityData: {},
   activityDataMode: 'hours',
-  todos: [],
+  reminders: [],
   resources: [],
   exams: [],
   weeklyTargetHours: 40,
@@ -132,7 +134,7 @@ const toProgressPayload = (state: AppData): ProgressPayload => ({
   subjects: state.subjects,
   activityData: state.activityData,
   activityDataMode: state.activityDataMode,
-  todos: state.todos,
+  reminders: state.reminders,
   resources: state.resources,
   exams: state.exams,
   weeklyTargetHours: state.weeklyTargetHours,
@@ -143,27 +145,14 @@ const toProgressPayload = (state: AppData): ProgressPayload => ({
 
 const sanitizeProgressPayload = (rawPayload: unknown): Partial<ProgressPayload> => {
   if (!rawPayload || typeof rawPayload !== 'object') return {};
-  const payload = rawPayload as Partial<ProgressPayload> & { reminders?: unknown[] };
-  
-  // Migrate legacy reminders to todos if todos is empty
-  let migratedTodos: Todo[] | undefined = undefined;
-  if (Array.isArray(payload.todos)) {
-    migratedTodos = payload.todos;
-  } else if (Array.isArray(payload.reminders)) {
-    migratedTodos = payload.reminders.map((r: any) => ({
-      id: r.id || crypto.randomUUID(),
-      text: r.title || r.description || 'Legacy Reminder',
-      completed: false
-    }));
-  }
-
+  const payload = rawPayload as Partial<ProgressPayload>;
   return {
     subjects: Array.isArray(payload.subjects) ? payload.subjects : undefined,
     activityData: payload.activityData && typeof payload.activityData === 'object'
       ? (payload.activityData as Record<string, number>)
       : undefined,
     activityDataMode: payload.activityDataMode === 'hours' ? 'hours' : undefined,
-    todos: migratedTodos,
+    reminders: Array.isArray(payload.reminders) ? payload.reminders : undefined,
     resources: Array.isArray(payload.resources) ? payload.resources : undefined,
     exams: Array.isArray(payload.exams) ? payload.exams : undefined,
     weeklyTargetHours: typeof payload.weeklyTargetHours === 'number' ? payload.weeklyTargetHours : undefined,
@@ -252,7 +241,7 @@ const normalizeAppData = (rawData: unknown): AppData => {
     subjects: normalizeSubjects(candidate.subjects),
     activityData: normalizeActivityData(candidate.activityData, candidate.activityDataMode),
     activityDataMode: 'hours',
-    todos: Array.isArray(candidate.todos) ? candidate.todos as Todo[] : defaultData.todos,
+    reminders: Array.isArray(candidate.reminders) ? candidate.reminders as Reminder[] : defaultData.reminders,
     resources: Array.isArray(candidate.resources) ? candidate.resources as ResourceItem[] : defaultData.resources,
     exams: Array.isArray(candidate.exams) ? candidate.exams as ExamItem[] : defaultData.exams,
     weeklyTargetHours: typeof candidate.weeklyTargetHours === 'number' ? candidate.weeklyTargetHours : defaultData.weeklyTargetHours,
@@ -328,7 +317,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       } else {
         const savedGoogleSession = readGoogleSession();
         if (savedGoogleSession) {
-          setData(prev => ({ ...prev, isLoggedIn: true, user: { name: savedGoogleSession.email, avatar: savedGoogleSession.avatar } }));
+          setData(prev => ({ ...prev, isLoggedIn: true, user: { name: savedGoogleSession.name, avatar: savedGoogleSession.avatar } }));
           return;
         }
         setData(prev => ({ ...prev, isLoggedIn: false, user: null }));
@@ -374,7 +363,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           subjects: normalizeSubjects(remotePayload.subjects ?? prev.subjects),
           activityData: normalizeActivityData(remotePayload.activityData ?? prev.activityData, remotePayload.activityDataMode ?? prev.activityDataMode),
           activityDataMode: 'hours',
-          todos: remotePayload.todos ?? prev.todos,
+          reminders: remotePayload.reminders ?? prev.reminders,
           resources: remotePayload.resources ?? prev.resources,
           exams: remotePayload.exams ?? prev.exams,
           weeklyTargetHours: remotePayload.weeklyTargetHours ?? prev.weeklyTargetHours,
@@ -444,7 +433,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       setData(prev => ({
         ...prev,
         isLoggedIn: true,
-        user: { name: profile.email, avatar: initials },
+        user: { name: displayName, avatar: initials },
       }));
       dismissAuthPrompt();
 

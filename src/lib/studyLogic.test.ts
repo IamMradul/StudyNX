@@ -20,7 +20,7 @@ const baseData: AppData = {
   ],
   activityData: { '2026-04-19': 2 },
   activityDataMode: 'hours',
-  reminders: [],
+  todos: [],
   resources: [],
   exams: [],
   weeklyTargetHours: 40,
