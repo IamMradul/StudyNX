@@ -108,6 +108,7 @@ interface DataContextType {
   requestEmailSignIn: (email: string) => Promise<{ ok: boolean; message: string }>;
   login: (name: string) => void;
   logout: () => Promise<void>;
+  updatePassword: (password: string) => Promise<{ ok: boolean; message: string }>;
   updateData: (newData: Partial<AppData>) => void;
   logStudySession: (session: StudySessionLog) => Promise<AuthResult>;
 }
@@ -324,11 +325,13 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const applySession = (session: Session | null) => {
       if (session?.user?.email) {
         const email = session.user.email;
-        setData(prev => ({ ...prev, isLoggedIn: true, user: { name: email, avatar: email.slice(0, 2).toUpperCase() } }));
+        const nameFromMeta = session.user.user_metadata?.name || session.user.user_metadata?.full_name;
+        const displayName = nameFromMeta || email.split('@')[0];
+        setData(prev => ({ ...prev, isLoggedIn: true, user: { name: displayName, avatar: displayName.slice(0, 2).toUpperCase() } }));
       } else {
         const savedGoogleSession = readGoogleSession();
         if (savedGoogleSession) {
-          setData(prev => ({ ...prev, isLoggedIn: true, user: { name: savedGoogleSession.email, avatar: savedGoogleSession.avatar } }));
+          setData(prev => ({ ...prev, isLoggedIn: true, user: { name: savedGoogleSession.name, avatar: savedGoogleSession.avatar } }));
           return;
         }
         setData(prev => ({ ...prev, isLoggedIn: false, user: null }));
@@ -488,6 +491,28 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     return { ok: true, message: 'Password reset email sent. Check your inbox.' };
   };
 
+  const updatePassword = async (password: string): Promise<AuthResult> => {
+    const supabaseClient = supabase;
+    if (authMode !== 'supabase-email' || !isSupabaseConfigured || !supabaseClient) {
+      return { ok: false, message: 'Not available in local mode or without Supabase configured.' };
+    }
+    
+    // Check if the user is signed in with Google
+    if (readGoogleSession()) {
+      return { ok: false, message: 'Password cannot be changed for Google accounts.' };
+    }
+
+    // Verify Supabase session
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    if (!session) {
+      return { ok: false, message: 'Auth session missing! Please sign out and sign in again.' };
+    }
+
+    const { error } = await supabaseClient.auth.updateUser({ password });
+    if (error) return { ok: false, message: error.message };
+    return { ok: true, message: 'Password updated successfully.' };
+  };
+
   const login = (name: string) => {
     if (authMode !== 'local') return;
     setData(prev => ({ ...prev, isLoggedIn: true, user: { name, avatar: name.slice(0, 2).toUpperCase() } }));
@@ -562,6 +587,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         requestEmailSignIn,
         login,
         logout,
+        updatePassword,
         updateData,
         logStudySession,
       }}

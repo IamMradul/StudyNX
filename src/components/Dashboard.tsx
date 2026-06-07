@@ -33,9 +33,107 @@ const dashboardTabs: Array<{ id: DashboardTab; label: string; description: strin
   },
 ];
 
+const ProfileModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, onClose }) => {
+  const { data, logout, updatePassword } = useData();
+  const [newPassword, setNewPassword] = React.useState('');
+  const [confirmPassword, setConfirmPassword] = React.useState('');
+  const [feedback, setFeedback] = React.useState('');
+  const [feedbackTone, setFeedbackTone] = React.useState<'success'|'error'>('success');
+  const [isUpdating, setIsUpdating] = React.useState(false);
+
+  if (!isOpen) return null;
+
+  const handleUpdatePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (newPassword.length < 6) {
+      setFeedbackTone('error');
+      setFeedback('Password must be at least 6 characters.');
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      setFeedbackTone('error');
+      setFeedback('Passwords do not match.');
+      return;
+    }
+    
+    setIsUpdating(true);
+    setFeedback('');
+    const res = await updatePassword(newPassword);
+    setFeedbackTone(res.ok ? 'success' : 'error');
+    setFeedback(res.message);
+    if (res.ok) {
+      setNewPassword('');
+      setConfirmPassword('');
+    }
+    setIsUpdating(false);
+  };
+
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-sm animate-fade-in-up">
+      <div className="bg-slate-800 border border-slate-700 rounded-2xl p-6 w-full max-w-sm shadow-2xl relative">
+        <button type="button" className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-slate-700 hover:bg-slate-600 text-slate-300 transition-colors" onClick={onClose}>
+          ✕
+        </button>
+        <div className="flex flex-col items-center mb-6">
+          <div className="w-16 h-16 rounded-full bg-electric-violet/20 border border-electric-violet/40 flex items-center justify-center text-2xl font-bold text-electric-violet mb-3">
+            {data.user?.avatar || 'SN'}
+          </div>
+          <h2 className="text-xl font-heading font-bold text-slate-100">{data.user?.name || 'User'}</h2>
+          <p className="text-sm text-slate-400">Manage your account</p>
+        </div>
+
+        <div className="border-t border-slate-700 pt-6 mb-6">
+          <h3 className="text-sm font-semibold text-slate-300 mb-4 uppercase tracking-wider">Change Password</h3>
+          <form onSubmit={handleUpdatePassword} className="space-y-4">
+            <input 
+              type="password" 
+              placeholder="New password" 
+              className="w-full bg-slate-900/50 border border-slate-600 rounded-xl px-4 py-2 text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-electric-violet transition-all"
+              value={newPassword}
+              onChange={e => setNewPassword(e.target.value)}
+              required
+            />
+            <input 
+              type="password" 
+              placeholder="Confirm new password" 
+              className="w-full bg-slate-900/50 border border-slate-600 rounded-xl px-4 py-2 text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-electric-violet transition-all"
+              value={confirmPassword}
+              onChange={e => setConfirmPassword(e.target.value)}
+              required
+            />
+            <button 
+              type="submit" 
+              disabled={isUpdating}
+              className="w-full py-2 bg-electric-violet hover:bg-electric-violet/90 text-white font-medium rounded-xl transition-all disabled:opacity-50"
+            >
+              {isUpdating ? 'Updating...' : 'Update Password'}
+            </button>
+          </form>
+          {feedback && (
+            <p className={`mt-3 text-sm text-center ${feedbackTone === 'success' ? 'text-emerald-400' : 'text-rose-400'}`}>
+              {feedback}
+            </p>
+          )}
+        </div>
+
+        <div className="border-t border-slate-700 pt-4">
+          <button 
+            type="button" 
+            onClick={() => { onClose(); logout(); }}
+            className="w-full py-2 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 font-medium rounded-xl transition-all"
+          >
+            Sign Out
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const Dashboard: React.FC = () => {
-  const { data, logout, requestAuthPrompt } = useData();
+  const { data, requestAuthPrompt } = useData();
   const [activeTab, setActiveTab] = React.useState<DashboardTab>('overview');
+  const [isProfileOpen, setIsProfileOpen] = React.useState(false);
 
   React.useEffect(() => {
     const titleSuffix = activeTab === 'overview'
@@ -111,7 +209,7 @@ const Dashboard: React.FC = () => {
         <div className="p-4 mt-auto border-t border-white/5">
           <div className="flex items-center gap-4 overflow-hidden mb-4">
             <button 
-              onClick={data.isLoggedIn ? logout : () => requestAuthPrompt('Sign in to save your changes.')} 
+              onClick={data.isLoggedIn ? () => setIsProfileOpen(true) : () => requestAuthPrompt('Sign in to save your changes.')} 
               className="relative w-10 h-10 shrink-0 rounded-full bg-electric-violet/10 border border-electric-violet/30 flex items-center justify-center text-electric-violet font-semibold transition-all hover:scale-105 hover:shadow-glow-violet group/btn"
             >
               {data.isLoggedIn ? (data.user?.avatar || 'SN') : 'SN'}
@@ -228,6 +326,8 @@ const Dashboard: React.FC = () => {
           </motion.div>
         </AnimatePresence>
       </main>
+
+      <ProfileModal isOpen={isProfileOpen} onClose={() => setIsProfileOpen(false)} />
     </div>
   );
 };
