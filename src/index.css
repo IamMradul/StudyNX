@@ -94,16 +94,20 @@ html[data-theme="light"] {
   --bg-ring-track: rgba(0, 0, 0, 0.05);
 
   /* Override Tailwind v4 default color variables used in hardcoded classes */
-  --color-white: #0f172a;     /* text-white becomes dark slate */
-  --color-black: #ffffff;     /* bg-black becomes white */
-  
-  --color-slate-100: #1e293b; /* Re-map slate scales for light mode */
+  --color-white: #0f172a;
+  /* text-white becomes dark slate */
+  --color-black: #ffffff;
+  /* bg-black becomes white */
+
+  --color-slate-100: #1e293b;
+  /* Re-map slate scales for light mode */
   --color-slate-200: #334155;
   --color-slate-300: #475569;
   --color-slate-400: #64748b;
   --color-slate-500: #94a3b8;
-  
-  --color-void: #f8fafc;      /* Background3D uses bg-void */
+
+  --color-void: #f8fafc;
+  /* Background3D uses bg-void */
 }
 
 /* Remove inverted image filters */
@@ -129,13 +133,16 @@ html[data-theme="light"] video {
   width: 8px;
   height: 8px;
 }
+
 ::-webkit-scrollbar-track {
   background: transparent;
 }
+
 ::-webkit-scrollbar-thumb {
   background-color: var(--border-soft);
   border-radius: 10px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
   background-color: var(--text-muted);
 }
@@ -146,6 +153,7 @@ html[data-theme="light"] video {
   height: 0px;
   background: transparent;
 }
+
 .scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;

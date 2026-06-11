@@ -8,7 +8,7 @@ import { fadeUp } from '../lib/animations';
 
 const AnimatedNumber = ({ value, isFloat = false, suffix = '' }: { value: number, isFloat?: boolean, suffix?: string }) => {
   const count = useMotionValue(0);
-  const display = useTransform(count, (latest) => 
+  const display = useTransform(count, (latest) =>
     (isFloat ? latest.toFixed(1) : Math.round(latest)) + suffix
   );
 
@@ -22,23 +22,23 @@ const AnimatedNumber = ({ value, isFloat = false, suffix = '' }: { value: number
 
 const StatCard = ({ title, value, subtitle, isFloat, suffix, sparklineData, color, dataKey, delay }: any) => {
   return (
-    <motion.div 
+    <motion.div
       variants={fadeUp}
       custom={delay}
       whileHover={{ y: -4, scale: 1.01 }}
       className={cn(
         "relative p-6 rounded-3xl bg-white/[0.02] border border-white/10 backdrop-blur-xl overflow-hidden group transition-all duration-300 shadow-card",
         color === 'violet' ? 'hover:border-electric-violet/50 hover:shadow-glow-violet' :
-        color === 'cyan' ? 'hover:border-neon-cyan/50 hover:shadow-glow-cyan' :
-        'hover:border-emerald-400/50 hover:shadow-glow-emerald'
+          color === 'cyan' ? 'hover:border-neon-cyan/50 hover:shadow-glow-cyan' :
+            'hover:border-emerald-400/50 hover:shadow-glow-emerald'
       )}
     >
       {/* Top glow line */}
       <div className={cn(
         "absolute top-0 left-0 right-0 h-1 opacity-50",
         color === 'violet' ? 'bg-gradient-to-r from-transparent via-electric-violet to-transparent' :
-        color === 'cyan' ? 'bg-gradient-to-r from-transparent via-neon-cyan to-transparent' :
-        'bg-gradient-to-r from-transparent via-emerald-400 to-transparent'
+          color === 'cyan' ? 'bg-gradient-to-r from-transparent via-neon-cyan to-transparent' :
+            'bg-gradient-to-r from-transparent via-emerald-400 to-transparent'
       )} />
 
       <div className="flex justify-between items-start mb-4">
@@ -55,11 +55,11 @@ const StatCard = ({ title, value, subtitle, isFloat, suffix, sparklineData, colo
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={sparklineData}>
             <YAxis domain={['dataMin - 1', 'dataMax + 1']} hide />
-            <Line 
-              type="monotone" 
-              dataKey={dataKey} 
-              stroke={color === 'violet' ? '#7C3AED' : color === 'cyan' ? '#06B6D4' : '#10B981'} 
-              strokeWidth={2} 
+            <Line
+              type="monotone"
+              dataKey={dataKey}
+              stroke={color === 'violet' ? '#7C3AED' : color === 'cyan' ? '#06B6D4' : '#10B981'}
+              strokeWidth={2}
               dot={false}
               isAnimationActive={true}
               animationDuration={1500}
@@ -74,7 +74,7 @@ const StatCard = ({ title, value, subtitle, isFloat, suffix, sparklineData, colo
 const TopStats: React.FC = () => {
   const { data } = useData();
   const now = new Date();
-  
+
   // Weekly data for sparklines
   const weekEntries = Array.from({ length: 7 }, (_, idx) => {
     const d = new Date(now);
@@ -102,10 +102,10 @@ const TopStats: React.FC = () => {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <StatCard 
-        title="Today's Hours" 
-        value={todayHours} 
-        isFloat={true} 
+      <StatCard
+        title="Today's Hours"
+        value={todayHours}
+        isFloat={true}
         suffix="h"
         subtitle="Logged today"
         sparklineData={weekEntries}
@@ -113,9 +113,9 @@ const TopStats: React.FC = () => {
         color="violet"
         delay={0}
       />
-      <StatCard 
-        title="Current Streak" 
-        value={streak} 
+      <StatCard
+        title="Current Streak"
+        value={streak}
         isFloat={false}
         suffix="d"
         subtitle={`${activeDays}/7 active days`}
@@ -124,9 +124,9 @@ const TopStats: React.FC = () => {
         color="cyan"
         delay={1}
       />
-      <StatCard 
-        title="Focus Score" 
-        value={avgFocusScore} 
+      <StatCard
+        title="Focus Score"
+        value={avgFocusScore}
         isFloat={false}
         suffix="%"
         subtitle="Weekly average"

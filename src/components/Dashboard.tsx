@@ -7,6 +7,7 @@ import SubjectsList from './SubjectsList';
 import StudyComparison from './StudyComparison';
 import { ExamCountdown, WeeklyGoal } from './Phase7Widgets';
 import { Resources, ToDoList, CalendarWidget } from './Phase8Widgets';
+import RemindersList from './RemindersList';
 import ThemeToggle from './ThemeToggle';
 import InsightsPanel from './InsightsPanel';
 import DailyGoal from './DailyGoal';
@@ -16,30 +17,36 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { fadeUp } from '../lib/animations';
 import { cn } from '../lib/utils';
 
-type DashboardTab = 'overview' | 'subjects' | 'resources' | 'insights';
+type DashboardTab = 'overview' | 'subjects' | 'resources' | 'reminders' | 'insights';
 
 const dashboardTabs: Array<{ id: DashboardTab; label: string; description: string; icon: React.ReactNode }> = [
-  { 
-    id: 'overview', 
-    label: 'Overview', 
+  {
+    id: 'overview',
+    label: 'Overview',
     description: 'Your main dashboard view',
     icon: <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
   },
-  { 
-    id: 'subjects', 
-    label: 'Subjects', 
+  {
+    id: 'subjects',
+    label: 'Subjects',
     description: 'Track your subjects',
     icon: <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
   },
-  { 
-    id: 'resources', 
-    label: 'Resources', 
+  {
+    id: 'resources',
+    label: 'Resources',
     description: 'Quick links and study materials',
     icon: <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" /></svg>
   },
-  { 
-    id: 'insights', 
-    label: 'Insights', 
+  {
+    id: 'reminders',
+    label: 'Reminders',
+    description: 'Time-based alerts',
+    icon: <span className="material-symbols-outlined text-[20px] shrink-0">notifications_active</span>
+  },
+  {
+    id: 'insights',
+    label: 'Insights',
     description: 'Trends and export tools',
     icon: <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
   },
@@ -50,7 +57,7 @@ const ProfileModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOp
   const [newPassword, setNewPassword] = React.useState('');
   const [confirmPassword, setConfirmPassword] = React.useState('');
   const [feedback, setFeedback] = React.useState('');
-  const [feedbackTone, setFeedbackTone] = React.useState<'success'|'error'>('success');
+  const [feedbackTone, setFeedbackTone] = React.useState<'success' | 'error'>('success');
   const [isUpdating, setIsUpdating] = React.useState(false);
 
   if (!isOpen) return null;
@@ -67,7 +74,7 @@ const ProfileModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOp
       setFeedback('Passwords do not match.');
       return;
     }
-    
+
     setIsUpdating(true);
     setFeedback('');
     const res = await updatePassword(newPassword);
@@ -97,24 +104,24 @@ const ProfileModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOp
         <div className="border-t border-slate-700 pt-6 mb-6">
           <h3 className="text-sm font-semibold text-slate-300 mb-4 uppercase tracking-wider">Change Password</h3>
           <form onSubmit={handleUpdatePassword} className="space-y-4">
-            <input 
-              type="password" 
-              placeholder="New password" 
+            <input
+              type="password"
+              placeholder="New password"
               className="w-full bg-slate-900/50 border border-slate-600 rounded-xl px-4 py-2 text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-electric-violet transition-all"
               value={newPassword}
               onChange={e => setNewPassword(e.target.value)}
               required
             />
-            <input 
-              type="password" 
-              placeholder="Confirm new password" 
+            <input
+              type="password"
+              placeholder="Confirm new password"
               className="w-full bg-slate-900/50 border border-slate-600 rounded-xl px-4 py-2 text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-electric-violet transition-all"
               value={confirmPassword}
               onChange={e => setConfirmPassword(e.target.value)}
               required
             />
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               disabled={isUpdating}
               className="w-full py-2 bg-electric-violet hover:bg-electric-violet/90 text-white font-medium rounded-xl transition-all disabled:opacity-50"
             >
@@ -129,12 +136,74 @@ const ProfileModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOp
         </div>
 
         <div className="border-t border-slate-700 pt-4">
-          <button 
-            type="button" 
+          <button
+            type="button"
             onClick={() => { onClose(); logout(); }}
             className="w-full py-2 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 font-medium rounded-xl transition-all"
           >
             Sign Out
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const ReminderModal: React.FC = () => {
+  const { data, updateData } = useData();
+  const [activeReminderId, setActiveReminderId] = React.useState<string | null>(null);
+
+  React.useEffect(() => {
+    // Check for triggered reminders every 10 seconds
+    const checkReminders = () => {
+      const now = new Date().getTime();
+      const triggered = data.reminders.find(r => !r.isDismissed && new Date(r.datetime).getTime() <= now);
+      if (triggered && triggered.id !== activeReminderId) {
+        setActiveReminderId(triggered.id);
+      } else if (!triggered && activeReminderId) {
+        setActiveReminderId(null);
+      }
+    };
+
+    checkReminders(); // check immediately
+    const interval = setInterval(checkReminders, 10000);
+    return () => clearInterval(interval);
+  }, [data.reminders, activeReminderId]);
+
+  if (!activeReminderId) return null;
+  const reminder = data.reminders.find(r => r.id === activeReminderId);
+  if (!reminder) return null;
+
+  const handleDismiss = () => {
+    updateData({
+      reminders: data.reminders.map(r => r.id === activeReminderId ? { ...r, isDismissed: true } : r)
+    });
+    setActiveReminderId(null);
+  };
+
+  return (
+    <div className="fixed inset-0 z-[300] flex items-center justify-center p-4 bg-void/80 backdrop-blur-md animate-in fade-in duration-200">
+      <div className="bg-[#0f0f13] border border-white/10 rounded-3xl p-8 w-full max-w-sm shadow-card relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-32 h-32 bg-neon-cyan/10 blur-[40px] rounded-full -translate-y-1/2 translate-x-1/3 pointer-events-none" />
+        
+        <div className="flex flex-col items-center text-center relative z-10">
+          <div className="w-16 h-16 rounded-full bg-neon-cyan/10 border border-neon-cyan/30 flex items-center justify-center text-neon-cyan mb-4 shadow-glow-cyan animate-[pulse-glow_2s_infinite]">
+            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
+          </div>
+          <h2 className="text-xl font-display font-bold text-white mb-2">Reminder</h2>
+          <p className="text-slate-200 font-medium text-lg leading-relaxed bg-black/40 p-4 rounded-2xl border border-white/5 w-full">
+            {reminder.text}
+          </p>
+          <p className="text-xs text-slate-400 font-label-caps mt-3 mb-6 tracking-widest">
+            {new Date(reminder.datetime).toLocaleString()}
+          </p>
+          
+          <button 
+            type="button" 
+            onClick={handleDismiss}
+            className="w-full py-3 bg-electric-violet hover:bg-electric-violet/90 text-white font-bold rounded-xl transition-all shadow-glow-violet active:scale-95"
+          >
+            Dismiss
           </button>
         </div>
       </div>
@@ -154,7 +223,9 @@ const Dashboard: React.FC = () => {
         ? 'Subjects'
         : activeTab === 'resources'
           ? 'Resources'
-          : 'Insights';
+          : activeTab === 'reminders'
+            ? 'Reminders'
+            : 'Insights';
 
     document.title = `StudyNX | ${titleSuffix}`;
   }, [activeTab]);
@@ -198,10 +269,10 @@ const Dashboard: React.FC = () => {
             </span>
           </a>
         </div>
-        
+
         <nav className="flex-1 px-4 space-y-3 mt-4">
           {dashboardTabs.map(tab => (
-            <button 
+            <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               className={cn(
@@ -221,11 +292,11 @@ const Dashboard: React.FC = () => {
             </button>
           ))}
         </nav>
-        
+
         <div className="p-4 mt-auto border-t border-white/5">
           <div className="flex items-center gap-4 overflow-hidden mb-4">
-            <button 
-              onClick={data.isLoggedIn ? () => setIsProfileOpen(true) : () => requestAuthPrompt('Sign in to save your changes.')} 
+            <button
+              onClick={data.isLoggedIn ? () => setIsProfileOpen(true) : () => requestAuthPrompt('Sign in to save your changes.')}
               className="relative w-10 h-10 shrink-0 rounded-full bg-electric-violet/10 border border-electric-violet/30 flex items-center justify-center text-electric-violet font-semibold transition-all hover:scale-105 hover:shadow-glow-violet group/btn"
             >
               {data.isLoggedIn ? (data.user?.avatar || 'SN') : 'SN'}
@@ -237,8 +308,8 @@ const Dashboard: React.FC = () => {
               )}
             </button>
             <div className="flex flex-col opacity-0 group-hover:opacity-100 whitespace-nowrap transition-opacity duration-300">
-               <span className="text-sm font-medium text-white">{data.isLoggedIn ? data.user?.name || 'User' : 'Guest'}</span>
-               <span className="text-xs text-slate-400">{data.isLoggedIn ? 'Online' : 'Sign in to sync'}</span>
+              <span className="text-sm font-medium text-white">{data.isLoggedIn ? data.user?.name || 'User' : 'Guest'}</span>
+              <span className="text-xs text-slate-400">{data.isLoggedIn ? 'Online' : 'Sign in to sync'}</span>
             </div>
           </div>
           <div className="flex justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -262,15 +333,15 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
 
-        <motion.header 
-          variants={fadeUp} 
-          initial="initial" 
-          animate="animate" 
+        <motion.header
+          variants={fadeUp}
+          initial="initial"
+          animate="animate"
           className="relative bg-white/[0.02] backdrop-blur-xl border border-white/[0.08] rounded-3xl p-6 lg:p-8 mb-8 overflow-hidden shadow-card group hover:border-white/[0.12] transition-colors"
         >
           {/* Decorative glow inside hero */}
           <div className="absolute top-0 right-0 w-64 h-64 bg-neon-cyan/10 blur-[80px] rounded-full -translate-y-1/2 translate-x-1/3 group-hover:bg-neon-cyan/20 transition-colors duration-700 pointer-events-none" />
-          
+
           <div className="relative z-10 grid lg:grid-cols-[1fr_auto] gap-6 lg:gap-10 items-center">
             <div className="space-y-3">
               <p className="text-neon-cyan text-[10px] font-bold tracking-[0.2em] uppercase">Study Tracker</p>
@@ -281,7 +352,7 @@ const Dashboard: React.FC = () => {
                 {heroDescription}
               </p>
             </div>
-            
+
             <div className="grid grid-cols-3 gap-3 min-w-[200px]">
               <div className="bg-white/5 border border-white/10 rounded-xl p-4 hover:-translate-y-1 hover:border-electric-violet/50 hover:shadow-glow-violet transition-all duration-300">
                 <p className="text-slate-500 text-[10px] font-bold tracking-widest uppercase mb-1">Today</p>
@@ -340,6 +411,12 @@ const Dashboard: React.FC = () => {
               </div>
             )}
 
+            {activeTab === 'reminders' && (
+              <div className="space-y-8">
+                <RemindersList />
+              </div>
+            )}
+
             {activeTab === 'insights' && (
               <div className="space-y-8">
                 <InsightsPanel />
@@ -354,6 +431,7 @@ const Dashboard: React.FC = () => {
       </main>
 
       <ProfileModal isOpen={isProfileOpen} onClose={() => setIsProfileOpen(false)} />
+      <ReminderModal />
     </div>
   );
 };

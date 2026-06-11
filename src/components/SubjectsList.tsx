@@ -18,7 +18,7 @@ const TiltCard = ({ children, className, onClick }: { children: React.ReactNode,
   };
 
   return (
-    <motion.div 
+    <motion.div
       onMouseMove={handleMouseMove}
       onMouseLeave={() => setTilt({ x: 0, y: 0 })}
       animate={{ rotateX: tilt.x, rotateY: tilt.y, scale: tilt.x || tilt.y ? 1.02 : 1 }}
@@ -68,25 +68,6 @@ const CircularProgress = ({ progress, color, size = 56, strokeWidth = 5 }: { pro
       <div className="absolute inset-0 flex items-center justify-center text-xs font-bold font-display" style={{ color }}>
         {clampedProgress}%
       </div>
-    </div>
-  );
-};
-
-const ProgressBar = ({ progress, color }: { progress: number, color: string }) => {
-  return (
-    <div className="h-2 w-full bg-black/40 rounded-full overflow-hidden mt-4 border border-white/5 relative">
-      <motion.div 
-        initial={{ width: 0 }}
-        animate={{ width: `${Math.min(100, progress)}%` }}
-        transition={{ duration: 1.5, ease: "easeOut", delay: 0.2 }}
-        className="h-full rounded-full relative overflow-hidden"
-        style={{ 
-          background: `linear-gradient(90deg, ${color} 0%, ${color}aa 100%)`,
-          boxShadow: `0 0 10px ${color}80` 
-        }}
-      >
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full animate-[shimmer_2s_infinite]" />
-      </motion.div>
     </div>
   );
 };
@@ -141,7 +122,7 @@ const SubjectsList: React.FC = () => {
     const totalHours = Number(totalHoursRaw.toFixed(1));
     const progress = Math.min(100, Math.round((totalHours / targetHours) * 100));
     const status: Subject['status'] = progress >= 100 ? 'on track' : progress >= 50 ? 'progressing' : 'needs focus';
-    
+
     return { ...subject, targetHours, dailyHours: sanitizedDailyHours, totalHours, progress, status, studyDates: Object.keys(sanitizedDailyHours).sort() };
   };
 
@@ -247,8 +228,8 @@ const SubjectsList: React.FC = () => {
             value={newSubjectTargetHours}
             onChange={(e) => setNewSubjectTargetHours(e.target.value)}
           />
-          <button 
-            type="button" 
+          <button
+            type="button"
             className="bg-white/5 hover:bg-white/10 border border-white/10 text-white px-6 py-2 rounded-xl text-sm font-medium transition-all active:scale-[0.97]"
             onClick={addSubject}
           >
@@ -266,12 +247,12 @@ const SubjectsList: React.FC = () => {
 
         <motion.div variants={staggerContainer} initial="initial" animate="animate" onWheel={scrollOnHover} className="flex flex-col gap-4 flex-1 overflow-y-auto scrollbar-hide hover-scrollbar min-h-0">
           {data.subjects.map(subject => (
-            <TiltCard 
-              key={subject.id} 
+            <TiltCard
+              key={subject.id}
               onClick={() => setSelectedSubjectId(subject.id)}
               className="group cursor-pointer relative bg-white/[0.03] hover:bg-white/[0.05] border border-white/10 rounded-2xl p-5 transition-colors overflow-hidden shrink-0"
             >
-              <div 
+              <div
                 className="absolute top-0 left-0 bottom-0 w-1 opacity-50"
                 style={{ backgroundColor: subject.color }}
               />
@@ -286,23 +267,23 @@ const SubjectsList: React.FC = () => {
                     <div className="flex items-center gap-2 shrink-0">
                       <span className={cn(
                         "px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border",
-                        subject.status === 'on track' ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400 shadow-[0_0_10px_rgba(16,185,129,0.2)]' : 
-                        subject.status === 'progressing' ? 'bg-amber-500/10 border-amber-500/30 text-amber-400 shadow-[0_0_10px_rgba(245,158,11,0.2)]' : 
-                        'bg-red-500/10 border-red-500/30 text-red-400 shadow-[0_0_10px_rgba(239,68,68,0.2)]'
+                        subject.status === 'on track' ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400 shadow-[0_0_10px_rgba(16,185,129,0.2)]' :
+                          subject.status === 'progressing' ? 'bg-amber-500/10 border-amber-500/30 text-amber-400 shadow-[0_0_10px_rgba(245,158,11,0.2)]' :
+                            'bg-red-500/10 border-red-500/30 text-red-400 shadow-[0_0_10px_rgba(239,68,68,0.2)]'
                       )}>
                         {subject.status}
                       </span>
-                      
+
                       <div className="opacity-0 group-hover:opacity-100 transition-opacity flex gap-1 ml-2">
-                        <button 
-                          type="button" 
+                        <button
+                          type="button"
                           className="w-7 h-7 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-400 hover:text-white transition-colors"
                           onClick={(e) => editSubject(subject.id, e)}
                         >
                           <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.536L16.732 3.732z" /></svg>
                         </button>
-                        <button 
-                          type="button" 
+                        <button
+                          type="button"
                           className="w-7 h-7 rounded-lg bg-white/5 hover:bg-red-500/20 flex items-center justify-center text-slate-400 hover:text-red-400 transition-colors"
                           onClick={(e) => deleteSubject(subject.id, e)}
                         >
@@ -320,14 +301,14 @@ const SubjectsList: React.FC = () => {
 
       <AnimatePresence>
         {selectedSubject && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-void/80 backdrop-blur-md"
             onClick={() => setSelectedSubjectId(null)}
           >
-            <motion.div 
+            <motion.div
               variants={scaleIn}
               initial="initial"
               animate="animate"
@@ -355,8 +336,8 @@ const SubjectsList: React.FC = () => {
                     value={todayHoursInput}
                     onChange={(e) => setTodayHoursInput(e.target.value)}
                   />
-                  <button 
-                    type="button" 
+                  <button
+                    type="button"
                     className="bg-electric-violet hover:bg-electric-violet/80 text-white font-semibold px-6 py-3 rounded-xl transition-all active:scale-95 shadow-glow-violet"
                     onClick={() => setTodayHoursForSubject(selectedSubject.id)}
                   >
@@ -390,10 +371,10 @@ const SubjectsList: React.FC = () => {
                             className={cn(
                               "w-[12px] h-[12px] rounded-[3px] transition-colors border",
                               day.hours === 0 ? "bg-white/[0.02] border-white/[0.02]" :
-                              day.hours < 1 ? "bg-electric-violet/30 border-electric-violet/10" :
-                              day.hours < 2.5 ? "bg-electric-violet/60 border-electric-violet/20" :
-                              day.hours < 4 ? "bg-electric-violet/80 border-electric-violet/30" :
-                              "bg-electric-violet border-electric-violet shadow-[0_0_8px_rgba(124,58,237,0.4)]"
+                                day.hours < 1 ? "bg-electric-violet/30 border-electric-violet/10" :
+                                  day.hours < 2.5 ? "bg-electric-violet/60 border-electric-violet/20" :
+                                    day.hours < 4 ? "bg-electric-violet/80 border-electric-violet/30" :
+                                      "bg-electric-violet border-electric-violet shadow-[0_0_8px_rgba(124,58,237,0.4)]"
                             )}
                             title={`${day.dateKey}: ${day.hours.toFixed(1)}h`}
                           />

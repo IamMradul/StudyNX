@@ -57,10 +57,10 @@ export const Resources: React.FC = () => {
       {data.resources.length === 0 && (
         <div className="empty-state">
           <svg width="40" height="40" viewBox="0 0 40 40" fill="none" aria-hidden="true">
-            <rect x="4" y="6" width="22" height="28" rx="3" stroke="currentColor" strokeWidth="1.5"/>
-            <path d="M10 12h10M10 17h10M10 22h6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-            <circle cx="30" cy="30" r="8" fill="currentColor" fillOpacity=".1" stroke="currentColor" strokeWidth="1.5"/>
-            <path d="M30 26v8M26 30h8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+            <rect x="4" y="6" width="22" height="28" rx="3" stroke="currentColor" strokeWidth="1.5" />
+            <path d="M10 12h10M10 17h10M10 22h6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+            <circle cx="30" cy="30" r="8" fill="currentColor" fillOpacity=".1" stroke="currentColor" strokeWidth="1.5" />
+            <path d="M30 26v8M26 30h8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
           </svg>
           <p>No resources yet. Add links, notes, or references.</p>
         </div>
@@ -73,10 +73,10 @@ export const Resources: React.FC = () => {
             <div className="flex-1 min-w-0 pr-2">
               <span className="text-sm font-medium text-slate-200 block break-words whitespace-normal">{res.title}</span>
               {res.tag && (
-                <a 
-                  href={res.tag.startsWith('http') ? res.tag : `https://${res.tag}`} 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
+                <a
+                  href={res.tag.startsWith('http') ? res.tag : `https://${res.tag}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="text-xs text-electric-violet hover:text-neon-cyan transition-colors block break-all whitespace-normal mt-0.5 underline"
                 >
                   {res.tag}
@@ -120,7 +120,7 @@ export const ToDoList: React.FC = () => {
 
   const toggleTodo = (id: string) => {
     updateData({
-      todos: data.todos.map(item => 
+      todos: data.todos.map(item =>
         item.id === id ? { ...item, completed: !item.completed } : item
       ),
     });
@@ -136,7 +136,7 @@ export const ToDoList: React.FC = () => {
       {data.todos.length === 0 && (
         <div className="empty-state shrink-0">
           <svg width="40" height="40" viewBox="0 0 40 40" fill="none" aria-hidden="true">
-            <path d="M9 11l3 3L22 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M9 11l3 3L22 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
           <p>No tasks yet. Add one below!</p>
         </div>
@@ -145,9 +145,9 @@ export const ToDoList: React.FC = () => {
       <div className="reminders-list flex-1 overflow-y-auto scrollbar-hide hover-scrollbar min-h-0 space-y-3" onWheel={scrollOnHover}>
         {data.todos.map(todo => (
           <div key={todo.id} className="shrink-0 flex items-center gap-3 bg-white/[0.02] border border-white/10 p-3 rounded-xl transition-colors hover:bg-white/[0.04]">
-            <input 
-              type="checkbox" 
-              checked={todo.completed} 
+            <input
+              type="checkbox"
+              checked={todo.completed}
               onChange={() => toggleTodo(todo.id)}
               className="w-4 h-4 rounded border-white/20 bg-black/20 text-electric-violet focus:ring-electric-violet cursor-pointer shrink-0"
             />
@@ -161,12 +161,12 @@ export const ToDoList: React.FC = () => {
         ))}
       </div>
       <div className="add-reminder-row shrink-0 mt-4">
-        <input 
-          type="text" 
-          placeholder="Add a new task..." 
-          className="add-reminder-input" 
-          value={newTodo} 
-          onChange={e => setNewTodo(e.target.value)} 
+        <input
+          type="text"
+          placeholder="Add a new task..."
+          className="add-reminder-input"
+          value={newTodo}
+          onChange={e => setNewTodo(e.target.value)}
           onKeyDown={e => e.key === 'Enter' && addTodo()}
         />
         <button type="button" className="widget-btn add-btn" aria-label="Add task" onClick={addTodo}>+</button>
@@ -190,24 +190,24 @@ export const CalendarWidget: React.FC = () => {
   const monthLabel = baseMonth.toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
   const days = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
 
-  const daysInMonth    = new Date(baseMonth.getFullYear(), baseMonth.getMonth() + 1, 0).getDate();
-  const firstWeekday   = new Date(baseMonth.getFullYear(), baseMonth.getMonth(), 1).getDay();
+  const daysInMonth = new Date(baseMonth.getFullYear(), baseMonth.getMonth() + 1, 0).getDate();
+  const firstWeekday = new Date(baseMonth.getFullYear(), baseMonth.getMonth(), 1).getDay();
   const prevMonthLastDay = new Date(baseMonth.getFullYear(), baseMonth.getMonth(), 0).getDate();
 
-  const prevMonthDays    = Array.from({ length: firstWeekday }, (_, idx) => prevMonthLastDay - firstWeekday + idx + 1);
+  const prevMonthDays = Array.from({ length: firstWeekday }, (_, idx) => prevMonthLastDay - firstWeekday + idx + 1);
   const currentMonthDays = Array.from({ length: daysInMonth }, (_, i) => i + 1);
-  const totalCells       = prevMonthDays.length + currentMonthDays.length;
-  const nextMonthDays    = Array.from({ length: (7 - (totalCells % 7 || 7)) % 7 }, (_, i) => i + 1);
+  const totalCells = prevMonthDays.length + currentMonthDays.length;
+  const nextMonthDays = Array.from({ length: (7 - (totalCells % 7 || 7)) % 7 }, (_, i) => i + 1);
 
-  const selectedStudyHours  = data.activityData[selectedDate] ?? 0;
-  const selectedBreakHours  = selectedStudyHours * 0.2;
-  const focusRatio          = selectedStudyHours > 0
+  const selectedStudyHours = data.activityData[selectedDate] ?? 0;
+  const selectedBreakHours = selectedStudyHours * 0.2;
+  const focusRatio = selectedStudyHours > 0
     ? Math.round((selectedStudyHours / (selectedStudyHours + selectedBreakHours)) * 100)
     : 0;
 
   const hoursToClass = (hours: number) => {
     if (hours >= 6) return 'cal-intense';
-    if (hours > 0)  return 'cal-active';
+    if (hours > 0) return 'cal-active';
     return '';
   };
 
@@ -239,7 +239,7 @@ export const CalendarWidget: React.FC = () => {
 
         {currentMonthDays.map(d => {
           const dateKey = dateKeyFor(d);
-          const hours   = data.activityData[dateKey] ?? 0;
+          const hours = data.activityData[dateKey] ?? 0;
           let extraClass = `cal-date ${hoursToClass(hours)}`;
           if (selectedDate === dateKey) extraClass += ' cal-selected';
           return (

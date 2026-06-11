@@ -18,6 +18,13 @@ export interface Subject {
   dailyHours: Record<string, number>; // date "YYYY-MM-DD" -> hours for this subject
 }
 
+export interface Reminder {
+  id: string;
+  text: string;
+  datetime: string; // ISO string
+  isDismissed: boolean;
+}
+
 export interface Todo {
   id: string;
   text: string;
@@ -60,6 +67,7 @@ export interface AppData {
   activityData: Record<string, number>; // date "YYYY-MM-DD" -> hours
   activityDataMode: 'hours';
   todos: Todo[];
+  reminders: Reminder[];
   resources: ResourceItem[];
   exams: ExamItem[];
   weeklyTargetHours: number;
@@ -68,7 +76,7 @@ export interface AppData {
   sessionLogs: SessionLog[];
 }
 
-type ProgressPayload = Pick<AppData, 'subjects' | 'activityData' | 'activityDataMode' | 'todos' | 'resources' | 'exams' | 'weeklyTargetHours' | 'dailyTargetHours' | 'pomodoroSettings' | 'sessionLogs'>;
+type ProgressPayload = Pick<AppData, 'subjects' | 'activityData' | 'activityDataMode' | 'todos' | 'reminders' | 'resources' | 'exams' | 'weeklyTargetHours' | 'dailyTargetHours' | 'pomodoroSettings' | 'sessionLogs'>;
 
 const isRecord = (value: unknown): value is Record<string, unknown> => (
   Boolean(value) && typeof value === 'object' && !Array.isArray(value)
@@ -81,6 +89,7 @@ const defaultData: AppData = {
   activityData: {},
   activityDataMode: 'hours',
   todos: [],
+  reminders: [],
   resources: [],
   exams: [],
   weeklyTargetHours: 40,
@@ -134,6 +143,7 @@ const toProgressPayload = (state: AppData): ProgressPayload => ({
   activityData: state.activityData,
   activityDataMode: state.activityDataMode,
   todos: state.todos,
+  reminders: state.reminders,
   resources: state.resources,
   exams: state.exams,
   weeklyTargetHours: state.weeklyTargetHours,
@@ -146,16 +156,26 @@ const sanitizeProgressPayload = (rawPayload: unknown): Partial<ProgressPayload> 
   if (!rawPayload || typeof rawPayload !== 'object') return {};
   const payload = rawPayload as Partial<ProgressPayload> & { reminders?: unknown[] };
   
-  // Migrate legacy reminders to todos if todos is empty
+  // Migrate legacy reminders to todos if they don't look like the new timed Reminders
   let migratedTodos: Todo[] | undefined = undefined;
+  let newReminders: Reminder[] | undefined = undefined;
+  
   if (Array.isArray(payload.todos)) {
     migratedTodos = payload.todos;
-  } else if (Array.isArray(payload.reminders)) {
-    migratedTodos = payload.reminders.map((r: any) => ({
-      id: r.id || crypto.randomUUID(),
-      text: r.title || r.description || 'Legacy Reminder',
-      completed: false
-    }));
+  }
+  
+  if (Array.isArray(payload.reminders)) {
+    // If it has datetime, it's our new Reminder type
+    if (payload.reminders.length > 0 && ('datetime' in (payload.reminders[0] || {}))) {
+      newReminders = payload.reminders as Reminder[];
+    } else if (!migratedTodos) {
+      // Legacy reminder migration
+      migratedTodos = payload.reminders.map((r: any) => ({
+        id: r.id || crypto.randomUUID(),
+        text: r.title || r.description || 'Legacy Reminder',
+        completed: false
+      }));
+    }
   }
 
   return {
@@ -165,6 +185,7 @@ const sanitizeProgressPayload = (rawPayload: unknown): Partial<ProgressPayload> 
       : undefined,
     activityDataMode: payload.activityDataMode === 'hours' ? 'hours' : undefined,
     todos: migratedTodos,
+    reminders: newReminders,
     resources: Array.isArray(payload.resources) ? payload.resources : undefined,
     exams: Array.isArray(payload.exams) ? payload.exams : undefined,
     weeklyTargetHours: typeof payload.weeklyTargetHours === 'number' ? payload.weeklyTargetHours : undefined,
@@ -254,6 +275,7 @@ const normalizeAppData = (rawData: unknown): AppData => {
     activityData: normalizeActivityData(candidate.activityData, candidate.activityDataMode),
     activityDataMode: 'hours',
     todos: Array.isArray(candidate.todos) ? candidate.todos as Todo[] : defaultData.todos,
+    reminders: Array.isArray(candidate.reminders) ? candidate.reminders as Reminder[] : defaultData.reminders,
     resources: Array.isArray(candidate.resources) ? candidate.resources as ResourceItem[] : defaultData.resources,
     exams: Array.isArray(candidate.exams) ? candidate.exams as ExamItem[] : defaultData.exams,
     weeklyTargetHours: typeof candidate.weeklyTargetHours === 'number' ? candidate.weeklyTargetHours : defaultData.weeklyTargetHours,
@@ -378,6 +400,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           activityData: normalizeActivityData(remotePayload.activityData ?? prev.activityData, remotePayload.activityDataMode ?? prev.activityDataMode),
           activityDataMode: 'hours',
           todos: remotePayload.todos ?? prev.todos,
+          reminders: remotePayload.reminders ?? prev.reminders,
           resources: remotePayload.resources ?? prev.resources,
           exams: remotePayload.exams ?? prev.exams,
           weeklyTargetHours: remotePayload.weeklyTargetHours ?? prev.weeklyTargetHours,
