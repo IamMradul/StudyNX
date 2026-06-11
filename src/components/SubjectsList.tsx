@@ -182,7 +182,7 @@ const SubjectsList: React.FC = () => {
 
   return (
     <>
-      <motion.div variants={fadeUp} className="bg-white/[0.02] border border-white/10 backdrop-blur-xl rounded-3xl p-6 lg:p-8 h-[500px] flex flex-col">
+      <motion.div variants={fadeUp} className="bg-white/[0.02] border border-white/10 backdrop-blur-xl rounded-3xl p-6 lg:p-8 min-h-[600px] h-[calc(100vh-16rem)] flex flex-col">
         <div className="flex items-center justify-between mb-6 shrink-0">
           <div>
             <h2 className="text-2xl font-display font-bold text-white tracking-wide">Track Subjects</h2>
