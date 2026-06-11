@@ -32,6 +32,46 @@ const TiltCard = ({ children, className, onClick }: { children: React.ReactNode,
   );
 };
 
+const CircularProgress = ({ progress, color, size = 56, strokeWidth = 5 }: { progress: number, color: string, size?: number, strokeWidth?: number }) => {
+  const radius = (size - strokeWidth) / 2;
+  const circumference = radius * 2 * Math.PI;
+  const clampedProgress = Math.min(100, Math.max(0, progress));
+  const strokeDashoffset = circumference - (clampedProgress / 100) * circumference;
+
+  return (
+    <div className="relative flex items-center justify-center shrink-0" style={{ width: size, height: size }}>
+      <svg className="transform -rotate-90 w-full h-full">
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          stroke="currentColor"
+          strokeWidth={strokeWidth}
+          fill="transparent"
+          className="text-white/10"
+        />
+        <motion.circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          stroke={color}
+          strokeWidth={strokeWidth}
+          fill="transparent"
+          strokeDasharray={circumference}
+          initial={{ strokeDashoffset: circumference }}
+          animate={{ strokeDashoffset }}
+          transition={{ duration: 1.5, ease: "easeOut", delay: 0.2 }}
+          strokeLinecap="round"
+          style={{ filter: `drop-shadow(0 0 6px ${color}80)` }}
+        />
+      </svg>
+      <div className="absolute inset-0 flex items-center justify-center text-xs font-bold font-display" style={{ color }}>
+        {clampedProgress}%
+      </div>
+    </div>
+  );
+};
+
 const ProgressBar = ({ progress, color }: { progress: number, color: string }) => {
   return (
     <div className="h-2 w-full bg-black/40 rounded-full overflow-hidden mt-4 border border-white/5 relative">
@@ -235,42 +275,43 @@ const SubjectsList: React.FC = () => {
                 className="absolute top-0 left-0 bottom-0 w-1 opacity-50"
                 style={{ backgroundColor: subject.color }}
               />
-              <div className="flex justify-between items-start mb-2 pl-2">
-                <div>
-                  <h3 className="text-lg font-display font-semibold text-white group-hover:text-neon-cyan transition-colors">{subject.name}</h3>
-                  <p className="text-xs text-slate-400 mt-0.5">{subject.totalHours}h / {subject.targetHours}h</p>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className={cn(
-                    "px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border",
-                    subject.status === 'on track' ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400 shadow-[0_0_10px_rgba(16,185,129,0.2)]' : 
-                    subject.status === 'progressing' ? 'bg-amber-500/10 border-amber-500/30 text-amber-400 shadow-[0_0_10px_rgba(245,158,11,0.2)]' : 
-                    'bg-red-500/10 border-red-500/30 text-red-400 shadow-[0_0_10px_rgba(239,68,68,0.2)]'
-                  )}>
-                    {subject.status}
-                  </span>
-                  
-                  <div className="opacity-0 group-hover:opacity-100 transition-opacity flex gap-1 ml-2">
-                    <button 
-                      type="button" 
-                      className="w-7 h-7 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-400 hover:text-white transition-colors"
-                      onClick={(e) => editSubject(subject.id, e)}
-                    >
-                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.536L16.732 3.732z" /></svg>
-                    </button>
-                    <button 
-                      type="button" 
-                      className="w-7 h-7 rounded-lg bg-white/5 hover:bg-red-500/20 flex items-center justify-center text-slate-400 hover:text-red-400 transition-colors"
-                      onClick={(e) => deleteSubject(subject.id, e)}
-                    >
-                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                    </button>
+              <div className="flex items-center gap-5 pl-2 py-1">
+                <CircularProgress progress={subject.progress} color={subject.color} />
+                <div className="flex-1 min-w-0">
+                  <div className="flex justify-between items-start">
+                    <div className="min-w-0 pr-4">
+                      <h3 className="text-lg font-display font-semibold text-white group-hover:text-neon-cyan transition-colors truncate">{subject.name}</h3>
+                      <p className="text-xs text-slate-400 mt-0.5">{subject.totalHours}h / {subject.targetHours}h</p>
+                    </div>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <span className={cn(
+                        "px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border",
+                        subject.status === 'on track' ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400 shadow-[0_0_10px_rgba(16,185,129,0.2)]' : 
+                        subject.status === 'progressing' ? 'bg-amber-500/10 border-amber-500/30 text-amber-400 shadow-[0_0_10px_rgba(245,158,11,0.2)]' : 
+                        'bg-red-500/10 border-red-500/30 text-red-400 shadow-[0_0_10px_rgba(239,68,68,0.2)]'
+                      )}>
+                        {subject.status}
+                      </span>
+                      
+                      <div className="opacity-0 group-hover:opacity-100 transition-opacity flex gap-1 ml-2">
+                        <button 
+                          type="button" 
+                          className="w-7 h-7 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-400 hover:text-white transition-colors"
+                          onClick={(e) => editSubject(subject.id, e)}
+                        >
+                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.536L16.732 3.732z" /></svg>
+                        </button>
+                        <button 
+                          type="button" 
+                          className="w-7 h-7 rounded-lg bg-white/5 hover:bg-red-500/20 flex items-center justify-center text-slate-400 hover:text-red-400 transition-colors"
+                          onClick={(e) => deleteSubject(subject.id, e)}
+                        >
+                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="pl-2 relative">
-                <ProgressBar progress={subject.progress} color={subject.color} />
-                <div className="absolute right-0 -top-5 text-xs font-bold" style={{ color: subject.color }}>{subject.progress}%</div>
               </div>
             </TiltCard>
           ))}

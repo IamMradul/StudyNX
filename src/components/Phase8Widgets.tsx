@@ -8,7 +8,7 @@ import './Phase8Widgets.css';
 export const Resources: React.FC = () => {
   const { data, updateData } = useData();
   const [title, setTitle] = useState('');
-  const [tag, setTag] = useState('');
+  const [link, setLink] = useState('');
 
   const addResource = () => {
     if (!title.trim()) return;
@@ -17,12 +17,12 @@ export const Resources: React.FC = () => {
       resources: [...data.resources, {
         id: crypto.randomUUID(),
         title: title.trim(),
-        tag: tag.trim() || 'General',
+        tag: link.trim(),
         color: palette[data.resources.length % palette.length],
       }],
     });
     setTitle('');
-    setTag('');
+    setLink('');
   };
 
   const editResource = (resourceId: string) => {
@@ -30,10 +30,10 @@ export const Resources: React.FC = () => {
     if (!resource) return;
     const nextTitle = window.prompt('Edit resource title', resource.title)?.trim();
     if (!nextTitle) return;
-    const nextTag = window.prompt('Edit resource tag', resource.tag)?.trim();
+    const nextLink = window.prompt('Edit resource link', resource.tag)?.trim();
     updateData({
       resources: data.resources.map(item =>
-        item.id === resourceId ? { ...item, title: nextTitle, tag: nextTag || item.tag } : item
+        item.id === resourceId ? { ...item, title: nextTitle, tag: nextLink !== undefined ? nextLink : item.tag } : item
       ),
     });
   };
@@ -51,7 +51,7 @@ export const Resources: React.FC = () => {
   };
 
   return (
-    <div className="card widget-card resources-card flex flex-col h-[400px]">
+    <div className="card widget-card resources-card flex flex-col min-h-[600px] h-[calc(100vh-16rem)]">
       <div className="card-title shrink-0">Quick resources</div>
 
       {data.resources.length === 0 && (
@@ -72,7 +72,16 @@ export const Resources: React.FC = () => {
             <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: res.color }} />
             <div className="flex-1 min-w-0 pr-2">
               <span className="text-sm font-medium text-slate-200 block break-words whitespace-normal">{res.title}</span>
-              {res.tag && <span className="text-xs text-slate-500 block break-all whitespace-normal mt-0.5">{res.tag}</span>}
+              {res.tag && (
+                <a 
+                  href={res.tag.startsWith('http') ? res.tag : `https://${res.tag}`} 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="text-xs text-electric-violet hover:text-neon-cyan transition-colors block break-all whitespace-normal mt-0.5 underline"
+                >
+                  {res.tag}
+                </a>
+              )}
             </div>
             <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
               <button type="button" className="w-7 h-7 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-400 hover:text-white transition-colors" aria-label={`Move up`} onClick={() => moveResource(res.id, -1)}>↑</button>
@@ -84,7 +93,7 @@ export const Resources: React.FC = () => {
         ))}
         <div className="add-reminder-row shrink-0 mt-4">
           <input type="text" placeholder="resource title" className="add-reminder-input" value={title} onChange={e => setTitle(e.target.value)} />
-          <input type="text" placeholder="tag" className="add-reminder-input" value={tag} onChange={e => setTag(e.target.value)} />
+          <input type="text" placeholder="link (url)" className="add-reminder-input" value={link} onChange={e => setLink(e.target.value)} />
         </div>
         <button type="button" className="widget-btn shrink-0 mt-3" onClick={addResource}>+ add resource</button>
       </div>

@@ -16,7 +16,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { fadeUp } from '../lib/animations';
 import { cn } from '../lib/utils';
 
-type DashboardTab = 'overview' | 'subjects' | 'insights';
+type DashboardTab = 'overview' | 'subjects' | 'resources' | 'insights';
 
 const dashboardTabs: Array<{ id: DashboardTab; label: string; description: string; icon: React.ReactNode }> = [
   { 
@@ -30,6 +30,12 @@ const dashboardTabs: Array<{ id: DashboardTab; label: string; description: strin
     label: 'Subjects', 
     description: 'Track your subjects',
     icon: <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
+  },
+  { 
+    id: 'resources', 
+    label: 'Resources', 
+    description: 'Quick links and study materials',
+    icon: <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" /></svg>
   },
   { 
     id: 'insights', 
@@ -146,7 +152,9 @@ const Dashboard: React.FC = () => {
       ? 'Dashboard'
       : activeTab === 'subjects'
         ? 'Subjects'
-        : 'Insights';
+        : activeTab === 'resources'
+          ? 'Resources'
+          : 'Insights';
 
     document.title = `StudyNX | ${titleSuffix}`;
   }, [activeTab]);
@@ -306,7 +314,6 @@ const Dashboard: React.FC = () => {
                   <TopStats />
                   <div className="grid sm:grid-cols-2 gap-8">
                     <StudyComparison />
-                    <Resources />
                     <ToDoList />
                   </div>
                 </div>
@@ -324,6 +331,12 @@ const Dashboard: React.FC = () => {
             {activeTab === 'subjects' && (
               <div className="space-y-8">
                 <SubjectsList />
+              </div>
+            )}
+
+            {activeTab === 'resources' && (
+              <div className="space-y-8">
+                <Resources />
               </div>
             )}
 
