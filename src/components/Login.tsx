@@ -137,16 +137,17 @@ const Login: React.FC<LoginProps> = ({ message, onDismiss }) => {
     : ['Fast local access', 'Private by default', 'No account setup'];
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-void/80 backdrop-blur-sm overflow-y-auto">
-      <motion.div 
-        variants={fadeUp} 
-        initial="initial" 
-        animate="animate" 
-        exit="exit"
-        className="relative w-full max-w-6xl mx-auto flex flex-col lg:flex-row rounded-3xl overflow-hidden shadow-glow-violet bg-white/[0.03] border border-white/10"
-      >
+    <div className="fixed inset-0 z-[100] bg-[var(--bg-primary)]/80 backdrop-blur-sm overflow-y-auto">
+      <div className="flex min-h-full items-center justify-center p-4 py-12 lg:p-8">
+        <motion.div 
+          variants={fadeUp} 
+          initial="initial" 
+          animate="animate" 
+          exit="exit"
+          className="relative w-full max-w-6xl mx-auto flex flex-col lg:flex-row rounded-3xl overflow-hidden shadow-glow-violet bg-[var(--bg-card)] border border-[var(--border-color)]"
+        >
         {/* Left Side: 3D Hero & Copy */}
-        <div className="relative flex-1 p-10 lg:p-16 flex flex-col justify-center min-h-[500px] overflow-hidden">
+        <div className="relative flex-1 p-6 lg:p-16 flex flex-col justify-center min-h-[250px] lg:min-h-[500px] overflow-hidden">
           <div className="absolute inset-0 z-0 opacity-80 pointer-events-none">
             <Canvas camera={{ position: [0, 0, 5], fov: 45 }}>
               <ambientLight intensity={0.5} />
@@ -155,34 +156,34 @@ const Login: React.FC<LoginProps> = ({ message, onDismiss }) => {
             </Canvas>
           </div>
           
-          <motion.div variants={staggerContainer} initial="initial" animate="animate" className="relative z-10 space-y-6">
-            <motion.div variants={fadeUp} className="flex items-center gap-3 mb-8">
-              <div className="font-display font-bold text-2xl tracking-widest uppercase">
+          <motion.div variants={staggerContainer} initial="initial" animate="animate" className="relative z-10 space-y-4 lg:space-y-6">
+            <motion.div variants={fadeUp} className="flex items-center gap-3 mb-4 lg:mb-8">
+              <div className="font-display font-bold text-xl lg:text-2xl tracking-widest uppercase text-[var(--text-main)]">
                 Study<span className="bg-clip-text text-transparent bg-gradient-to-r from-electric-violet to-neon-cyan">NX</span>
               </div>
-              <span className="px-3 py-1 rounded-full text-[0.65rem] uppercase tracking-wider bg-white/5 border border-white/10 text-neon-cyan">
+              <span className="px-3 py-1 rounded-full text-[0.65rem] uppercase tracking-wider bg-[var(--bg-secondary)] border border-[var(--border-color)] text-neon-cyan">
                 Study dashboard
               </span>
             </motion.div>
 
-            <motion.h2 variants={fadeUp} className="text-4xl lg:text-5xl font-display font-bold leading-tight">
+            <motion.h2 variants={fadeUp} className="text-3xl lg:text-5xl font-display font-bold leading-tight text-[var(--text-heading)]">
               Study Smarter. <br />
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-electric-violet to-neon-cyan animate-gradient-shift bg-[length:200%_auto]">
                 Track Deeper.
               </span>
             </motion.h2>
             
-            <motion.p variants={fadeUp} className="text-slate-400 text-lg max-w-md">
+            <motion.p variants={fadeUp} className="text-[var(--text-muted)] text-base lg:text-lg max-w-md hidden md:block">
               Save sessions, track streaks, and pick up exactly where you left off across devices.
             </motion.p>
 
-            <motion.div variants={fadeUp} className="flex flex-wrap gap-3 pt-4">
+            <motion.div variants={fadeUp} className="hidden md:flex flex-wrap gap-3 pt-4">
               {authPillCopy.map((item, i) => (
                 <motion.span 
                   key={item}
                   animate={{ y: [0, -5, 0] }}
                   transition={{ duration: 4, repeat: Infinity, delay: i * 0.4 }}
-                  className="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm text-slate-300 shadow-glow-cyan"
+                  className="px-4 py-2 rounded-full bg-[var(--bg-secondary)] border border-[var(--border-color)] text-sm text-[var(--text-main)] shadow-glow-cyan"
                 >
                   {item}
                 </motion.span>
@@ -192,22 +193,22 @@ const Login: React.FC<LoginProps> = ({ message, onDismiss }) => {
         </div>
 
         {/* Right Side: Auth Form */}
-        <div className="relative w-full lg:w-[480px] p-8 lg:p-12 bg-black/40 backdrop-blur-2xl border-l border-white/10 flex flex-col justify-center">
+        <div className="relative w-full lg:w-[480px] p-6 lg:p-12 bg-[var(--bg-card)] backdrop-blur-2xl border-t lg:border-t-0 lg:border-l border-[var(--border-color)] flex flex-col justify-center">
           {onDismiss && (
             <button 
               type="button" 
-              className="absolute top-6 right-6 w-8 h-8 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-all scale-100 hover:scale-110 active:scale-95" 
+              className="absolute top-4 right-4 lg:top-6 lg:right-6 w-8 h-8 flex items-center justify-center rounded-full bg-[var(--bg-secondary)] hover:bg-[var(--border-color)] text-[var(--text-muted)] hover:text-[var(--text-main)] transition-all scale-100 hover:scale-110 active:scale-95" 
               onClick={onDismiss}
             >
               ×
             </button>
           )}
 
-          <div className="mb-8">
-            <h3 className="text-2xl font-display font-semibold mb-2">
+          <div className="mb-6 lg:mb-8">
+            <h3 className="text-xl lg:text-2xl font-display font-semibold mb-2 text-[var(--text-heading)]">
               {authMode === 'supabase-email' ? 'Welcome back' : 'Enter workspace'}
             </h3>
-            <p className="text-sm text-slate-400">
+            <p className="text-sm text-[var(--text-muted)]">
               {authMode === 'supabase-email'
                 ? 'Sign in to access your synchronized progress.'
                 : 'Local mode is ideal for quick private use.'}
@@ -228,7 +229,7 @@ const Login: React.FC<LoginProps> = ({ message, onDismiss }) => {
                     type="button"
                     disabled={submitting}
                     onClick={handleGoogleSignIn}
-                    className="w-full flex items-center justify-center gap-3 py-3 px-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition-all active:scale-[0.97] hover:scale-[1.02] hover:shadow-glow-cyan"
+                    className="w-full flex items-center justify-center gap-3 py-3 px-4 rounded-xl bg-[var(--bg-input)] hover:bg-[var(--border-color)] border border-[var(--border-color)] text-[var(--text-main)] transition-all active:scale-[0.97] hover:scale-[1.02] hover:shadow-glow-cyan"
                   >
                     <svg className="w-5 h-5" viewBox="0 0 24 24">
                       <path d="M21.6 12.2c0-.7-.1-1.4-.2-2H12v3.8h5.5c-.2 1.1-.9 2.1-1.9 2.8v2.3h3.1c1.8-1.7 2.9-4.1 2.9-6.9z" fill="#4285F4" />
@@ -240,14 +241,14 @@ const Login: React.FC<LoginProps> = ({ message, onDismiss }) => {
                   </button>
 
                   <div className="flex items-center gap-4 my-6">
-                    <div className="flex-1 h-px bg-white/10"></div>
-                    <span className="text-xs uppercase tracking-wider text-slate-500">or email</span>
-                    <div className="flex-1 h-px bg-white/10"></div>
+                    <div className="flex-1 h-px bg-[var(--border-color)]"></div>
+                    <span className="text-xs uppercase tracking-wider text-[var(--text-muted)]">or email</span>
+                    <div className="flex-1 h-px bg-[var(--border-color)]"></div>
                   </div>
                 </>
               )}
 
-              <div className="flex p-1 rounded-xl bg-white/5 border border-white/5 mb-6">
+              <div className="flex p-1 rounded-xl bg-[var(--bg-input)] border border-[var(--border-color)] mb-6">
                 {(['signin', 'signup', 'magic'] as const).map((tab) => (
                   <button
                     key={tab}
@@ -255,7 +256,7 @@ const Login: React.FC<LoginProps> = ({ message, onDismiss }) => {
                     onClick={() => switchView(tab)}
                     className={cn(
                       "flex-1 py-2 text-sm font-medium rounded-lg transition-all",
-                      authView === tab ? "bg-white/10 text-white shadow-sm" : "text-slate-400 hover:text-white"
+                      authView === tab ? "bg-[var(--border-color)] text-[var(--text-main)] shadow-sm" : "text-[var(--text-muted)] hover:text-[var(--text-main)]"
                     )}
                   >
                     {tab === 'signin' ? 'Sign In' : tab === 'signup' ? 'Sign Up' : 'Magic'}
@@ -274,7 +275,7 @@ const Login: React.FC<LoginProps> = ({ message, onDismiss }) => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
-                    className="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-slate-200 placeholder:text-slate-500 focus:outline-none focus:border-neon-cyan focus:ring-1 focus:ring-neon-cyan transition-all"
+                    className="w-full bg-[var(--bg-input)] border border-[var(--border-color)] rounded-xl px-4 py-3 text-[var(--text-main)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-neon-cyan focus:ring-1 focus:ring-neon-cyan transition-all"
                   />
                 </div>
                 
@@ -286,7 +287,7 @@ const Login: React.FC<LoginProps> = ({ message, onDismiss }) => {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       required
-                      className="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-slate-200 placeholder:text-slate-500 focus:outline-none focus:border-neon-cyan focus:ring-1 focus:ring-neon-cyan transition-all"
+                      className="w-full bg-[var(--bg-input)] border border-[var(--border-color)] rounded-xl px-4 py-3 text-[var(--text-main)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-neon-cyan focus:ring-1 focus:ring-neon-cyan transition-all"
                     />
                   </div>
                 )}
@@ -299,7 +300,7 @@ const Login: React.FC<LoginProps> = ({ message, onDismiss }) => {
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       required
-                      className="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-slate-200 placeholder:text-slate-500 focus:outline-none focus:border-neon-cyan focus:ring-1 focus:ring-neon-cyan transition-all"
+                      className="w-full bg-[var(--bg-input)] border border-[var(--border-color)] rounded-xl px-4 py-3 text-[var(--text-main)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-neon-cyan focus:ring-1 focus:ring-neon-cyan transition-all"
                     />
                   </div>
                 )}
@@ -319,7 +320,7 @@ const Login: React.FC<LoginProps> = ({ message, onDismiss }) => {
                       type="button"
                       disabled={submitting}
                       onClick={handleResetPassword}
-                      className="text-sm text-slate-400 hover:text-white transition-colors"
+                      className="text-sm text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors"
                     >
                       Forgot password?
                     </button>
@@ -344,7 +345,7 @@ const Login: React.FC<LoginProps> = ({ message, onDismiss }) => {
                   placeholder="Enter your name..."
                   value={localName}
                   onChange={(e) => setLocalName(e.target.value)}
-                  className="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-slate-200 placeholder:text-slate-500 focus:outline-none focus:border-neon-cyan focus:ring-1 focus:ring-neon-cyan transition-all"
+                  className="w-full bg-[var(--bg-input)] border border-[var(--border-color)] rounded-xl px-4 py-3 text-[var(--text-main)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-neon-cyan focus:ring-1 focus:ring-neon-cyan transition-all"
                 />
               </div>
               <button 
@@ -358,6 +359,7 @@ const Login: React.FC<LoginProps> = ({ message, onDismiss }) => {
           )}
         </div>
       </motion.div>
+      </div>
     </div>
   );
 };

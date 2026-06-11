@@ -130,7 +130,7 @@ export const ToDoList: React.FC = () => {
     updateData({ todos: data.todos.filter(item => item.id !== id) });
 
   return (
-    <div className="card widget-card reminders-card flex flex-col h-[400px]">
+    <div className="card widget-card reminders-card flex flex-col h-full min-h-[400px]">
       <div className="card-title shrink-0">To-Do List</div>
 
       {data.todos.length === 0 && (

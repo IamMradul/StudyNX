@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import { useData } from '../context/DataContext';
 import { toDateKey } from '../lib/studyLogic';
 import TopStats from './TopStats';
@@ -17,7 +18,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { fadeUp } from '../lib/animations';
 import { cn } from '../lib/utils';
 
-type DashboardTab = 'overview' | 'subjects' | 'resources' | 'reminders' | 'insights';
+type DashboardTab = 'overview' | 'subjects' | 'resources' | 'todo' | 'reminders' | 'insights';
 
 const dashboardTabs: Array<{ id: DashboardTab; label: string; description: string; icon: React.ReactNode }> = [
   {
@@ -37,6 +38,12 @@ const dashboardTabs: Array<{ id: DashboardTab; label: string; description: strin
     label: 'Resources',
     description: 'Quick links and study materials',
     icon: <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" /></svg>
+  },
+  {
+    id: 'todo',
+    label: 'To Do',
+    description: 'Manage tasks',
+    icon: <span className="material-symbols-outlined text-[20px] shrink-0">task_alt</span>
   },
   {
     id: 'reminders',
@@ -223,9 +230,11 @@ const Dashboard: React.FC = () => {
         ? 'Subjects'
         : activeTab === 'resources'
           ? 'Resources'
-          : activeTab === 'reminders'
-            ? 'Reminders'
-            : 'Insights';
+          : activeTab === 'todo'
+            ? 'To Do'
+            : activeTab === 'reminders'
+              ? 'Reminders'
+              : 'Insights';
 
     document.title = `StudyNX | ${titleSuffix}`;
   }, [activeTab]);
@@ -319,7 +328,7 @@ const Dashboard: React.FC = () => {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 p-6 lg:p-10 overflow-x-hidden">
+      <main className="flex-1 p-6 pb-24 lg:p-10 overflow-x-hidden">
         {/* Mobile Nav Header (Visible only on small screens) */}
         <div className="lg:hidden flex items-center justify-between mb-8 pb-4 border-b border-white/10">
           <span className="font-display font-bold text-xl tracking-widest uppercase">
@@ -385,14 +394,13 @@ const Dashboard: React.FC = () => {
                   <TopStats />
                   <div className="grid sm:grid-cols-2 gap-8">
                     <StudyComparison />
-                    <ToDoList />
+                    <ExamCountdown />
                   </div>
                 </div>
                 <aside className="space-y-8 min-w-0">
                   <WeeklyGoal />
                   <DailyGoal />
                   <CalendarWidget />
-                  <ExamCountdown />
                 </aside>
               </div>
             )}
@@ -408,6 +416,17 @@ const Dashboard: React.FC = () => {
             {activeTab === 'resources' && (
               <div className="space-y-8">
                 <Resources />
+              </div>
+            )}
+
+            {activeTab === 'todo' && (
+              <div className="space-y-8 max-w-4xl mx-auto mt-4">
+                <h2 className="text-3xl font-display font-bold text-on-surface tracking-wide mb-6">Your Tasks</h2>
+                <div className="h-[calc(100vh-16rem)] min-h-[600px] flex">
+                  <div className="flex-1">
+                    <ToDoList />
+                  </div>
+                </div>
               </div>
             )}
 
@@ -429,6 +448,28 @@ const Dashboard: React.FC = () => {
           </motion.div>
         </AnimatePresence>
       </main>
+
+      {/* Mobile Bottom Nav */}
+      {typeof document !== 'undefined' && ReactDOM.createPortal(
+        <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-[#050508]/90 backdrop-blur-2xl border-t border-white/10 flex items-center justify-between px-2 pt-2 pb-4 z-[100] overflow-x-auto shadow-[-0_10px_40px_rgba(0,0,0,0.5)]">
+          {dashboardTabs.map(tab => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={cn(
+                "flex flex-col items-center justify-center w-16 min-w-[64px] py-1 gap-1 rounded-xl transition-all",
+                activeTab === tab.id ? "text-neon-cyan" : "text-slate-500 hover:text-slate-300"
+              )}
+            >
+              <div className={cn("flex items-center justify-center w-8 h-8 rounded-full transition-colors", activeTab === tab.id ? "bg-neon-cyan/10" : "")}>
+                {tab.icon}
+              </div>
+              <span className="text-[10px] font-medium tracking-wide truncate w-full text-center">{tab.label}</span>
+            </button>
+          ))}
+        </nav>,
+        document.body
+      )}
 
       <ProfileModal isOpen={isProfileOpen} onClose={() => setIsProfileOpen(false)} />
       <ReminderModal />
