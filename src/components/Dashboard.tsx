@@ -324,7 +324,7 @@ const Dashboard: React.FC = () => {
               <span className="text-xs text-slate-400">{data.isLoggedIn ? 'Online' : 'Sign in to sync'}</span>
             </div>
           </div>
-          <div className="flex justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          <div className="flex justify-center transition-opacity duration-300">
             <ThemeToggle />
           </div>
         </div>

@@ -266,7 +266,7 @@ const SubjectsList: React.FC = () => {
             <TiltCard
               key={subject.id}
               onClick={() => setSelectedSubjectId(subject.id)}
-              className="group cursor-pointer relative bg-[#0f0f13]/80 hover:bg-[#1a1a24]/90 backdrop-blur-md border border-white/10 hover:border-white/20 rounded-3xl p-6 transition-all duration-300 overflow-hidden shadow-[0_8px_32px_-8px_rgba(0,0,0,0.5)] hover:shadow-[0_16px_48px_-12px_rgba(0,0,0,0.8)] flex flex-col h-[180px]"
+              className="group cursor-pointer relative bg-[var(--bg-card)] hover:brightness-110 backdrop-blur-md border border-white/10 hover:border-white/20 rounded-3xl p-6 transition-all duration-300 overflow-hidden shadow-[0_8px_32px_-8px_rgba(0,0,0,0.5)] hover:shadow-[0_16px_48px_-12px_rgba(0,0,0,0.8)] flex flex-col h-[180px]"
             >
               <div
                 className="absolute inset-0 opacity-0 group-hover:opacity-[0.03] transition-opacity duration-500 pointer-events-none"
@@ -333,7 +333,7 @@ const SubjectsList: React.FC = () => {
               initial="initial"
               animate="animate"
               exit="exit"
-              className="w-full max-w-xl bg-[#0f0f13] border border-white/10 rounded-3xl p-8 shadow-card"
+              className="w-full max-w-xl bg-[var(--bg-card)] backdrop-blur-xl border border-white/10 rounded-3xl p-8 shadow-card"
               onClick={e => e.stopPropagation()}
             >
               <div className="flex justify-between items-start mb-6 border-b border-white/10 pb-6">
