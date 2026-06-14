@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useData } from '../context/DataContext';
 import { toDateKey } from '../lib/studyLogic';
 import { motion } from 'framer-motion';
@@ -70,9 +70,25 @@ const Heatmap: React.FC = () => {
   const [todayHoursInput, setTodayHoursInput] = useState(String(todayHours));
   const [selectedDateKey, setSelectedDateKey] = useState(todayKey);
 
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const currentMonthRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     setTodayHoursInput(String(todayHours));
   }, [todayHours]);
+
+  useEffect(() => {
+    if (scrollRef.current && currentMonthRef.current) {
+      const container = scrollRef.current;
+      const target = currentMonthRef.current;
+      // Calculate position to center the target element
+      const scrollLeft = target.offsetLeft - (container.clientWidth / 2) + (target.clientWidth / 2);
+      // Use setTimeout to ensure the DOM is fully rendered and layout is computed
+      setTimeout(() => {
+        container.scrollTo({ left: scrollLeft, behavior: 'smooth' });
+      }, 100);
+    }
+  }, []);
 
   const saveTodayHours = async () => {
     const parsedHours = Number.parseFloat(todayHoursInput);
@@ -167,7 +183,7 @@ const Heatmap: React.FC = () => {
           </div>
         </div>
 
-        <div className="flex-1 overflow-x-auto pb-4 scrollbar-hide">
+        <div ref={scrollRef} className="flex-1 overflow-x-auto pb-4 scrollbar-hide scroll-smooth">
           <Tooltip.Provider delayDuration={100}>
             <motion.div 
               variants={containerVariants}
@@ -176,7 +192,11 @@ const Heatmap: React.FC = () => {
               className="flex gap-3 min-w-max"
             >
               {months.map((month) => (
-                <div key={month.monthLabel} className={cn("flex flex-col gap-2 p-3 rounded-2xl transition-colors", month.isCurrentMonth ? "bg-white/[0.03] border border-white/[0.05]" : "")}>
+                <div 
+                  key={month.monthLabel} 
+                  ref={month.isCurrentMonth ? currentMonthRef : null}
+                  className={cn("flex flex-col gap-2 p-3 rounded-2xl transition-colors shrink-0", month.isCurrentMonth ? "bg-white/[0.03] border border-white/[0.05]" : "")}
+                >
                   <div className="flex gap-1">
                     {month.columns.map((weekColumn, weekIndex) => (
                       <div className="flex flex-col gap-1" key={`${month.monthLabel}-w${weekIndex}`}>
