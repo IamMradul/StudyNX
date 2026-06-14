@@ -5,7 +5,7 @@ import { toDateKey } from '../lib/studyLogic';
 import { motion, AnimatePresence } from 'framer-motion';
 // @ts-ignore
 import confetti from 'canvas-confetti';
-import { cn, scrollOnHover } from '../lib/utils';
+import { cn } from '../lib/utils';
 import { fadeUp, staggerContainer, scaleIn } from '../lib/animations';
 
 const TiltCard = ({ children, className, onClick }: { children: React.ReactNode, className?: string, onClick?: () => void }) => {
@@ -211,30 +211,46 @@ const SubjectsList: React.FC = () => {
           </div>
         </div>
 
-        <div className="flex flex-col sm:flex-row gap-3 mb-6">
-          <input
-            type="text"
-            className="flex-1 min-w-[50px] w-full bg-black/20 border border-white/10 rounded-xl px-4 py-2 text-sm text-slate-200 placeholder:text-slate-500 focus:outline-none focus:border-neon-cyan focus:ring-1 focus:ring-neon-cyan transition-all"
-            placeholder="Add subject..."
-            value={newSubjectName}
-            onChange={(e) => setNewSubjectName(e.target.value)}
-          />
-          <input
-            type="number"
-            min="1"
-            step="0.5"
-            className="w-full sm:w-32 bg-black/20 border border-white/10 rounded-xl px-4 py-2 text-sm text-slate-200 placeholder:text-slate-500 focus:outline-none focus:border-neon-cyan focus:ring-1 focus:ring-neon-cyan transition-all"
-            placeholder="Target"
-            value={newSubjectTargetHours}
-            onChange={(e) => setNewSubjectTargetHours(e.target.value)}
-          />
-          <button
-            type="button"
-            className="bg-white/5 hover:bg-white/10 border border-white/10 text-white px-6 py-2 rounded-xl text-sm font-medium transition-all active:scale-[0.97]"
-            onClick={addSubject}
-          >
-            Add
-          </button>
+        <div className="flex flex-col md:flex-row gap-4 mb-8 bg-black/20 border border-white/5 rounded-3xl p-3 shadow-inner">
+          <div className="flex-1 relative">
+            <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none text-slate-500">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
+            </div>
+            <input
+              type="text"
+              className="w-full bg-transparent border-none rounded-2xl pl-12 pr-4 py-3 text-slate-200 placeholder:text-slate-500 focus:outline-none focus:bg-white/[0.03] transition-colors"
+              placeholder="What subject do you want to track?"
+              value={newSubjectName}
+              onChange={(e) => setNewSubjectName(e.target.value)}
+            />
+          </div>
+          <div className="w-px bg-white/10 hidden md:block" />
+          <div className="flex gap-3">
+            <div className="relative w-full md:w-40">
+              <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none text-slate-500">
+                <span className="text-xs font-bold uppercase tracking-widest">Target</span>
+              </div>
+              <input
+                type="number"
+                min="1"
+                step="0.5"
+                className="w-full bg-transparent border-none rounded-2xl pl-20 pr-4 py-3 text-slate-200 placeholder:text-slate-500 focus:outline-none focus:bg-white/[0.03] transition-colors"
+                placeholder="40"
+                value={newSubjectTargetHours}
+                onChange={(e) => setNewSubjectTargetHours(e.target.value)}
+              />
+              <div className="absolute inset-y-0 right-4 flex items-center pointer-events-none text-slate-500">
+                <span className="text-sm">h</span>
+              </div>
+            </div>
+            <button
+              type="button"
+              className="bg-electric-violet hover:bg-electric-violet/90 text-white px-8 py-3 rounded-2xl font-bold tracking-wide transition-all active:scale-[0.97] shadow-[0_0_20px_rgba(124,58,237,0.3)] hover:shadow-[0_0_30px_rgba(124,58,237,0.5)] shrink-0"
+              onClick={addSubject}
+            >
+              Add
+            </button>
+          </div>
         </div>
 
         {data.subjects.length === 0 && (
@@ -245,52 +261,56 @@ const SubjectsList: React.FC = () => {
           </div>
         )}
 
-        <motion.div variants={staggerContainer} initial="initial" animate="animate" onWheel={scrollOnHover} className="flex flex-col gap-4 flex-1 overflow-y-auto scrollbar-hide hover-scrollbar min-h-0">
+        <motion.div variants={staggerContainer} initial="initial" animate="animate" className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 flex-1 overflow-y-auto pb-6 scrollbar-hide hover-scrollbar min-h-0 content-start p-2 -m-2">
           {data.subjects.map(subject => (
             <TiltCard
               key={subject.id}
               onClick={() => setSelectedSubjectId(subject.id)}
-              className="group cursor-pointer relative bg-white/[0.03] hover:bg-white/[0.05] border border-white/10 rounded-2xl p-5 transition-colors overflow-hidden shrink-0"
+              className="group cursor-pointer relative bg-[#0f0f13]/80 hover:bg-[#1a1a24]/90 backdrop-blur-md border border-white/10 hover:border-white/20 rounded-3xl p-6 transition-all duration-300 overflow-hidden shadow-[0_8px_32px_-8px_rgba(0,0,0,0.5)] hover:shadow-[0_16px_48px_-12px_rgba(0,0,0,0.8)] flex flex-col h-[180px]"
             >
               <div
-                className="absolute top-0 left-0 bottom-0 w-1 opacity-50"
+                className="absolute inset-0 opacity-0 group-hover:opacity-[0.03] transition-opacity duration-500 pointer-events-none"
+                style={{ background: `radial-gradient(circle at top right, ${subject.color}, transparent 60%)` }}
+              />
+              <div
+                className="absolute top-0 left-0 right-0 h-1 opacity-80"
                 style={{ backgroundColor: subject.color }}
               />
-              <div className="flex items-center gap-5 pl-2 py-1">
-                <CircularProgress progress={subject.progress} color={subject.color} />
-                <div className="flex-1 min-w-0">
-                  <div className="flex justify-between items-start">
-                    <div className="min-w-0 pr-4">
-                      <h3 className="text-lg font-display font-semibold text-white group-hover:text-neon-cyan transition-colors truncate">{subject.name}</h3>
-                      <p className="text-xs text-slate-400 mt-0.5">{subject.totalHours}h / {subject.targetHours}h</p>
+              <div className="flex items-start gap-5 flex-1">
+                <CircularProgress progress={subject.progress} color={subject.color} size={64} strokeWidth={5} />
+                <div className="flex-1 min-w-0 pt-1 flex flex-col h-full">
+                  <div className="flex justify-between items-start gap-4">
+                    <div className="min-w-0 flex-1">
+                      <h3 className="text-xl font-display font-bold text-white group-hover:text-neon-cyan transition-colors truncate">{subject.name}</h3>
+                      <p className="text-sm text-slate-400 mt-1 font-medium">{subject.totalHours}h <span className="opacity-50">/ {subject.targetHours}h</span></p>
                     </div>
-                    <div className="flex items-center gap-2 shrink-0">
-                      <span className={cn(
-                        "px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border",
-                        subject.status === 'on track' ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400 shadow-[0_0_10px_rgba(16,185,129,0.2)]' :
-                          subject.status === 'progressing' ? 'bg-amber-500/10 border-amber-500/30 text-amber-400 shadow-[0_0_10px_rgba(245,158,11,0.2)]' :
-                            'bg-red-500/10 border-red-500/30 text-red-400 shadow-[0_0_10px_rgba(239,68,68,0.2)]'
-                      )}>
-                        {subject.status}
-                      </span>
-
-                      <div className="opacity-0 group-hover:opacity-100 transition-opacity flex gap-1 ml-2">
-                        <button
-                          type="button"
-                          className="w-7 h-7 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-400 hover:text-white transition-colors"
-                          onClick={(e) => editSubject(subject.id, e)}
-                        >
-                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.536L16.732 3.732z" /></svg>
-                        </button>
-                        <button
-                          type="button"
-                          className="w-7 h-7 rounded-lg bg-white/5 hover:bg-red-500/20 flex items-center justify-center text-slate-400 hover:text-red-400 transition-colors"
-                          onClick={(e) => deleteSubject(subject.id, e)}
-                        >
-                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                        </button>
-                      </div>
+                    <div className="opacity-0 group-hover:opacity-100 transition-opacity flex gap-2 shrink-0">
+                      <button
+                        type="button"
+                        className="w-8 h-8 rounded-xl bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-400 hover:text-white transition-colors backdrop-blur-md shadow-lg"
+                        onClick={(e) => editSubject(subject.id, e)}
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.536L16.732 3.732z" /></svg>
+                      </button>
+                      <button
+                        type="button"
+                        className="w-8 h-8 rounded-xl bg-white/5 hover:bg-red-500/20 flex items-center justify-center text-slate-400 hover:text-red-400 transition-colors backdrop-blur-md shadow-lg"
+                        onClick={(e) => deleteSubject(subject.id, e)}
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                      </button>
                     </div>
+                  </div>
+                  
+                  <div className="mt-auto pt-4 flex items-center">
+                    <span className={cn(
+                      "px-3 py-1.5 rounded-xl text-[10px] font-bold uppercase tracking-widest border",
+                      subject.status === 'on track' ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.15)]' :
+                        subject.status === 'progressing' ? 'bg-amber-500/10 border-amber-500/30 text-amber-400 shadow-[0_0_15px_rgba(245,158,11,0.15)]' :
+                          'bg-red-500/10 border-red-500/30 text-red-400 shadow-[0_0_15px_rgba(239,68,68,0.15)]'
+                    )}>
+                      {subject.status}
+                    </span>
                   </div>
                 </div>
               </div>

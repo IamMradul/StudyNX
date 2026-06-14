@@ -192,7 +192,7 @@ const ReminderModal: React.FC = () => {
     <div className="fixed inset-0 z-[300] flex items-center justify-center p-4 bg-void/80 backdrop-blur-md animate-in fade-in duration-200">
       <div className="bg-[#0f0f13] border border-white/10 rounded-3xl p-8 w-full max-w-sm shadow-card relative overflow-hidden">
         <div className="absolute top-0 right-0 w-32 h-32 bg-neon-cyan/10 blur-[40px] rounded-full -translate-y-1/2 translate-x-1/3 pointer-events-none" />
-        
+
         <div className="flex flex-col items-center text-center relative z-10">
           <div className="w-16 h-16 rounded-full bg-neon-cyan/10 border border-neon-cyan/30 flex items-center justify-center text-neon-cyan mb-4 shadow-glow-cyan animate-[pulse-glow_2s_infinite]">
             <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
@@ -204,9 +204,9 @@ const ReminderModal: React.FC = () => {
           <p className="text-xs text-slate-400 font-label-caps mt-3 mb-6 tracking-widest">
             {new Date(reminder.datetime).toLocaleString()}
           </p>
-          
-          <button 
-            type="button" 
+
+          <button
+            type="button"
             onClick={handleDismiss}
             className="w-full py-3 bg-electric-violet hover:bg-electric-violet/90 text-white font-bold rounded-xl transition-all shadow-glow-violet active:scale-95"
           >
@@ -266,15 +266,18 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="flex min-h-screen bg-transparent text-slate-200 font-sans selection:bg-electric-violet/30 selection:text-white">
+      {/* Sidebar Placeholder to prevent layout shift */}
+      <div className="hidden lg:block w-20 shrink-0 border-r border-transparent" />
+
       {/* Sidebar */}
-      <aside className="group hidden lg:flex w-20 hover:w-64 transition-all duration-300 flex-col bg-white/[0.02] backdrop-blur-2xl border-r border-white/[0.06] sticky top-0 h-screen overflow-y-auto overflow-x-hidden z-40 pb-20">
+      <aside className="group hidden lg:flex w-20 hover:w-64 fixed left-0 top-0 transition-all duration-300 flex-col bg-white/[0.02] hover:bg-void/60 backdrop-blur-2xl border-r border-white/[0.06] h-screen overflow-y-auto overflow-x-hidden z-50 pb-20">
         <div className="p-6">
           <a href="/" className="flex items-center gap-2 overflow-hidden">
-            <span className="font-display font-bold text-2xl flex items-center justify-center w-8 shrink-0 text-electric-violet">
-              S
-            </span>
+            <div className="flex items-center justify-center w-8 h-8 shrink-0">
+              <img src="/StudyNX.png" alt="StudyNX" className="w-full h-full object-contain" />
+            </div>
             <span className="font-display font-bold text-xl tracking-widest uppercase opacity-0 group-hover:opacity-100 whitespace-nowrap transition-opacity duration-300 animate-[pulse-glow_4s_infinite]">
-              tudy<span className="bg-clip-text text-transparent bg-gradient-to-r from-electric-violet to-neon-cyan">NX</span>
+              Study<span className="bg-clip-text text-transparent bg-gradient-to-r from-electric-violet to-neon-cyan">NX</span>
             </span>
           </a>
         </div>

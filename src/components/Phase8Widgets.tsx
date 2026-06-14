@@ -130,46 +130,78 @@ export const ToDoList: React.FC = () => {
     updateData({ todos: data.todos.filter(item => item.id !== id) });
 
   return (
-    <div className="card widget-card reminders-card flex flex-col h-full min-h-[400px]">
-      <div className="card-title shrink-0">To-Do List</div>
+    <div className="bg-white/[0.02] backdrop-blur-xl border border-white/10 rounded-3xl p-6 lg:p-10 min-h-[600px] h-[calc(100vh-16rem)] flex flex-col shadow-card relative overflow-hidden group">
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-electric-violet/5 blur-[100px] rounded-full -translate-y-1/2 translate-x-1/3 pointer-events-none" />
+
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-10 z-10 shrink-0 gap-4">
+        <div>
+          <h2 className="text-4xl font-display font-bold text-white tracking-wide">Tasks</h2>
+          <p className="text-slate-400 text-sm mt-3 leading-relaxed">Manage your action items and stay productive.</p>
+        </div>
+        <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-electric-violet bg-electric-violet/10 px-5 py-2.5 rounded-2xl border border-electric-violet/20 shadow-[0_0_15px_rgba(124,58,237,0.15)] shrink-0 self-start sm:self-auto">
+          {data.todos.filter(t => t.completed).length} / {data.todos.length} Done
+        </div>
+      </div>
+
+      <div className="mb-8 z-10 shrink-0">
+        <div className="relative group/input">
+          <div className="absolute inset-y-0 left-5 flex items-center pointer-events-none text-neon-cyan group-focus-within/input:text-electric-violet transition-colors">
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
+          </div>
+          <input
+            type="text"
+            placeholder="Add a new task... (Press Enter)"
+            className="w-full bg-black/20 border border-white/10 rounded-2xl pl-14 pr-24 py-5 text-lg text-slate-200 placeholder:text-slate-500 focus:outline-none focus:bg-white/[0.03] focus:border-electric-violet/50 focus:ring-1 focus:ring-electric-violet/50 shadow-inner transition-all"
+            value={newTodo}
+            onChange={e => setNewTodo(e.target.value)}
+            onKeyDown={e => e.key === 'Enter' && addTodo()}
+          />
+          <button 
+            type="button" 
+            className="absolute inset-y-2 right-2 bg-white/5 hover:bg-electric-violet/20 text-electric-violet hover:text-white rounded-xl px-5 font-bold tracking-wide transition-all active:scale-[0.95]"
+            aria-label="Add task" 
+            onClick={addTodo}
+          >
+            Add
+          </button>
+        </div>
+      </div>
 
       {data.todos.length === 0 && (
-        <div className="empty-state shrink-0">
-          <svg width="40" height="40" viewBox="0 0 40 40" fill="none" aria-hidden="true">
-            <path d="M9 11l3 3L22 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        <div className="flex-1 flex flex-col items-center justify-center opacity-50 z-10">
+          <svg className="w-16 h-16 text-slate-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
           </svg>
-          <p>No tasks yet. Add one below!</p>
+          <p className="text-lg">No tasks yet. Add one above!</p>
         </div>
       )}
 
-      <div className="reminders-list flex-1 overflow-y-auto scrollbar-hide hover-scrollbar min-h-0 space-y-3" onWheel={scrollOnHover}>
+      <div className="flex-1 overflow-y-auto scrollbar-hide hover-scrollbar min-h-0 z-10 space-y-3 lg:pr-2">
         {data.todos.map(todo => (
-          <div key={todo.id} className="shrink-0 flex items-center gap-3 bg-white/[0.02] border border-white/10 p-3 rounded-xl transition-colors hover:bg-white/[0.04]">
-            <input
-              type="checkbox"
-              checked={todo.completed}
-              onChange={() => toggleTodo(todo.id)}
-              className="w-4 h-4 rounded border-white/20 bg-black/20 text-electric-violet focus:ring-electric-violet cursor-pointer shrink-0"
-            />
-            <span className={todo.completed ? 'line-through text-slate-500 flex-1 text-sm break-words whitespace-normal' : 'text-slate-200 flex-1 text-sm break-words whitespace-normal'}>
+          <div 
+            key={todo.id} 
+            className={`group flex items-center gap-5 bg-white/[0.02] border border-white/5 p-5 rounded-2xl transition-all duration-300 hover:bg-white/[0.05] ${todo.completed ? 'opacity-60' : 'hover:border-white/10 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.2)] hover:shadow-[0_4px_20px_-4px_rgba(124,58,237,0.15)]'}`}
+          >
+            <button
+              type="button"
+              onClick={() => toggleTodo(todo.id)}
+              className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 border transition-all duration-300 ${todo.completed ? 'bg-electric-violet border-electric-violet text-white shadow-glow-violet scale-95' : 'bg-black/20 border-white/20 text-transparent hover:border-electric-violet/50 hover:bg-electric-violet/10'}`}
+            >
+              <svg className={`w-4 h-4 transition-transform duration-300 ${todo.completed ? 'scale-100' : 'scale-50 opacity-0'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
+            </button>
+            <span className={`flex-1 text-lg transition-all duration-300 ${todo.completed ? 'line-through text-slate-500 decoration-slate-500/50' : 'text-slate-200'}`}>
               {todo.text}
             </span>
-            <button type="button" className="text-slate-500 hover:text-red-400 transition-colors shrink-0 px-2" aria-label="Delete" onClick={() => deleteTodo(todo.id)}>
-              ✕
+            <button 
+              type="button" 
+              className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-slate-500 hover:bg-red-500/20 hover:text-red-400 transition-colors opacity-0 group-hover:opacity-100 shrink-0" 
+              aria-label="Delete" 
+              onClick={() => deleteTodo(todo.id)}
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
             </button>
           </div>
         ))}
-      </div>
-      <div className="add-reminder-row shrink-0 mt-4">
-        <input
-          type="text"
-          placeholder="Add a new task..."
-          className="add-reminder-input"
-          value={newTodo}
-          onChange={e => setNewTodo(e.target.value)}
-          onKeyDown={e => e.key === 'Enter' && addTodo()}
-        />
-        <button type="button" className="widget-btn add-btn" aria-label="Add task" onClick={addTodo}>+</button>
       </div>
     </div>
   );
