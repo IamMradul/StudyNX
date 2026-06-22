@@ -7,7 +7,7 @@ import { fadeUp, staggerContainer } from '../lib/animations';
 import { cn } from '../lib/utils';
 import './Login.css';
 
-type AuthView = 'signin' | 'signup' | 'magic';
+type AuthView = 'signin' | 'signup';
 
 type LoginProps = {
   message?: string;
@@ -17,7 +17,6 @@ type LoginProps = {
 const FloatingObject = () => {
   return (
     <PresentationControls
-      global
       rotation={[0.13, 0.1, 0]}
       polar={[-0.4, 0.2]}
       azimuth={[-1, 0.75]}
@@ -54,7 +53,6 @@ const Login: React.FC<LoginProps> = ({ message, onDismiss }) => {
     authMode,
     isGoogleDirectEnabled,
     signInWithGoogle,
-    requestEmailSignIn,
     signInWithPassword,
     signUpWithPassword,
     requestPasswordReset,
@@ -95,19 +93,6 @@ const Login: React.FC<LoginProps> = ({ message, onDismiss }) => {
     setSubmitting(false);
   };
 
-  const handleMagicLink = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const normalizedEmail = email.trim();
-    if (!normalizedEmail) {
-      setResult(false, 'Enter your email first.');
-      return;
-    }
-    setSubmitting(true);
-    const result = await requestEmailSignIn(normalizedEmail);
-    setResult(result.ok, result.message);
-    setSubmitting(false);
-  };
-
   const handleResetPassword = async () => {
     const normalizedEmail = email.trim();
     if (!normalizedEmail) {
@@ -133,11 +118,11 @@ const Login: React.FC<LoginProps> = ({ message, onDismiss }) => {
   };
 
   const authPillCopy = authMode === 'supabase-email'
-    ? ['Secure email access', 'Magic link option', 'Google sign-in']
+    ? ['Secure email access', 'Google sign-in']
     : ['Fast local access', 'Private by default', 'No account setup'];
 
   return (
-    <div className="fixed inset-0 z-[100] bg-[var(--bg-primary)]/80 backdrop-blur-sm overflow-y-auto">
+    <div className="fixed inset-0 z-[100] bg-[var(--bg-primary)]/80 backdrop-blur-sm overflow-y-auto h-[100dvh] w-full overscroll-contain">
       <div className="flex min-h-full items-center justify-center p-4 py-12 lg:p-8">
         <motion.div 
           variants={fadeUp} 
@@ -249,7 +234,7 @@ const Login: React.FC<LoginProps> = ({ message, onDismiss }) => {
               )}
 
               <div className="flex p-1 rounded-xl bg-[var(--bg-input)] border border-[var(--border-color)] mb-6">
-                {(['signin', 'signup', 'magic'] as const).map((tab) => (
+                {(['signin', 'signup'] as const).map((tab) => (
                   <button
                     key={tab}
                     type="button"
@@ -259,13 +244,22 @@ const Login: React.FC<LoginProps> = ({ message, onDismiss }) => {
                       authView === tab ? "bg-[var(--border-color)] text-[var(--text-main)] shadow-sm" : "text-[var(--text-muted)] hover:text-[var(--text-main)]"
                     )}
                   >
-                    {tab === 'signin' ? 'Sign In' : tab === 'signup' ? 'Sign Up' : 'Magic'}
+                    {tab === 'signin' ? 'Sign In' : 'Sign Up'}
                   </button>
                 ))}
               </div>
 
+              {feedback && (
+                <div className={cn(
+                  "p-4 rounded-xl text-sm border mb-4",
+                  feedbackTone === 'success' ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-400" : "bg-red-500/10 border-red-500/20 text-red-400"
+                )}>
+                  {feedback}
+                </div>
+              )}
+
               <form 
-                onSubmit={authView === 'signin' ? handleSignIn : authView === 'signup' ? handleSignUp : handleMagicLink}
+                onSubmit={authView === 'signin' ? handleSignIn : handleSignUp}
                 className="space-y-4"
               >
                 <div>
@@ -279,18 +273,16 @@ const Login: React.FC<LoginProps> = ({ message, onDismiss }) => {
                   />
                 </div>
                 
-                {authView !== 'magic' && (
-                  <div>
-                    <input
-                      type="password"
-                      placeholder={authView === 'signup' ? "Create password" : "Password"}
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      required
-                      className="w-full bg-[var(--bg-input)] border border-[var(--border-color)] rounded-xl px-4 py-3 text-[var(--text-main)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-neon-cyan focus:ring-1 focus:ring-neon-cyan transition-all"
-                    />
-                  </div>
-                )}
+                <div>
+                  <input
+                    type="password"
+                    placeholder={authView === 'signup' ? "Create password" : "Password"}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    className="w-full bg-[var(--bg-input)] border border-[var(--border-color)] rounded-xl px-4 py-3 text-[var(--text-main)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-neon-cyan focus:ring-1 focus:ring-neon-cyan transition-all"
+                  />
+                </div>
 
                 {authView === 'signup' && (
                   <div>
@@ -311,7 +303,7 @@ const Login: React.FC<LoginProps> = ({ message, onDismiss }) => {
                   className="w-full relative overflow-hidden group bg-gradient-to-r from-electric-violet to-neon-cyan text-white font-semibold py-3 px-4 rounded-xl transition-all active:scale-[0.97] hover:scale-[1.02] hover:shadow-glow-violet"
                 >
                   <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:animate-[shimmer_1s_forwards]" />
-                  {submitting ? 'Processing...' : authView === 'signin' ? 'Sign In' : authView === 'signup' ? 'Create Account' : 'Send Link'}
+                  {submitting ? 'Processing...' : authView === 'signin' ? 'Sign In' : 'Create Account'}
                 </button>
 
                 {authView === 'signin' && (
@@ -327,15 +319,6 @@ const Login: React.FC<LoginProps> = ({ message, onDismiss }) => {
                   </div>
                 )}
               </form>
-
-              {feedback && (
-                <div className={cn(
-                  "p-4 rounded-xl text-sm border",
-                  feedbackTone === 'success' ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-400" : "bg-red-500/10 border-red-500/20 text-red-400"
-                )}>
-                  {feedback}
-                </div>
-              )}
             </div>
           ) : (
             <form onSubmit={handleLogin} className="space-y-4">
