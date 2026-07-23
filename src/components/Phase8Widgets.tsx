@@ -138,8 +138,24 @@ export const ToDoList: React.FC = () => {
           <h2 className="text-4xl font-display font-bold text-white tracking-wide">Tasks</h2>
           <p className="text-slate-400 text-sm mt-3 leading-relaxed">Manage your action items and stay productive.</p>
         </div>
-        <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-electric-violet bg-electric-violet/10 px-5 py-2.5 rounded-2xl border border-electric-violet/20 shadow-[0_0_15px_rgba(124,58,237,0.15)] shrink-0 self-start sm:self-auto">
-          {data.todos.filter(t => t.completed).length} / {data.todos.length} Done
+        <div className="flex items-center gap-4 shrink-0 self-start sm:self-auto flex-wrap">
+          <label className="flex items-center gap-3 text-sm text-slate-300 cursor-pointer hover:text-white transition-colors bg-white/5 px-4 py-2.5 rounded-xl border border-white/10 hover:border-white/20 group">
+            <div className={`w-5 h-5 rounded-md flex items-center justify-center transition-all duration-300 ${data.dailyTodoEnabled ? 'bg-electric-violet border-electric-violet text-white shadow-glow-violet' : 'border border-slate-500 bg-black/20 text-transparent group-hover:border-electric-violet/50'}`}>
+              <svg className={`w-3.5 h-3.5 transition-transform duration-300 ${data.dailyTodoEnabled ? 'scale-100' : 'scale-50 opacity-0'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <span className="font-medium tracking-wide">Daily to do</span>
+            <input 
+              type="checkbox" 
+              className="hidden" 
+              checked={data.dailyTodoEnabled || false} 
+              onChange={(e) => updateData({ dailyTodoEnabled: e.target.checked })} 
+            />
+          </label>
+          <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-electric-violet bg-electric-violet/10 px-5 py-2.5 rounded-2xl border border-electric-violet/20 shadow-[0_0_15px_rgba(124,58,237,0.15)]">
+            {data.todos.filter(t => t.completed).length} / {data.todos.length} Done
+          </div>
         </div>
       </div>
 
@@ -216,8 +232,9 @@ export const CalendarWidget: React.FC = () => {
   const { data, logStudySession } = useData();
   const [monthOffset, setMonthOffset] = useState(0);
   const today = new Date();
+  const todayKey = toDateKey(today);
   const baseMonth = new Date(today.getFullYear(), today.getMonth() + monthOffset, 1);
-  const [selectedDate, setSelectedDate] = useState<string>(() => toDateKey(today));
+  const [selectedDate, setSelectedDate] = useState<string>(() => todayKey);
 
   const monthLabel = baseMonth.toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
   const days = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
@@ -238,8 +255,9 @@ export const CalendarWidget: React.FC = () => {
     : 0;
 
   const hoursToClass = (hours: number) => {
-    if (hours >= 6) return 'cal-intense';
-    if (hours > 0) return 'cal-active';
+    if (hours >= 6) return 'cal-level-3';
+    if (hours >= 3) return 'cal-level-2';
+    if (hours > 0) return 'cal-level-1';
     return '';
   };
 
@@ -271,11 +289,13 @@ export const CalendarWidget: React.FC = () => {
 
         {currentMonthDays.map(d => {
           const dateKey = dateKeyFor(d);
+          const isFuture = dateKey > todayKey;
           const hours = data.activityData[dateKey] ?? 0;
           let extraClass = `cal-date ${hoursToClass(hours)}`;
           if (selectedDate === dateKey) extraClass += ' cal-selected';
+          if (isFuture) extraClass += ' opacity-30 cursor-not-allowed';
           return (
-            <div key={`day-${d}`} className={extraClass} onClick={() => setSelectedDate(dateKey)}>
+            <div key={`day-${d}`} className={extraClass} onClick={() => { if (!isFuture) setSelectedDate(dateKey); }}>
               {d}
             </div>
           );

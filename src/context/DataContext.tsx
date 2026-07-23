@@ -62,7 +62,7 @@ export interface SessionLog {
 
 export interface AppData {
   isLoggedIn: boolean;
-  user: { name: string; avatar: string } | null;
+  user: { name: string; avatar: string; email?: string } | null;
   subjects: Subject[];
   activityData: Record<string, number>; // date "YYYY-MM-DD" -> hours
   activityDataMode: 'hours';
@@ -74,9 +74,11 @@ export interface AppData {
   dailyTargetHours: number;
   pomodoroSettings: PomodoroSettings;
   sessionLogs: SessionLog[];
+  dailyTodoEnabled: boolean;
+  lastTodoResetDate: string;
 }
 
-type ProgressPayload = Pick<AppData, 'subjects' | 'activityData' | 'activityDataMode' | 'todos' | 'reminders' | 'resources' | 'exams' | 'weeklyTargetHours' | 'dailyTargetHours' | 'pomodoroSettings' | 'sessionLogs'>;
+type ProgressPayload = Pick<AppData, 'subjects' | 'activityData' | 'activityDataMode' | 'todos' | 'reminders' | 'resources' | 'exams' | 'weeklyTargetHours' | 'dailyTargetHours' | 'pomodoroSettings' | 'sessionLogs' | 'dailyTodoEnabled' | 'lastTodoResetDate'>;
 
 const isRecord = (value: unknown): value is Record<string, unknown> => (
   Boolean(value) && typeof value === 'object' && !Array.isArray(value)
@@ -100,6 +102,8 @@ const defaultData: AppData = {
     longBreakDuration: 15,
   },
   sessionLogs: [],
+  dailyTodoEnabled: false,
+  lastTodoResetDate: '',
 };
 
 interface DataContextType {
@@ -150,6 +154,8 @@ const toProgressPayload = (state: AppData): ProgressPayload => ({
   dailyTargetHours: state.dailyTargetHours,
   pomodoroSettings: state.pomodoroSettings,
   sessionLogs: state.sessionLogs,
+  dailyTodoEnabled: state.dailyTodoEnabled,
+  lastTodoResetDate: state.lastTodoResetDate,
 });
 
 const sanitizeProgressPayload = (rawPayload: unknown): Partial<ProgressPayload> => {
@@ -196,6 +202,8 @@ const sanitizeProgressPayload = (rawPayload: unknown): Partial<ProgressPayload> 
       longBreakDuration:  typeof payload.pomodoroSettings.longBreakDuration  === 'number' ? payload.pomodoroSettings.longBreakDuration  : 15,
     } : undefined,
     sessionLogs: Array.isArray(payload.sessionLogs) ? payload.sessionLogs : undefined,
+    dailyTodoEnabled: typeof payload.dailyTodoEnabled === 'boolean' ? payload.dailyTodoEnabled : undefined,
+    lastTodoResetDate: typeof payload.lastTodoResetDate === 'string' ? payload.lastTodoResetDate : undefined,
   };
 };
 
@@ -264,6 +272,7 @@ const normalizeAppData = (rawData: unknown): AppData => {
     ? {
       name: typeof candidate.user.name === 'string' ? candidate.user.name : '',
       avatar: typeof candidate.user.avatar === 'string' ? candidate.user.avatar : '',
+      email: typeof candidate.user.email === 'string' ? candidate.user.email : undefined,
     }
     : null;
 
@@ -288,6 +297,8 @@ const normalizeAppData = (rawData: unknown): AppData => {
       longBreakDuration:  typeof candidate.pomodoroSettings.longBreakDuration  === 'number' ? candidate.pomodoroSettings.longBreakDuration  : defaultData.pomodoroSettings.longBreakDuration,
     } : defaultData.pomodoroSettings,
     sessionLogs: Array.isArray(candidate.sessionLogs) ? candidate.sessionLogs as SessionLog[] : defaultData.sessionLogs,
+    dailyTodoEnabled: typeof candidate.dailyTodoEnabled === 'boolean' ? candidate.dailyTodoEnabled : defaultData.dailyTodoEnabled,
+    lastTodoResetDate: typeof candidate.lastTodoResetDate === 'string' ? candidate.lastTodoResetDate : defaultData.lastTodoResetDate,
   };
 };
 
@@ -349,11 +360,11 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         const email = session.user.email;
         const nameFromMeta = session.user.user_metadata?.name || session.user.user_metadata?.full_name;
         const displayName = nameFromMeta || email.split('@')[0];
-        setData(prev => ({ ...prev, isLoggedIn: true, user: { name: displayName, avatar: displayName.slice(0, 2).toUpperCase() } }));
+        setData(prev => ({ ...prev, isLoggedIn: true, user: { name: displayName, avatar: displayName.slice(0, 2).toUpperCase(), email } }));
       } else {
         const savedGoogleSession = readGoogleSession();
         if (savedGoogleSession) {
-          setData(prev => ({ ...prev, isLoggedIn: true, user: { name: savedGoogleSession.name, avatar: savedGoogleSession.avatar } }));
+          setData(prev => ({ ...prev, isLoggedIn: true, user: { name: savedGoogleSession.name, avatar: savedGoogleSession.avatar, email: savedGoogleSession.email } }));
           return;
         }
         setData(prev => ({ ...prev, isLoggedIn: false, user: null }));
@@ -381,17 +392,26 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const supabaseClient = supabase;
     if (!isSupabaseConfigured || !supabaseClient) return;
     if (!data.isLoggedIn || !data.user?.name) { hydratedUserRef.current = null; return; }
-    if (hydratedUserRef.current === data.user.name) return;
+    
+    const userIdentifier = data.user.email || data.user.name;
+    if (hydratedUserRef.current === userIdentifier) return;
 
-    const userName = data.user.name;
-    hydratedUserRef.current = userName;
+    hydratedUserRef.current = userIdentifier;
     isHydratingFromSupabaseRef.current = true;
     let isCancelled = false;
 
     const hydrateFromSupabase = async () => {
-      const { data: row, error } = await supabaseClient.from('user_progress').select('payload').eq('user_name', userName).maybeSingle();
+      let row = null;
+      if (data.user?.email) {
+        const { data: emailRow } = await supabaseClient.from('user_progress').select('payload').eq('user_email', data.user.email).maybeSingle();
+        row = emailRow;
+      }
+      if (!row && data.user) {
+        const { data: nameRow } = await supabaseClient.from('user_progress').select('payload').eq('user_email', data.user.name).maybeSingle();
+        row = nameRow;
+      }
+      
       if (isCancelled) return;
-      if (error) { console.error('Supabase fetch error:', error.message); isHydratingFromSupabaseRef.current = false; return; }
       if (row?.payload) {
         const remotePayload = sanitizeProgressPayload(row.payload);
         setData(prev => ({
@@ -413,7 +433,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     hydrateFromSupabase();
     return () => { isCancelled = true; };
-  }, [data.isLoggedIn, data.user?.name]);
+  }, [data.isLoggedIn, data.user?.name, data.user?.email]);
 
   useEffect(() => { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }, [data]);
 
@@ -425,14 +445,51 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     const payload = toProgressPayload(data);
     const saveToSupabase = async () => {
+      const identifier = data.user!.email || data.user!.name;
       const { error } = await supabaseClient.from('user_progress').upsert(
-        { user_name: data.user!.name, payload, updated_at: new Date().toISOString() },
-        { onConflict: 'user_name' }
+        { user_email: identifier, display_name: data.user!.name, payload, updated_at: new Date().toISOString() },
+        { onConflict: 'user_email' }
       );
       if (error) console.error('Supabase save error:', error.message);
     };
     saveToSupabase();
   }, [data]);
+
+  useEffect(() => {
+    if (!data.dailyTodoEnabled) return;
+    
+    const checkReset = () => {
+      const now = new Date();
+      // Shift back by 3 hours: "today" logically ends at 3 AM next day.
+      const logicalDate = new Date(now);
+      logicalDate.setHours(logicalDate.getHours() - 3);
+      const logicalDateKey = toDateKey(logicalDate);
+
+      setData(prev => {
+        if (!prev.dailyTodoEnabled) return prev;
+        
+        if (prev.lastTodoResetDate && prev.lastTodoResetDate !== logicalDateKey) {
+          const hasCompletedTodos = prev.todos.some(t => t.completed);
+          if (hasCompletedTodos) {
+            return normalizeAppData({
+              ...prev,
+              todos: prev.todos.map(t => ({ ...t, completed: false })),
+              lastTodoResetDate: logicalDateKey
+            });
+          } else {
+            return normalizeAppData({ ...prev, lastTodoResetDate: logicalDateKey });
+          }
+        } else if (!prev.lastTodoResetDate) {
+          return normalizeAppData({ ...prev, lastTodoResetDate: logicalDateKey });
+        }
+        return prev;
+      });
+    };
+
+    checkReset();
+    const interval = setInterval(checkReset, 60000); // Check every minute
+    return () => clearInterval(interval);
+  }, [data.dailyTodoEnabled]);
 
   const requestEmailSignIn = async (email: string) => {
     const supabaseClient = supabase;
@@ -470,7 +527,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       setData(prev => ({
         ...prev,
         isLoggedIn: true,
-        user: { name: profile.email, avatar: initials },
+        user: { name: displayName, avatar: initials, email: profile.email },
       }));
       dismissAuthPrompt();
 

@@ -221,10 +221,11 @@ const Heatmap: React.FC = () => {
                                   className={cn(
                                     "w-[10px] h-[10px] rounded-sm transition-all duration-200 outline-none",
                                     getBucketClass(cell.hours),
-                                    selectedDateKey === dateKey ? "ring-2 ring-white ring-offset-2 ring-offset-[#050508] scale-125 z-10" : ""
+                                    selectedDateKey === dateKey ? "ring-2 ring-white ring-offset-2 ring-offset-[#050508] scale-125 z-10" : "",
+                                    dateKey > todayKey ? "opacity-30 cursor-not-allowed" : "cursor-pointer"
                                   )}
-                                  whileHover={{ scale: 1.4, zIndex: 20 }}
-                                  onClick={() => setSelectedDateKey(dateKey)}
+                                  whileHover={dateKey > todayKey ? {} : { scale: 1.4, zIndex: 20 }}
+                                  onClick={() => { if (dateKey <= todayKey) setSelectedDateKey(dateKey); }}
                                 />
                               </Tooltip.Trigger>
                               <Tooltip.Portal>

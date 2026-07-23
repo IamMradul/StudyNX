@@ -32,6 +32,8 @@ const baseData: AppData = {
     longBreakDuration: 15,
   },
   sessionLogs: [],
+  dailyTodoEnabled: false,
+  lastTodoResetDate: '',
 };
 
 describe('study session logging', () => {
