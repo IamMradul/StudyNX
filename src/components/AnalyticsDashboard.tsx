@@ -18,7 +18,7 @@ import {
   PolarRadiusAxis,
   Radar,
 } from 'recharts';
-import { useData } from '../context/DataContext';
+import { useData, toDateKey } from '../context/DataContext';
 import './AnalyticsDashboard.css';
 
 const AMBER = '#f5a623';
@@ -55,7 +55,7 @@ const AnalyticsDashboard: React.FC = () => {
     const last14Days = Array.from({ length: 14 }, (_, i) => {
       const d = new Date();
       d.setDate(d.getDate() - (13 - i));
-      const key = d.toISOString().split('T')[0];
+      const key = toDateKey(d);
       const hours = data.activityData[key] || 0;
       return {
         date: d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }),
@@ -95,7 +95,7 @@ const AnalyticsDashboard: React.FC = () => {
       } else {
         // Fallback: If no session logs, but we have activityData, distribute activityData slightly
         // for "Time of Day" to not look empty, but only for today
-        const todayKey = new Date().toISOString().split('T')[0];
+        const todayKey = toDateKey(new Date());
         const todayHours = data.activityData[todayKey] || 0;
         if (todayHours > 0 && hour >= 10 && hour <= 18) {
           count = (todayHours * 60) / 5; // Split today's hours across typical study window
@@ -129,7 +129,7 @@ const AnalyticsDashboard: React.FC = () => {
       for (let i = 0; i < count; i++) {
         const d = new Date();
         d.setDate(d.getDate() - d.getDay() + days.indexOf(day) - (i * 7));
-        const key = d.toISOString().split('T')[0];
+        const key = toDateKey(d);
         intensity += data.activityData[key] || 0;
       }
       return { subject: day, A: Math.round((intensity / count) * 60) };

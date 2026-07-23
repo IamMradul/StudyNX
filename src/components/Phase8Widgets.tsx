@@ -51,7 +51,7 @@ export const Resources: React.FC = () => {
   };
 
   return (
-    <div className="card widget-card resources-card flex flex-col min-h-[600px] h-[calc(100vh-16rem)]">
+    <div className="card widget-card resources-card flex flex-col min-h-[500px] lg:min-h-[600px] h-auto lg:h-[calc(100vh-16rem)]">
       <div className="card-title shrink-0">Quick resources</div>
 
       {data.resources.length === 0 && (
@@ -84,10 +84,18 @@ export const Resources: React.FC = () => {
               )}
             </div>
             <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
-              <button type="button" className="w-7 h-7 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-400 hover:text-white transition-colors" aria-label={`Move up`} onClick={() => moveResource(res.id, -1)}>↑</button>
-              <button type="button" className="w-7 h-7 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-400 hover:text-white transition-colors" aria-label={`Move down`} onClick={() => moveResource(res.id, 1)}>↓</button>
-              <button type="button" className="w-7 h-7 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-400 hover:text-white transition-colors text-xs font-bold" onClick={() => editResource(res.id)}>EDIT</button>
-              <button type="button" className="w-7 h-7 rounded-lg bg-white/5 hover:bg-red-500/20 flex items-center justify-center text-slate-400 hover:text-red-400 transition-colors text-xs font-bold" onClick={() => deleteResource(res.id)}>DEL</button>
+              <button type="button" className="w-7 h-7 rounded-lg bg-[var(--bg-secondary)] hover:bg-[var(--border-color)] flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors" aria-label={`Move up`} onClick={() => moveResource(res.id, -1)}>
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" /></svg>
+              </button>
+              <button type="button" className="w-7 h-7 rounded-lg bg-[var(--bg-secondary)] hover:bg-[var(--border-color)] flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors" aria-label={`Move down`} onClick={() => moveResource(res.id, 1)}>
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+              </button>
+              <button type="button" className="w-7 h-7 rounded-lg bg-[var(--bg-secondary)] hover:bg-[var(--border-color)] flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors" aria-label={`Edit`} onClick={() => editResource(res.id)}>
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+              </button>
+              <button type="button" className="w-7 h-7 rounded-lg bg-[var(--bg-secondary)] hover:bg-rose-500/20 flex items-center justify-center text-[var(--text-muted)] hover:text-rose-500 transition-colors" aria-label={`Delete`} onClick={() => deleteResource(res.id)}>
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+              </button>
             </div>
           </div>
         ))}
@@ -130,7 +138,7 @@ export const ToDoList: React.FC = () => {
     updateData({ todos: data.todos.filter(item => item.id !== id) });
 
   return (
-    <div className="bg-white/[0.02] backdrop-blur-xl border border-white/10 rounded-3xl p-6 lg:p-10 min-h-[600px] h-[calc(100vh-16rem)] flex flex-col shadow-card relative overflow-hidden group">
+    <div className="bg-white/[0.02] backdrop-blur-xl border border-white/10 rounded-3xl p-6 lg:p-10 min-h-[500px] lg:min-h-[600px] h-auto lg:h-[calc(100vh-16rem)] flex flex-col shadow-card relative overflow-hidden group">
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-electric-violet/5 blur-[100px] rounded-full -translate-y-1/2 translate-x-1/3 pointer-events-none" />
 
       <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-10 z-10 shrink-0 gap-4">
@@ -146,11 +154,11 @@ export const ToDoList: React.FC = () => {
               </svg>
             </div>
             <span className="font-medium tracking-wide">Daily to do</span>
-            <input 
-              type="checkbox" 
-              className="hidden" 
-              checked={data.dailyTodoEnabled || false} 
-              onChange={(e) => updateData({ dailyTodoEnabled: e.target.checked })} 
+            <input
+              type="checkbox"
+              className="hidden"
+              checked={data.dailyTodoEnabled || false}
+              onChange={(e) => updateData({ dailyTodoEnabled: e.target.checked })}
             />
           </label>
           <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-electric-violet bg-electric-violet/10 px-5 py-2.5 rounded-2xl border border-electric-violet/20 shadow-[0_0_15px_rgba(124,58,237,0.15)]">
@@ -172,10 +180,10 @@ export const ToDoList: React.FC = () => {
             onChange={e => setNewTodo(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && addTodo()}
           />
-          <button 
-            type="button" 
+          <button
+            type="button"
             className="absolute inset-y-2 right-2 bg-white/5 hover:bg-electric-violet/20 text-electric-violet hover:text-white rounded-xl px-5 font-bold tracking-wide transition-all active:scale-[0.95]"
-            aria-label="Add task" 
+            aria-label="Add task"
             onClick={addTodo}
           >
             Add
@@ -194,8 +202,8 @@ export const ToDoList: React.FC = () => {
 
       <div className="flex-1 overflow-y-auto scrollbar-hide hover-scrollbar min-h-0 z-10 space-y-3 lg:pr-2">
         {data.todos.map(todo => (
-          <div 
-            key={todo.id} 
+          <div
+            key={todo.id}
             className={`group flex items-center gap-5 bg-white/[0.02] border border-white/5 p-5 rounded-2xl transition-all duration-300 hover:bg-white/[0.05] ${todo.completed ? 'opacity-60' : 'hover:border-white/10 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.2)] hover:shadow-[0_4px_20px_-4px_rgba(124,58,237,0.15)]'}`}
           >
             <button
@@ -208,10 +216,10 @@ export const ToDoList: React.FC = () => {
             <span className={`flex-1 text-lg transition-all duration-300 ${todo.completed ? 'line-through text-slate-500 decoration-slate-500/50' : 'text-slate-200'}`}>
               {todo.text}
             </span>
-            <button 
-              type="button" 
-              className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-slate-500 hover:bg-red-500/20 hover:text-red-400 transition-colors opacity-0 group-hover:opacity-100 shrink-0" 
-              aria-label="Delete" 
+            <button
+              type="button"
+              className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-slate-500 hover:bg-red-500/20 hover:text-red-400 transition-colors opacity-0 group-hover:opacity-100 shrink-0"
+              aria-label="Delete"
               onClick={() => deleteTodo(todo.id)}
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>

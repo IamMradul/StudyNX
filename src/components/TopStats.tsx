@@ -101,7 +101,7 @@ const TopStats: React.FC = () => {
   const avgFocusScore = Math.round(focusScoreData.reduce((s, e) => s + e.score, 0) / 7);
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div className="hidden md:grid grid-cols-1 md:grid-cols-3 gap-6">
       <StatCard
         title="Today's Hours"
         value={todayHours}

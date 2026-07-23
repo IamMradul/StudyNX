@@ -124,6 +124,7 @@ interface DataContextType {
   updatePassword: (password: string) => Promise<{ ok: boolean; message: string }>;
   updateData: (newData: Partial<AppData>) => void;
   logStudySession: (session: StudySessionLog) => Promise<AuthResult>;
+  generateDemoData: () => void;
 }
 
 const DataContext = createContext<DataContextType | undefined>(undefined);
@@ -650,6 +651,45 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     };
   };
 
+  const generateDemoData = () => {
+    const d = new Date();
+    const newActivityData: Record<string, number> = {};
+    const newSessionLogs: SessionLog[] = [];
+    
+    const fakeSubjects: Subject[] = [
+      { id: 'mock-1', name: 'Mathematics', progress: 50, totalHours: 15, targetHours: 30, status: 'progressing', color: '#10B981', studyDates: [], dailyHours: {} },
+      { id: 'mock-2', name: 'Physics', progress: 30, totalHours: 9, targetHours: 30, status: 'needs focus', color: '#F43F5E', studyDates: [], dailyHours: {} },
+      { id: 'mock-3', name: 'Computer Science', progress: 80, totalHours: 24, targetHours: 30, status: 'on track', color: '#7C3AED', studyDates: [], dailyHours: {} },
+    ];
+
+    for (let i = 0; i < 28; i++) {
+      const date = new Date(d);
+      date.setDate(date.getDate() - i);
+      const key = toDateKey(date);
+      
+      // 70% chance to have studied on a given day
+      if (Math.random() > 0.3) {
+        const hours = Math.round((Math.random() * 4 + 1) * 10) / 10;
+        newActivityData[key] = hours;
+        
+        const subjectIndex = Math.floor(Math.random() * 3);
+        const subj = fakeSubjects[subjectIndex];
+        subj.dailyHours[key] = hours;
+        
+        newSessionLogs.push({
+          id: crypto.randomUUID(),
+          subjectId: subj.id,
+          subjectName: subj.name,
+          startTime: new Date(date.setHours(9 + Math.floor(Math.random() * 10))).toISOString(), // Random hour between 9am and 7pm
+          durationMinutes: Math.round(hours * 60),
+          quality: Math.floor(Math.random() * 3) + 3, // Quality between 3 and 5
+        });
+      }
+    }
+    
+    updateData({ activityData: newActivityData, sessionLogs: newSessionLogs, subjects: fakeSubjects });
+  };
+
   return (
     <DataContext.Provider
       value={{
@@ -670,6 +710,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         updatePassword,
         updateData,
         logStudySession,
+        generateDemoData,
       }}
     >
       {children}

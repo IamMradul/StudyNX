@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useData } from '../context/DataContext';
+import { useTheme } from '../hooks/useTheme';
 import { motion } from 'framer-motion';
 import { Canvas } from '@react-three/fiber';
 import { Float, PresentationControls, Icosahedron, MeshDistortMaterial } from '@react-three/drei';
@@ -14,7 +15,9 @@ type LoginProps = {
   onDismiss?: () => void;
 };
 
-const FloatingObject = () => {
+const FloatingObject = ({ theme }: { theme: 'light' | 'dark' }) => {
+  const isLight = theme === 'light';
+  
   return (
     <PresentationControls
       rotation={[0.13, 0.1, 0]}
@@ -22,15 +25,15 @@ const FloatingObject = () => {
       azimuth={[-1, 0.75]}
     >
       <Float rotationIntensity={2} floatIntensity={3} speed={2}>
-        <Icosahedron args={[1, 15]} scale={1.5}>
+        <Icosahedron args={[1, 15]} scale={1.3} position={[0.8, 1, 0]}>
           <MeshDistortMaterial
-            color="#7C3AED"
-            emissive="#06B6D4"
-            emissiveIntensity={0.2}
+            color={isLight ? "#4F46E5" : "#7C3AED"}
+            emissive={isLight ? "#06B6D4" : "#06B6D4"}
+            emissiveIntensity={isLight ? 0.5 : 0.2}
             distort={0.4}
             speed={2}
             roughness={0.2}
-            metalness={0.8}
+            metalness={isLight ? 0.4 : 0.8}
             wireframe={true}
           />
         </Icosahedron>
@@ -57,6 +60,7 @@ const Login: React.FC<LoginProps> = ({ message, onDismiss }) => {
     signUpWithPassword,
     requestPasswordReset,
   } = useData();
+  const { theme } = useTheme();
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -124,224 +128,224 @@ const Login: React.FC<LoginProps> = ({ message, onDismiss }) => {
   return (
     <div className="fixed inset-0 z-[100] bg-[var(--bg-primary)]/80 backdrop-blur-sm overflow-y-auto h-[100dvh] w-full overscroll-contain">
       <div className="flex min-h-full items-center justify-center p-4 py-12 lg:p-8">
-        <motion.div 
-          variants={fadeUp} 
-          initial="initial" 
-          animate="animate" 
+        <motion.div
+          variants={fadeUp}
+          initial="initial"
+          animate="animate"
           exit="exit"
           className="relative w-full max-w-6xl mx-auto flex flex-col lg:flex-row rounded-3xl overflow-hidden shadow-glow-violet bg-[var(--bg-card)] border border-[var(--border-color)]"
         >
-        {/* Left Side: 3D Hero & Copy */}
-        <div className="relative flex-1 p-6 lg:p-16 flex flex-col justify-center min-h-[250px] lg:min-h-[500px] overflow-hidden">
-          <div className="absolute inset-0 z-0 opacity-80 pointer-events-none">
-            <Canvas camera={{ position: [0, 0, 5], fov: 45 }}>
-              <ambientLight intensity={0.5} />
-              <directionalLight position={[10, 10, 5]} intensity={1} />
-              <FloatingObject />
-            </Canvas>
-          </div>
-          
-          <motion.div variants={staggerContainer} initial="initial" animate="animate" className="relative z-10 space-y-4 lg:space-y-6">
-            <motion.div variants={fadeUp} className="flex items-center gap-3 mb-4 lg:mb-8">
-              <div className="font-display font-bold text-xl lg:text-2xl tracking-widest uppercase text-[var(--text-main)]">
-                Study<span className="bg-clip-text text-transparent bg-gradient-to-r from-electric-violet to-neon-cyan">NX</span>
-              </div>
-              <span className="px-3 py-1 rounded-full text-[0.65rem] uppercase tracking-wider bg-[var(--bg-secondary)] border border-[var(--border-color)] text-neon-cyan">
-                Study dashboard
-              </span>
-            </motion.div>
-
-            <motion.h2 variants={fadeUp} className="text-3xl lg:text-5xl font-display font-bold leading-tight text-[var(--text-heading)]">
-              Study Smarter. <br />
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-electric-violet to-neon-cyan animate-gradient-shift bg-[length:200%_auto]">
-                Track Deeper.
-              </span>
-            </motion.h2>
-            
-            <motion.p variants={fadeUp} className="text-[var(--text-muted)] text-base lg:text-lg max-w-md hidden md:block">
-              Save sessions, track streaks, and pick up exactly where you left off across devices.
-            </motion.p>
-
-            <motion.div variants={fadeUp} className="hidden md:flex flex-wrap gap-3 pt-4">
-              {authPillCopy.map((item, i) => (
-                <motion.span 
-                  key={item}
-                  animate={{ y: [0, -5, 0] }}
-                  transition={{ duration: 4, repeat: Infinity, delay: i * 0.4 }}
-                  className="px-4 py-2 rounded-full bg-[var(--bg-secondary)] border border-[var(--border-color)] text-sm text-[var(--text-main)] shadow-glow-cyan"
-                >
-                  {item}
-                </motion.span>
-              ))}
-            </motion.div>
-          </motion.div>
-        </div>
-
-        {/* Right Side: Auth Form */}
-        <div className="relative w-full lg:w-[480px] p-6 lg:p-12 bg-[var(--bg-card)] backdrop-blur-2xl border-t lg:border-t-0 lg:border-l border-[var(--border-color)] flex flex-col justify-center">
-          {onDismiss && (
-            <button 
-              type="button" 
-              className="absolute top-4 right-4 lg:top-6 lg:right-6 w-8 h-8 flex items-center justify-center rounded-full bg-[var(--bg-secondary)] hover:bg-[var(--border-color)] text-[var(--text-muted)] hover:text-[var(--text-main)] transition-all scale-100 hover:scale-110 active:scale-95" 
-              onClick={onDismiss}
-            >
-              ×
-            </button>
-          )}
-
-          <div className="mb-6 lg:mb-8">
-            <h3 className="text-xl lg:text-2xl font-display font-semibold mb-2 text-[var(--text-heading)]">
-              {authMode === 'supabase-email' ? 'Welcome back' : 'Enter workspace'}
-            </h3>
-            <p className="text-sm text-[var(--text-muted)]">
-              {authMode === 'supabase-email'
-                ? 'Sign in to access your synchronized progress.'
-                : 'Local mode is ideal for quick private use.'}
-            </p>
-          </div>
-
-          {message && (
-            <div className="mb-6 p-4 rounded-xl bg-electric-violet/20 border border-electric-violet/30 text-electric-violet text-sm">
-              {message}
+          {/* Left Side: 3D Hero & Copy */}
+          <div className="relative flex-1 p-6 lg:p-16 flex flex-col justify-center min-h-[250px] lg:min-h-[500px] overflow-hidden bg-[var(--login-left-bg)]">
+            <div className="absolute inset-0 z-0 opacity-80 pointer-events-none">
+              <Canvas camera={{ position: [0, 0, 5], fov: 45 }}>
+                <ambientLight intensity={0.5} />
+                <directionalLight position={[10, 10, 5]} intensity={1} />
+                <FloatingObject theme={theme} />
+              </Canvas>
             </div>
-          )}
 
-          {authMode === 'supabase-email' ? (
-            <div className="space-y-6">
-              {isGoogleDirectEnabled && (
-                <>
-                  <button
-                    type="button"
-                    disabled={submitting}
-                    onClick={handleGoogleSignIn}
-                    className="w-full flex items-center justify-center gap-3 py-3 px-4 rounded-xl bg-[var(--bg-input)] hover:bg-[var(--border-color)] border border-[var(--border-color)] text-[var(--text-main)] transition-all active:scale-[0.97] hover:scale-[1.02] hover:shadow-glow-cyan"
+            <motion.div variants={staggerContainer} initial="initial" animate="animate" className="relative z-10 space-y-4 lg:space-y-6">
+              <motion.div variants={fadeUp} className="flex items-center gap-3 mb-4 lg:mb-8">
+                <div className="font-display font-bold text-xl lg:text-2xl tracking-widest uppercase text-[var(--login-left-text)]">
+                  Study<span className="bg-clip-text text-transparent bg-gradient-to-r from-electric-violet to-neon-cyan">NX</span>
+                </div>
+                <span className="px-3 py-1 rounded-full text-[0.65rem] uppercase tracking-wider bg-[var(--bg-secondary)] border border-[var(--border-color)] text-neon-cyan">
+                  Study dashboard
+                </span>
+              </motion.div>
+
+              <motion.h2 variants={fadeUp} className="text-3xl lg:text-5xl font-display font-bold leading-tight text-[var(--login-left-text)]">
+                Study Smarter. <br />
+                <span className="bg-clip-text text-transparent bg-gradient-to-r from-electric-violet to-neon-cyan animate-gradient-shift bg-[length:200%_auto]">
+                  Track Deeper.
+                </span>
+              </motion.h2>
+
+              <motion.p variants={fadeUp} className="text-[var(--login-left-text)] text-base lg:text-lg max-w-md hidden md:block opacity-80">
+                Save sessions, track streaks, and pick up exactly where you left off across devices.
+              </motion.p>
+
+              <motion.div variants={fadeUp} className="hidden md:flex flex-wrap gap-3 pt-4">
+                {authPillCopy.map((item, i) => (
+                  <motion.span 
+                    key={item}
+                    animate={{ y: [0, -5, 0] }}
+                    transition={{ duration: 4, repeat: Infinity, delay: i * 0.4 }}
+                    className="px-4 py-2 rounded-full bg-[var(--bg-secondary)] border border-[var(--border-color)] text-sm text-[var(--login-left-text)] shadow-glow-cyan"
                   >
-                    <svg className="w-5 h-5" viewBox="0 0 24 24">
-                      <path d="M21.6 12.2c0-.7-.1-1.4-.2-2H12v3.8h5.5c-.2 1.1-.9 2.1-1.9 2.8v2.3h3.1c1.8-1.7 2.9-4.1 2.9-6.9z" fill="#4285F4" />
-                      <path d="M12 22c2.7 0 5-0.9 6.7-2.5l-3.1-2.3c-.9.6-2 .9-3.6.9-2.8 0-5.2-1.9-6-4.5H2.8v2.8C4.5 19.7 8 22 12 22z" fill="#34A853" />
-                      <path d="M6 13.6c-.2-.6-.4-1.3-.4-2s.1-1.4.4-2V8.8H2.8C2.3 9.8 2 10.9 2 12s.3 2.2.8 3.2l3.2-2.5V13.6z" fill="#FBBC05" />
-                      <path d="M12 5.4c1.5 0 2.9.5 4 1.5l3-3.1C17.5 2.2 14.9 1 12 1 8 1 4.5 3.3 2.8 6.8L6 9.2c.8-2.5 3.2-3.8 6-3.8z" fill="#EA4335" />
-                    </svg>
-                    Continue with Google
-                  </button>
-
-                  <div className="flex items-center gap-4 my-6">
-                    <div className="flex-1 h-px bg-[var(--border-color)]"></div>
-                    <span className="text-xs uppercase tracking-wider text-[var(--text-muted)]">or email</span>
-                    <div className="flex-1 h-px bg-[var(--border-color)]"></div>
-                  </div>
-                </>
-              )}
-
-              <div className="flex p-1 rounded-xl bg-[var(--bg-input)] border border-[var(--border-color)] mb-6">
-                {(['signin', 'signup'] as const).map((tab) => (
-                  <button
-                    key={tab}
-                    type="button"
-                    onClick={() => switchView(tab)}
-                    className={cn(
-                      "flex-1 py-2 text-sm font-medium rounded-lg transition-all",
-                      authView === tab ? "bg-[var(--border-color)] text-[var(--text-main)] shadow-sm" : "text-[var(--text-muted)] hover:text-[var(--text-main)]"
-                    )}
-                  >
-                    {tab === 'signin' ? 'Sign In' : 'Sign Up'}
-                  </button>
+                    {item}
+                  </motion.span>
                 ))}
-              </div>
+              </motion.div>
+            </motion.div>
+          </div>
 
-              {feedback && (
-                <div className={cn(
-                  "p-4 rounded-xl text-sm border mb-4",
-                  feedbackTone === 'success' ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-400" : "bg-red-500/10 border-red-500/20 text-red-400"
-                )}>
-                  {feedback}
-                </div>
-              )}
-
-              <form 
-                onSubmit={authView === 'signin' ? handleSignIn : handleSignUp}
-                className="space-y-4"
+          {/* Right Side: Auth Form */}
+          <div className="relative w-full lg:w-[480px] p-6 lg:p-12 bg-[var(--bg-card)] backdrop-blur-2xl border-t lg:border-t-0 lg:border-l border-[var(--border-color)] flex flex-col justify-center">
+            {onDismiss && (
+              <button
+                type="button"
+                className="absolute top-4 right-4 lg:top-6 lg:right-6 w-8 h-8 flex items-center justify-center rounded-full bg-[var(--bg-secondary)] hover:bg-[var(--border-color)] text-[var(--text-muted)] hover:text-[var(--text-main)] transition-all scale-100 hover:scale-110 active:scale-95"
+                onClick={onDismiss}
               >
-                <div>
-                  <input
-                    type="email"
-                    placeholder="you@example.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                    className="w-full bg-[var(--bg-input)] border border-[var(--border-color)] rounded-xl px-4 py-3 text-[var(--text-main)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-neon-cyan focus:ring-1 focus:ring-neon-cyan transition-all"
-                  />
-                </div>
-                
-                <div>
-                  <input
-                    type="password"
-                    placeholder={authView === 'signup' ? "Create password" : "Password"}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    className="w-full bg-[var(--bg-input)] border border-[var(--border-color)] rounded-xl px-4 py-3 text-[var(--text-main)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-neon-cyan focus:ring-1 focus:ring-neon-cyan transition-all"
-                  />
+                ×
+              </button>
+            )}
+
+            <div className="mb-6 lg:mb-8">
+              <h3 className="text-xl lg:text-2xl font-display font-semibold mb-2 text-[var(--text-heading)]">
+                {authMode === 'supabase-email' ? 'Welcome back' : 'Enter workspace'}
+              </h3>
+              <p className="text-sm text-[var(--text-muted)]">
+                {authMode === 'supabase-email'
+                  ? 'Sign in to access your synchronized progress.'
+                  : 'Local mode is ideal for quick private use.'}
+              </p>
+            </div>
+
+            {message && (
+              <div className="mb-6 p-4 rounded-xl bg-electric-violet/20 border border-electric-violet/30 text-electric-violet text-sm">
+                {message}
+              </div>
+            )}
+
+            {authMode === 'supabase-email' ? (
+              <div className="space-y-6">
+                {isGoogleDirectEnabled && (
+                  <>
+                    <button
+                      type="button"
+                      disabled={submitting}
+                      onClick={handleGoogleSignIn}
+                      className="w-full flex items-center justify-center gap-3 py-3 px-4 rounded-xl bg-[var(--bg-input)] hover:bg-[var(--border-color)] border border-[var(--border-color)] text-[var(--text-main)] transition-all active:scale-[0.97] hover:scale-[1.02] hover:shadow-glow-cyan"
+                    >
+                      <svg className="w-5 h-5" viewBox="0 0 24 24">
+                        <path d="M21.6 12.2c0-.7-.1-1.4-.2-2H12v3.8h5.5c-.2 1.1-.9 2.1-1.9 2.8v2.3h3.1c1.8-1.7 2.9-4.1 2.9-6.9z" fill="#4285F4" />
+                        <path d="M12 22c2.7 0 5-0.9 6.7-2.5l-3.1-2.3c-.9.6-2 .9-3.6.9-2.8 0-5.2-1.9-6-4.5H2.8v2.8C4.5 19.7 8 22 12 22z" fill="#34A853" />
+                        <path d="M6 13.6c-.2-.6-.4-1.3-.4-2s.1-1.4.4-2V8.8H2.8C2.3 9.8 2 10.9 2 12s.3 2.2.8 3.2l3.2-2.5V13.6z" fill="#FBBC05" />
+                        <path d="M12 5.4c1.5 0 2.9.5 4 1.5l3-3.1C17.5 2.2 14.9 1 12 1 8 1 4.5 3.3 2.8 6.8L6 9.2c.8-2.5 3.2-3.8 6-3.8z" fill="#EA4335" />
+                      </svg>
+                      Continue with Google
+                    </button>
+
+                    <div className="flex items-center gap-4 my-6">
+                      <div className="flex-1 h-px bg-[var(--border-color)]"></div>
+                      <span className="text-xs uppercase tracking-wider text-[var(--text-muted)]">or email</span>
+                      <div className="flex-1 h-px bg-[var(--border-color)]"></div>
+                    </div>
+                  </>
+                )}
+
+                <div className="flex p-1 rounded-xl bg-[var(--bg-input)] border border-[var(--border-color)] mb-6">
+                  {(['signin', 'signup'] as const).map((tab) => (
+                    <button
+                      key={tab}
+                      type="button"
+                      onClick={() => switchView(tab)}
+                      className={cn(
+                        "flex-1 py-2 text-sm font-medium rounded-lg transition-all",
+                        authView === tab ? "bg-[var(--border-color)] text-[var(--text-main)] shadow-sm" : "text-[var(--text-muted)] hover:text-[var(--text-main)]"
+                      )}
+                    >
+                      {tab === 'signin' ? 'Sign In' : 'Sign Up'}
+                    </button>
+                  ))}
                 </div>
 
-                {authView === 'signup' && (
+                {feedback && (
+                  <div className={cn(
+                    "p-4 rounded-xl text-sm border mb-4",
+                    feedbackTone === 'success' ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-400" : "bg-red-500/10 border-red-500/20 text-red-400"
+                  )}>
+                    {feedback}
+                  </div>
+                )}
+
+                <form
+                  onSubmit={authView === 'signin' ? handleSignIn : handleSignUp}
+                  className="space-y-4"
+                >
                   <div>
                     <input
-                      type="password"
-                      placeholder="Confirm password"
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      type="email"
+                      placeholder="you@example.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
                       required
                       className="w-full bg-[var(--bg-input)] border border-[var(--border-color)] rounded-xl px-4 py-3 text-[var(--text-main)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-neon-cyan focus:ring-1 focus:ring-neon-cyan transition-all"
                     />
                   </div>
-                )}
 
-                <button 
-                  type="submit" 
-                  disabled={submitting}
+                  <div>
+                    <input
+                      type="password"
+                      placeholder={authView === 'signup' ? "Create password" : "Password"}
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                      className="w-full bg-[var(--bg-input)] border border-[var(--border-color)] rounded-xl px-4 py-3 text-[var(--text-main)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-neon-cyan focus:ring-1 focus:ring-neon-cyan transition-all"
+                    />
+                  </div>
+
+                  {authView === 'signup' && (
+                    <div>
+                      <input
+                        type="password"
+                        placeholder="Confirm password"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        required
+                        className="w-full bg-[var(--bg-input)] border border-[var(--border-color)] rounded-xl px-4 py-3 text-[var(--text-main)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-neon-cyan focus:ring-1 focus:ring-neon-cyan transition-all"
+                      />
+                    </div>
+                  )}
+
+                  <button
+                    type="submit"
+                    disabled={submitting}
+                    className="w-full relative overflow-hidden group bg-gradient-to-r from-electric-violet to-neon-cyan text-white font-semibold py-3 px-4 rounded-xl transition-all active:scale-[0.97] hover:scale-[1.02] hover:shadow-glow-violet"
+                  >
+                    <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:animate-[shimmer_1s_forwards]" />
+                    {submitting ? 'Processing...' : authView === 'signin' ? 'Sign In' : 'Create Account'}
+                  </button>
+
+                  {authView === 'signin' && (
+                    <div className="text-center mt-4">
+                      <button
+                        type="button"
+                        disabled={submitting}
+                        onClick={handleResetPassword}
+                        className="text-sm text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors"
+                      >
+                        Forgot password?
+                      </button>
+                    </div>
+                  )}
+                </form>
+              </div>
+            ) : (
+              <form onSubmit={handleLogin} className="space-y-4">
+                <div>
+                  <input
+                    type="text"
+                    placeholder="Enter your name..."
+                    value={localName}
+                    onChange={(e) => setLocalName(e.target.value)}
+                    className="w-full bg-[var(--bg-input)] border border-[var(--border-color)] rounded-xl px-4 py-3 text-[var(--text-main)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-neon-cyan focus:ring-1 focus:ring-neon-cyan transition-all"
+                  />
+                </div>
+                <button
+                  type="submit"
                   className="w-full relative overflow-hidden group bg-gradient-to-r from-electric-violet to-neon-cyan text-white font-semibold py-3 px-4 rounded-xl transition-all active:scale-[0.97] hover:scale-[1.02] hover:shadow-glow-violet"
                 >
                   <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:animate-[shimmer_1s_forwards]" />
-                  {submitting ? 'Processing...' : authView === 'signin' ? 'Sign In' : 'Create Account'}
+                  Enter Dashboard
                 </button>
-
-                {authView === 'signin' && (
-                  <div className="text-center mt-4">
-                    <button
-                      type="button"
-                      disabled={submitting}
-                      onClick={handleResetPassword}
-                      className="text-sm text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors"
-                    >
-                      Forgot password?
-                    </button>
-                  </div>
-                )}
               </form>
-            </div>
-          ) : (
-            <form onSubmit={handleLogin} className="space-y-4">
-              <div>
-                <input
-                  type="text"
-                  placeholder="Enter your name..."
-                  value={localName}
-                  onChange={(e) => setLocalName(e.target.value)}
-                  className="w-full bg-[var(--bg-input)] border border-[var(--border-color)] rounded-xl px-4 py-3 text-[var(--text-main)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-neon-cyan focus:ring-1 focus:ring-neon-cyan transition-all"
-                />
-              </div>
-              <button 
-                type="submit"
-                className="w-full relative overflow-hidden group bg-gradient-to-r from-electric-violet to-neon-cyan text-white font-semibold py-3 px-4 rounded-xl transition-all active:scale-[0.97] hover:scale-[1.02] hover:shadow-glow-violet"
-              >
-                <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:animate-[shimmer_1s_forwards]" />
-                Enter Dashboard
-              </button>
-            </form>
-          )}
-        </div>
-      </motion.div>
+            )}
+          </div>
+        </motion.div>
       </div>
     </div>
   );

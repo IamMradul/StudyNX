@@ -95,26 +95,26 @@ const ProfileModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOp
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-sm animate-fade-in-up">
-      <div className="bg-slate-800 border border-slate-700 rounded-2xl p-6 w-full max-w-sm shadow-2xl relative">
-        <button type="button" className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-slate-700 hover:bg-slate-600 text-slate-300 transition-colors" onClick={onClose}>
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-[var(--bg-primary)]/80 backdrop-blur-md animate-fade-in-up" onClick={onClose}>
+      <div className="bg-[var(--bg-card-solid)] border border-[var(--border-color)] rounded-2xl p-6 w-full max-w-sm shadow-card relative overflow-hidden" onClick={e => e.stopPropagation()}>
+        <button type="button" className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-[var(--bg-secondary)] hover:bg-[var(--border-color)] text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors z-20" onClick={onClose}>
           ✕
         </button>
-        <div className="flex flex-col items-center mb-6">
-          <div className="w-16 h-16 rounded-full bg-electric-violet/20 border border-electric-violet/40 flex items-center justify-center text-2xl font-bold text-electric-violet mb-3">
+        <div className="flex flex-col items-center mb-6 relative z-10">
+          <div className="w-16 h-16 rounded-full bg-[var(--bg-secondary)] border border-[var(--border-color)] flex items-center justify-center text-2xl font-bold text-electric-violet mb-3 shadow-glow-violet">
             {data.user?.avatar || 'SN'}
           </div>
-          <h2 className="text-xl font-heading font-bold text-slate-100">{data.user?.name || 'User'}</h2>
-          <p className="text-sm text-slate-400">Manage your account</p>
+          <h2 className="text-xl font-heading font-bold text-[var(--text-heading)]">{data.user?.name || 'User'}</h2>
+          <p className="text-sm text-[var(--text-muted)]">Manage your account</p>
         </div>
 
-        <div className="border-t border-slate-700 pt-6 mb-6">
-          <h3 className="text-sm font-semibold text-slate-300 mb-4 uppercase tracking-wider">Change Password</h3>
+        <div className="border-t border-[var(--border-color)] pt-6 mb-6 relative z-10">
+          <h3 className="text-sm font-semibold text-[var(--text-label)] mb-4 uppercase tracking-wider">Change Password</h3>
           <form onSubmit={handleUpdatePassword} className="space-y-4">
             <input
               type="password"
               placeholder="New password"
-              className="w-full bg-slate-900/50 border border-slate-600 rounded-xl px-4 py-2 text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-electric-violet transition-all"
+              className="w-full bg-[var(--bg-input)] border border-[var(--border-color)] rounded-xl px-4 py-2 text-[var(--text-main)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-electric-violet/50 focus:ring-1 focus:ring-electric-violet/50 transition-all"
               value={newPassword}
               onChange={e => setNewPassword(e.target.value)}
               required
@@ -122,7 +122,7 @@ const ProfileModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOp
             <input
               type="password"
               placeholder="Confirm new password"
-              className="w-full bg-slate-900/50 border border-slate-600 rounded-xl px-4 py-2 text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-electric-violet transition-all"
+              className="w-full bg-[var(--bg-input)] border border-[var(--border-color)] rounded-xl px-4 py-2 text-[var(--text-main)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-electric-violet/50 focus:ring-1 focus:ring-electric-violet/50 transition-all"
               value={confirmPassword}
               onChange={e => setConfirmPassword(e.target.value)}
               required
@@ -136,17 +136,17 @@ const ProfileModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOp
             </button>
           </form>
           {feedback && (
-            <p className={`mt-3 text-sm text-center ${feedbackTone === 'success' ? 'text-emerald-400' : 'text-rose-400'}`}>
+            <p className={`mt-3 text-sm text-center ${feedbackTone === 'success' ? 'text-emerald-500' : 'text-rose-500'}`}>
               {feedback}
             </p>
           )}
         </div>
 
-        <div className="border-t border-slate-700 pt-4">
+        <div className="border-t border-[var(--border-color)] pt-4 relative z-10">
           <button
             type="button"
             onClick={() => { onClose(); logout(); }}
-            className="w-full py-2 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 font-medium rounded-xl transition-all"
+            className="w-full py-2 bg-rose-500/10 hover:bg-rose-500/20 text-rose-500 font-medium rounded-xl transition-all"
           >
             Sign Out
           </button>
@@ -349,7 +349,10 @@ const Dashboard: React.FC = () => {
           variants={fadeUp}
           initial="initial"
           animate="animate"
-          className="relative bg-white/[0.02] backdrop-blur-xl border border-white/[0.08] rounded-3xl p-6 lg:p-8 mb-8 overflow-hidden shadow-card group hover:border-white/[0.12] transition-colors"
+          className={cn(
+            "relative bg-white/[0.02] backdrop-blur-xl border border-white/[0.08] rounded-3xl p-6 lg:p-8 mb-8 overflow-hidden shadow-card group hover:border-white/[0.12] transition-colors",
+            activeTab !== 'overview' && "hidden lg:block"
+          )}
         >
           {/* Decorative glow inside hero */}
           <div className="absolute top-0 right-0 w-64 h-64 bg-neon-cyan/10 blur-[80px] rounded-full -translate-y-1/2 translate-x-1/3 group-hover:bg-neon-cyan/20 transition-colors duration-700 pointer-events-none" />
@@ -425,7 +428,7 @@ const Dashboard: React.FC = () => {
             {activeTab === 'todo' && (
               <div className="space-y-8 max-w-4xl mx-auto mt-4">
                 <h2 className="text-3xl font-display font-bold text-on-surface tracking-wide mb-6">Your Tasks</h2>
-                <div className="h-[calc(100vh-16rem)] min-h-[600px] flex">
+                <div className="h-auto lg:h-[calc(100vh-16rem)] min-h-[500px] lg:min-h-[600px] flex">
                   <div className="flex-1">
                     <ToDoList />
                   </div>

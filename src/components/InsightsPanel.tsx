@@ -50,7 +50,7 @@ const getLongestStreak = (activeDateKeys: string[]) => {
 };
 
 const InsightsPanel: React.FC = () => {
-  const { data } = useData();
+  const { data, generateDemoData } = useData();
   const now = new Date();
 
   const sortedEntries = Object.entries(data.activityData)
@@ -111,7 +111,12 @@ const InsightsPanel: React.FC = () => {
       <section className="insights-panel card">
         <div className="insights-heading">
           <h2>Study Insights</h2>
-          <span>{now.toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+          <div className="flex items-center gap-3">
+            <button type="button" className="text-xs bg-[var(--bg-secondary)] hover:bg-[var(--border-color)] text-[var(--text-muted)] hover:text-[var(--text-main)] px-3 py-1.5 rounded-lg font-medium transition-colors" onClick={generateDemoData}>
+              Generate Demo Data
+            </button>
+            <span>{now.toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+          </div>
         </div>
         <div className="insights-empty empty-state" style={{ minHeight: 240 }}>
           <svg width="72" height="72" viewBox="0 0 72 72" fill="none" aria-hidden="true">
@@ -135,7 +140,12 @@ const InsightsPanel: React.FC = () => {
           <h2>Study Insights</h2>
           <p>Clear trends, streaks, and completion metrics at a glance.</p>
         </div>
-        <span>{now.toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+        <div className="flex items-center gap-3">
+          <button type="button" className="text-xs bg-[var(--bg-secondary)] hover:bg-[var(--border-color)] text-[var(--text-muted)] hover:text-[var(--text-main)] px-3 py-1.5 rounded-lg font-medium transition-colors" onClick={generateDemoData}>
+            Generate Demo Data
+          </button>
+          <span>{now.toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+        </div>
       </div>
 
       <div className="insight-metrics-grid">

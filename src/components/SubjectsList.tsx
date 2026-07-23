@@ -2,11 +2,11 @@ import React, { useEffect, useMemo, useState, useRef } from 'react';
 import { useData } from '../context/DataContext';
 import type { Subject } from '../context/DataContext';
 import { toDateKey } from '../lib/studyLogic';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, Reorder } from 'framer-motion';
 // @ts-ignore
 import confetti from 'canvas-confetti';
 import { cn } from '../lib/utils';
-import { fadeUp, staggerContainer, scaleIn } from '../lib/animations';
+import { fadeUp, scaleIn } from '../lib/animations';
 
 const TiltCard = ({ children, className, onClick }: { children: React.ReactNode, className?: string, onClick?: () => void }) => {
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
@@ -203,7 +203,7 @@ const SubjectsList: React.FC = () => {
 
   return (
     <>
-      <motion.div variants={fadeUp} className="bg-white/[0.02] border border-white/10 backdrop-blur-xl rounded-3xl p-6 lg:p-8 min-h-[600px] h-[calc(100vh-16rem)] flex flex-col">
+      <motion.div variants={fadeUp} className="bg-white/[0.02] border border-white/10 backdrop-blur-xl rounded-3xl p-6 lg:p-8 min-h-[500px] lg:min-h-[600px] h-auto lg:h-[calc(100vh-16rem)] flex flex-col">
         <div className="flex items-center justify-between mb-6 shrink-0">
           <div>
             <h2 className="text-2xl font-display font-bold text-white tracking-wide">Track Subjects</h2>
@@ -261,13 +261,19 @@ const SubjectsList: React.FC = () => {
           </div>
         )}
 
-        <motion.div variants={staggerContainer} initial="initial" animate="animate" className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 flex-1 overflow-y-auto pb-6 scrollbar-hide hover-scrollbar min-h-0 content-start p-2 -m-2">
+        <Reorder.Group 
+          axis="y"
+          values={data.subjects}
+          onReorder={(newSubjects: Subject[]) => updateData({ subjects: newSubjects })}
+          as="div"
+          className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 flex-1 overflow-y-auto pb-6 scrollbar-hide hover-scrollbar min-h-0 content-start p-2 -m-2 list-none m-0"
+        >
           {data.subjects.map(subject => (
-            <TiltCard
-              key={subject.id}
-              onClick={() => setSelectedSubjectId(subject.id)}
-              className="group cursor-pointer relative bg-[var(--bg-card)] hover:brightness-110 backdrop-blur-md border border-white/10 hover:border-white/20 rounded-3xl p-6 transition-all duration-300 overflow-hidden shadow-[0_8px_32px_-8px_rgba(0,0,0,0.5)] hover:shadow-[0_16px_48px_-12px_rgba(0,0,0,0.8)] flex flex-col h-[180px]"
-            >
+            <Reorder.Item key={subject.id} value={subject} as="div" className="cursor-grab active:cursor-grabbing">
+              <TiltCard
+                onClick={() => setSelectedSubjectId(subject.id)}
+                className="group relative bg-[var(--bg-card)] hover:brightness-110 backdrop-blur-md border border-white/10 hover:border-white/20 rounded-3xl p-6 transition-all duration-300 overflow-hidden shadow-[0_8px_32px_-8px_rgba(0,0,0,0.5)] hover:shadow-[0_16px_48px_-12px_rgba(0,0,0,0.8)] flex flex-col h-[180px]"
+              >
               <div
                 className="absolute inset-0 opacity-0 group-hover:opacity-[0.03] transition-opacity duration-500 pointer-events-none"
                 style={{ background: `radial-gradient(circle at top right, ${subject.color}, transparent 60%)` }}
@@ -301,7 +307,7 @@ const SubjectsList: React.FC = () => {
                       </button>
                     </div>
                   </div>
-                  
+
                   <div className="mt-auto pt-4 flex items-center">
                     <span className={cn(
                       "px-3 py-1.5 rounded-xl text-[10px] font-bold uppercase tracking-widest border",
@@ -314,9 +320,10 @@ const SubjectsList: React.FC = () => {
                   </div>
                 </div>
               </div>
-            </TiltCard>
+              </TiltCard>
+            </Reorder.Item>
           ))}
-        </motion.div>
+        </Reorder.Group>
       </motion.div>
 
       <AnimatePresence>

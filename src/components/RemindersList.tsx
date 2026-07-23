@@ -47,7 +47,7 @@ const RemindersList: React.FC = () => {
   };
 
   return (
-    <motion.div variants={fadeUp} className="bg-white/[0.02] backdrop-blur-xl border border-white/10 rounded-3xl p-6 lg:p-8 min-h-[600px] h-[calc(100vh-16rem)] flex flex-col lg:flex-row gap-8 lg:gap-12 shadow-card relative overflow-hidden group">
+    <motion.div variants={fadeUp} className="bg-white/[0.02] backdrop-blur-xl border border-white/10 rounded-3xl p-6 lg:p-8 min-h-[500px] lg:min-h-[600px] h-auto lg:h-[calc(100vh-16rem)] flex flex-col lg:flex-row gap-8 lg:gap-12 shadow-card relative overflow-hidden group">
       <div className="absolute top-0 right-0 w-64 h-64 bg-neon-cyan/10 blur-[80px] rounded-full -translate-y-1/2 translate-x-1/3 pointer-events-none" />
       <div className="absolute bottom-0 left-0 w-64 h-64 bg-electric-violet/10 blur-[80px] rounded-full translate-y-1/2 -translate-x-1/3 pointer-events-none" />
       

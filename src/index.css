@@ -62,29 +62,32 @@
   --chart-grid: rgba(255, 255, 255, 0.05);
   --chart-label: #94a3b8;
   --bg-ring-track: rgba(255, 255, 255, 0.1);
+
+  --login-left-bg: #050508;
+  --login-left-text: #f8fafc;
 }
 
 /* ─── Light theme ────────────────────────────────────────────────── */
 html[data-theme="light"] {
   /* Override custom theme variables */
-  --bg-primary: #f8fafc;
-  --bg-secondary: rgba(0, 0, 0, 0.02);
-  --bg-card: rgba(255, 255, 255, 0.7);
+  --bg-primary: #f1f5f9;
+  --bg-secondary: rgba(0, 0, 0, 0.03);
+  --bg-card: rgba(255, 255, 255, 0.6);
   --bg-card-solid: #ffffff;
-  --bg-input: rgba(0, 0, 0, 0.03);
-  --bg-nav: rgba(255, 255, 255, 0.8);
+  --bg-input: rgba(0, 0, 0, 0.04);
+  --bg-nav: rgba(241, 245, 249, 0.8);
 
-  --text-main: #0f172a;
+  --text-main: #334155;
   --text-muted: #64748b;
-  --text-heading: #020617;
-  --text-inverse: #f8fafc;
+  --text-heading: #0f172a;
+  --text-inverse: #ffffff;
   --text-label: #475569;
 
-  --border-color: rgba(0, 0, 0, 0.06);
-  --border-soft: rgba(0, 0, 0, 0.03);
+  --border-color: rgba(0, 0, 0, 0.08);
+  --border-soft: rgba(0, 0, 0, 0.04);
 
-  --shadow-card: 0 12px 30px rgba(0, 0, 0, 0.04);
-  --shadow-glow: 0 0 0 1px rgba(0, 0, 0, 0.03) inset;
+  --shadow-card: 0 12px 30px rgba(0, 0, 0, 0.03);
+  --shadow-glow: 0 0 0 1px rgba(0, 0, 0, 0.04) inset;
 
   --skeleton-base: rgba(0, 0, 0, 0.04);
   --skeleton-shine: rgba(0, 0, 0, 0.08);
@@ -106,8 +109,11 @@ html[data-theme="light"] {
   --color-slate-400: #64748b;
   --color-slate-500: #94a3b8;
 
-  --color-void: #f8fafc;
+  --color-void: #f1f5f9;
   /* Background3D uses bg-void */
+
+  --login-left-bg: #f8fafc;
+  --login-left-text: #18181b;
 }
 
 /* Remove inverted image filters */
