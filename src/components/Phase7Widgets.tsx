@@ -394,7 +394,7 @@ export const ExamCountdown: React.FC = () => {
 };
 
 export const WeeklyGoal: React.FC = () => {
-  const { data, updateData } = useData();
+  const { data } = useData();
   const now = new Date();
   const current = Array.from({ length: 7 }, (_, idx) => {
     const d = new Date(now);
@@ -403,9 +403,6 @@ export const WeeklyGoal: React.FC = () => {
   }).reduce((sum, h) => sum + h, 0);
   const target = data.weeklyTargetHours;
   const percent = (current / target) * 100;
-
-  const adjustTarget = (delta: number) =>
-    updateData({ weeklyTargetHours: Math.max(1, data.weeklyTargetHours + delta) });
 
   return (
     <div className="card widget-card">
@@ -421,10 +418,6 @@ export const WeeklyGoal: React.FC = () => {
         {current >= target
           ? `🎉 Goal reached! You're ${(current - target).toFixed(1)}h ahead.`
           : `${(target - current).toFixed(1)} hrs to hit your weekly goal`}
-      </div>
-      <div className="add-reminder-row" style={{ marginTop: '10px' }}>
-        <button type="button" className="widget-btn mini" aria-label="Decrease weekly goal by 1 hour" onClick={() => adjustTarget(-1)}>-1h</button>
-        <button type="button" className="widget-btn mini" aria-label="Increase weekly goal by 1 hour" onClick={() => adjustTarget(1)}>+1h</button>
       </div>
     </div>
   );

@@ -277,6 +277,10 @@ const normalizeAppData = (rawData: unknown): AppData => {
     }
     : null;
 
+  const dailyTargetHours = typeof candidate.dailyTargetHours === 'number' && candidate.dailyTargetHours > 0
+    ? candidate.dailyTargetHours
+    : defaultData.dailyTargetHours;
+
   return {
     ...defaultData,
     isLoggedIn: typeof candidate.isLoggedIn === 'boolean' ? candidate.isLoggedIn : defaultData.isLoggedIn,
@@ -288,10 +292,8 @@ const normalizeAppData = (rawData: unknown): AppData => {
     reminders: Array.isArray(candidate.reminders) ? candidate.reminders as Reminder[] : defaultData.reminders,
     resources: Array.isArray(candidate.resources) ? candidate.resources as ResourceItem[] : defaultData.resources,
     exams: Array.isArray(candidate.exams) ? candidate.exams as ExamItem[] : defaultData.exams,
-    weeklyTargetHours: typeof candidate.weeklyTargetHours === 'number' ? candidate.weeklyTargetHours : defaultData.weeklyTargetHours,
-    dailyTargetHours:  typeof candidate.dailyTargetHours  === 'number' && candidate.dailyTargetHours > 0
-      ? candidate.dailyTargetHours
-      : defaultData.dailyTargetHours,
+    dailyTargetHours,
+    weeklyTargetHours: dailyTargetHours * 7,
     pomodoroSettings: isRecord(candidate.pomodoroSettings) ? {
       workDuration:       typeof candidate.pomodoroSettings.workDuration       === 'number' ? candidate.pomodoroSettings.workDuration       : defaultData.pomodoroSettings.workDuration,
       shortBreakDuration: typeof candidate.pomodoroSettings.shortBreakDuration === 'number' ? candidate.pomodoroSettings.shortBreakDuration : defaultData.pomodoroSettings.shortBreakDuration,
