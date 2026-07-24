@@ -427,6 +427,9 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           weeklyTargetHours: remotePayload.weeklyTargetHours ?? prev.weeklyTargetHours,
           dailyTargetHours:  remotePayload.dailyTargetHours  ?? prev.dailyTargetHours,
           pomodoroSettings:  remotePayload.pomodoroSettings  ?? prev.pomodoroSettings,
+          dailyTodoEnabled:  remotePayload.dailyTodoEnabled  ?? prev.dailyTodoEnabled,
+          lastTodoResetDate: remotePayload.lastTodoResetDate ?? prev.lastTodoResetDate,
+          sessionLogs:       remotePayload.sessionLogs       ?? prev.sessionLogs,
         }));
       }
       isHydratingFromSupabaseRef.current = false;
@@ -489,7 +492,19 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     checkReset();
     const interval = setInterval(checkReset, 60000); // Check every minute
-    return () => clearInterval(interval);
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') checkReset();
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('focus', checkReset);
+
+    return () => {
+      clearInterval(interval);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('focus', checkReset);
+    };
   }, [data.dailyTodoEnabled]);
 
   const requestEmailSignIn = async (email: string) => {

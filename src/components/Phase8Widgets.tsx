@@ -257,10 +257,6 @@ export const CalendarWidget: React.FC = () => {
   const nextMonthDays = Array.from({ length: (7 - (totalCells % 7 || 7)) % 7 }, (_, i) => i + 1);
 
   const selectedStudyHours = data.activityData[selectedDate] ?? 0;
-  const selectedBreakHours = selectedStudyHours * 0.2;
-  const focusRatio = selectedStudyHours > 0
-    ? Math.round((selectedStudyHours / (selectedStudyHours + selectedBreakHours)) * 100)
-    : 0;
 
   const hoursToClass = (hours: number) => {
     if (hours >= 6) return 'cal-level-3';
@@ -334,16 +330,22 @@ export const CalendarWidget: React.FC = () => {
             <strong>{selectedStudyHours.toFixed(1)}h</strong>
           </div>
           <div>
-            <small>Break</small>
-            <strong>{selectedBreakHours.toFixed(1)}h</strong>
+            <small>Target</small>
+            <strong>{data.dailyTargetHours.toFixed(1)}h</strong>
           </div>
           <div>
-            <small>Focus ratio</small>
-            <strong>{focusRatio}%</strong>
+            <small>Progress</small>
+            <strong>{Math.round(Math.min(100, (selectedStudyHours / (data.dailyTargetHours || 1)) * 100))}%</strong>
           </div>
         </div>
 
-        <div className="selected-hours-grid" style={{ marginTop: '10px' }}>
+        {selectedStudyHours > data.dailyTargetHours && (
+          <div style={{ marginTop: '12px', padding: '8px', borderRadius: '8px', backgroundColor: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.2)', color: '#10B981', fontSize: '0.8rem', textAlign: 'center', fontWeight: 500 }}>
+            🎉 Congratulations! You have studied more than your target!
+          </div>
+        )}
+
+        <div className="selected-hours-grid" style={{ marginTop: '12px' }}>
           {[0, 1, 2, 3, 4, 5, 6, 7, 8].map(hours => (
             <button
               key={hours}
